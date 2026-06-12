@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model User {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username     String   @unique @db.VarChar(50)
+  passwordHash String   @map("password_hash") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  roles         UserRole[]
+  sellerProfile SellerProfile?
+  buyerProfile  BuyerProfile?
+  driverProfile DriverProfile?
+
+  @@map("users")
+}
+
+model Role {
+  id   Int        @id @default(autoincrement())
+  name String     @unique @db.VarChar(20)
+
+  users UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId String @map("user_id") @db.Uuid
+  roleId Int    @map("role_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  // Composite Primary Key
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model ApplicationReview {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reviewerName String   @map("reviewer_name") @db.VarChar(100)
+  rating       Int      
+  comment      String   @db.Text
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@map("application_reviews")
+}
+
+model SellerProfile {
+  userId    String  @id @map("user_id") @db.Uuid
+  storeName String? @unique @map("store_name") @db.VarChar(100)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("seller_profiles")
+}
+
+model BuyerProfile {
+  userId          String  @id @map("user_id") @db.Uuid
+  walletBalance   Decimal @default(0.00) @map("wallet_balance") @db.Decimal(12, 2)
+  deliveryAddress String? @map("delivery_address") @db.Text
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("buyer_profiles")
+}
+
+model DriverProfile {
+  userId   String  @id @map("user_id") @db.Uuid
+  earnings Decimal @default(0.00) @map("earnings") @db.Decimal(12, 2)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("driver_profiles")
+}
