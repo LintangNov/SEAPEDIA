@@ -5,10 +5,10 @@ enum AuthState { guest, partial, authenticated }
 
 class AuthController extends Notifier<AuthState> {
   @override
-  AuthState build(){
+  AuthState build() {
     return AuthState.guest;
   }
-  
+
   Future<void> login(String username, String password) async {
     final repository = ref.read(authRepositoryProvider);
     await repository.login(username, password);
@@ -26,16 +26,14 @@ class AuthController extends Notifier<AuthState> {
     await repository.logout();
     state = AuthState.guest;
   }
-  
+
   void checkStatus(bool hasToken) {
     if (hasToken) {
-      state = AuthState.authenticated; 
+      state = AuthState.authenticated;
     }
   }
-
 }
 
-
-final authControllerProvider = NotifierProvider<AuthController, AuthState>((){
+final authControllerProvider = NotifierProvider<AuthController, AuthState>(() {
   return AuthController();
 });

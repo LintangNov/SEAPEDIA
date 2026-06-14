@@ -11,24 +11,26 @@ String get _baseUrl {
 }
 
 final dioProvider = Provider<Dio>((ref) {
-  final dio = Dio(BaseOptions(
-    baseUrl: _baseUrl,
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 10),
-    contentType: 'application/json',
-  ));
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: _baseUrl,
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      contentType: 'application/json',
+    ),
+  );
   final storage = ref.watch(secureStorageProvider);
 
   dio.interceptors.add(
     InterceptorsWrapper(
       onRequest: (options, handler) async {
         final token = await storage.read(key: 'accessToken');
-        
+
         // Jika token ada, sisipkan ke header Authorization
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
         }
-        
+
         return handler.next(options);
       },
       onError: (DioException e, handler) {
