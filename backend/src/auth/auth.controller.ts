@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { SelectRoleDto } from './dto/select-role.dto';
+import { AuthGuard } from "./auth.guard";
 
 @Controller('auth')
 export class AuthController {
@@ -19,9 +20,11 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('select-role')
-  async selectRole(@Body('userId') userId: string, @Body() dto: SelectRoleDto) {
+  async selectRole(@Request() req, @Body() dto: SelectRoleDto) {
+    const userId = req.user.sub; 
     return this.authService.selectRole(userId, dto.activeRole);
   }
 }
