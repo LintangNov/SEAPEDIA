@@ -76,7 +76,7 @@ export class AuthService {
         return {
             message: "Login successful. Please choose your active role.",
             accessToken,
-            availableRole: userRoles
+            availableRoles: userRoles
         };
     }
 
