@@ -22,10 +22,7 @@ class SelectRoleResponse {
   final String message;
   final String accessToken;
 
-  SelectRoleResponse({
-    required this.message,
-    required this.accessToken,
-  });
+  SelectRoleResponse({required this.message, required this.accessToken});
 
   factory SelectRoleResponse.fromJson(Map<String, dynamic> json) {
     return SelectRoleResponse(
