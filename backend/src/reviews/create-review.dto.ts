@@ -3,7 +3,7 @@ import { IsString, IsInt, Min, Max, MinLength } from 'class-validator';
 export class CreateReviewDto {
     @IsString()
     @MinLength(3)
-    revieverName!: string;
+    reviewerName!: string;
 
     @IsInt()
     @Min(1)

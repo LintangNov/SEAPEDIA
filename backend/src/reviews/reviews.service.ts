@@ -9,7 +9,7 @@ export class ReviewsService {
     async create(dto: CreateReviewDto) {
         const review = await this.prisma.applicationReview.create({
             data: {
-                reviewerName: dto.revieverName,
+                reviewerName: dto.reviewerName,
                 rating: dto.rating,
                 comment: dto.comment,
             },
