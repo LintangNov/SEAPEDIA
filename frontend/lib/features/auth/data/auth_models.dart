@@ -31,3 +31,23 @@ class SelectRoleResponse {
     );
   }
 }
+
+class UserProfile{
+  final String id;
+  final String username;
+  final String activeRole;
+
+  UserProfile({
+    required this.id,
+    required this.username,
+    required this.activeRole,
+  });
+
+  factory UserProfile.fromJson(Map<String, dynamic> json){
+    return UserProfile(
+      id: json['sub'] as String,
+      username: json['username'] as String,
+      activeRole: json['activeRole'] as String,
+    );
+  }
+}

@@ -66,6 +66,15 @@ class AuthRepository {
     }
   }
 
+  Future<UserProfile> getProfile() async {
+    try{
+      final response = await _dio.get('/users/me');
+      return UserProfile.fromJson(response.data['profile']);
+    } on DioException catch (e){
+      throw Exception(e.response?.data['message'] ?? 'Failed to fetch profile');
+    }
+  }
+
   Future<void> logout() async {
     await _storage.delete(key: 'accessToken');
   }
