@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/auth/presentation/login_screen.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -67,6 +68,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) =>
             const Scaffold(body: Center(child: Text('App Reviews (Public)'))),
       ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginScreen(),
+      ),
     ],
+
   );
 });
