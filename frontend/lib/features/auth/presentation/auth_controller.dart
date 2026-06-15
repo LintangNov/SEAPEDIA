@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 enum AuthState { guest, partial, authenticated }
 
 class AuthController extends Notifier<AuthState> {
+  List<String> availableRoles = [];
+
   @override
   AuthState build() {
     return AuthState.guest;
@@ -16,7 +18,9 @@ class AuthController extends Notifier<AuthState> {
 
   Future<void> login(String username, String password) async {
     final repository = ref.read(authRepositoryProvider);
-    await repository.login(username, password);
+    final response = await repository.login(username, password);
+    availableRoles = response.availableRoles;
+    
     state = AuthState.partial;
   }
 
@@ -29,6 +33,7 @@ class AuthController extends Notifier<AuthState> {
   Future<void> logout() async {
     final repository = ref.read(authRepositoryProvider);
     await repository.logout();
+    availableRoles.clear();
     state = AuthState.guest;
   }
 

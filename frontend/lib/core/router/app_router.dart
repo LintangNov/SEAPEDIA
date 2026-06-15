@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/auth/presentation/login_screen.dart';
 import 'package:seapedia/features/auth/presentation/register_screen.dart';
+import 'package:seapedia/features/auth/presentation/select_role_screen.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -50,8 +51,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/select-role',
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Select Role Screen'))),
+        builder: (context, state) => const SelectRoleScreen(),
       ),
       GoRoute(
         path: '/profile',
