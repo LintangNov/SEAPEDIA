@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/debug_border.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/widgets/debug_border.dart';
 import '../data/auth_models.dart';
 import '../data/auth_repository.dart';
 import 'auth_controller.dart';
@@ -89,7 +90,7 @@ class ProfileScreen extends ConsumerWidget {
                       icon: const Icon(Icons.shopping_bag),
                       label: const Text('Go to Product Catalog'),
                       onPressed: () {
-                        // TODO: navigasi ke halaman produk
+                        context.go('/products');
                       },
                     ),
                   ],

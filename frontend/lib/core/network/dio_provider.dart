@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../storage/secure_storage_provider.dart';
+import '../../features/auth/presentation/auth_controller.dart';
 
 String get _baseUrl {
   if (kIsWeb) return 'http://localhost:3000';
@@ -35,8 +36,8 @@ final dioProvider = Provider<Dio>((ref) {
       },
       onError: (DioException e, handler) {
         if (e.response?.statusCode == 401) {
-          // TODO: logout & redirect ke login
           debugPrint('UNAUTHORIZED: Token is missing or invalid');
+          ref.read(authControllerProvider.notifier).logout();
         }
         return handler.next(e);
       },

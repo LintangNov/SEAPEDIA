@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/debug_border.dart';
+import '../../../core/widgets/debug_border.dart';
 import 'auth_controller.dart';
 
 class SelectRoleScreen extends ConsumerStatefulWidget {
