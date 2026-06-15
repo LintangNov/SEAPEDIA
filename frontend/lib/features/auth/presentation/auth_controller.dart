@@ -9,6 +9,11 @@ class AuthController extends Notifier<AuthState> {
     return AuthState.guest;
   }
 
+  Future<void> register(String username, String password, List<String> roles) async {
+    final repository = ref.read(authRepositoryProvider);
+    await repository.register(username, password, roles);
+  }
+
   Future<void> login(String username, String password) async {
     final repository = ref.read(authRepositoryProvider);
     await repository.login(username, password);
