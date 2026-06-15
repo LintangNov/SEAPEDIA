@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/auth/presentation/login_screen.dart';
+import 'package:seapedia/features/auth/presentation/profile_screen.dart';
 import 'package:seapedia/features/auth/presentation/register_screen.dart';
 import 'package:seapedia/features/auth/presentation/select_role_screen.dart';
 import '../../features/auth/presentation/auth_controller.dart';
@@ -74,6 +75,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
       ),
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+      )
     ],
   );
 });
