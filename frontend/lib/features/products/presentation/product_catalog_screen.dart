@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/widgets/debug_border.dart';
+import 'products_provider.dart';
+
+class ProductCatalogScreen extends ConsumerWidget {
+  const ProductCatalogScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productsAsync = ref.watch(productsListProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Public Catalog'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () => context.push('/profile'), 
+            tooltip: 'Profile / Login',
+          )
+        ],
+      ),
+      body: productsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Error: $error', style: const TextStyle(color: Colors.red)),
+              ElevatedButton(
+                onPressed: () => ref.refresh(productsListProvider),
+                child: const Text('Retry'),
+              )
+            ],
+          ),
+        ),
+        data: (products) {
+          if (products.isEmpty) {
+            return const Center(child: Text('No products available.'));
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.all(16.0),
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return DebugBorder(
+                color: Colors.blue,
+                label: 'Product Item Card',
+                child: ListTile(
+                  title: Text(
+                    product.name, 
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text('Store: ${product.storeName}\nPrice: Rp${product.price}'),
+                  isThreeLine: true,
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    context.push('/products/${product.id}');
+                  },
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}

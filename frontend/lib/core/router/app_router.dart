@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import '../../features/products/presentation/product_catalog_screen.dart';
+import '../../features/products/presentation/product_detail_screen.dart';import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/auth/presentation/login_screen.dart';
@@ -61,9 +62,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/products',
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Product Catalog (Public)')),
-        ),
+        builder: (context, state) => const ProductCatalogScreen(),
+        routes: [
+          GoRoute(
+            path: ':id',
+            builder: (context, state) {
+              final productId = state.pathParameters['id']!;
+              return ProductDetailScreen(productId: productId);
+            },
+          ),
+        ]
       ),
       GoRoute(
         path: '/reviews',
@@ -78,7 +86,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
-      )
+      ),
     ],
   );
 });
