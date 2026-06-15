@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:seapedia/core/network/dio_provoder.dart';
+import 'package:seapedia/core/network/dio_provider.dart';
 import 'package:seapedia/core/storage/secure_storage_provider.dart';
 import 'package:seapedia/features/auth/data/auth_models.dart';
 
