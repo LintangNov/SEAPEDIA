@@ -27,7 +27,6 @@ final dioProvider = Provider<Dio>((ref) {
       onRequest: (options, handler) async {
         final token = await storage.read(key: 'accessToken');
 
-        // Jika token ada, sisipkan ke header Authorization
         if (token != null) {
           options.headers['Authorization'] = 'Bearer $token';
         }
@@ -41,6 +40,14 @@ final dioProvider = Provider<Dio>((ref) {
         }
         return handler.next(e);
       },
+    ),
+  );
+
+  dio.interceptors.add(
+    LogInterceptor(
+      requestBody: true,
+      responseBody: true,
+      logPrint: (obj) => debugPrint(obj.toString()),
     ),
   );
 

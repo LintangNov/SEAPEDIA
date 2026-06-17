@@ -45,9 +45,9 @@ class UserProfile{
 
   factory UserProfile.fromJson(Map<String, dynamic> json){
     return UserProfile(
-      id: json['sub'] as String,
-      username: json['username'] as String,
-      activeRole: json['activeRole'] as String,
+      id: json['sub']?.toString() ?? json['id']?.toString() ?? '',
+      username: json['username']?.toString() ?? 'Unknown',
+      activeRole: json['activeRole']?.toString() ?? 'None',
     );
   }
 }

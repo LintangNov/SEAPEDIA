@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:seapedia/features/auth/data/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,10 +32,16 @@ class AuthController extends Notifier<AuthState> {
   }
 
   Future<void> logout() async {
-    final repository = ref.read(authRepositoryProvider);
-    await repository.logout();
-    availableRoles.clear();
-    state = AuthState.guest;
+    try {
+      final repository = ref.read(authRepositoryProvider);
+      await repository.logout();
+      
+    } catch (e) {
+      debugPrint('Secure Storage Logout Error: $e');
+    } finally {
+      availableRoles.clear();
+      state = AuthState.guest;
+    }
   }
 
   void checkStatus(bool hasToken) {
