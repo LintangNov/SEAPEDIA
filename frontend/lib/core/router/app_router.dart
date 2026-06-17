@@ -1,5 +1,4 @@
 import 'package:seapedia/features/reviews/presentation/reviews_screen.dart';
-
 import '../../features/products/presentation/product_catalog_screen.dart';
 import '../../features/products/presentation/product_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ import '../../features/auth/presentation/auth_controller.dart';
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
+  final router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/products',
     redirect: (context, state) {
@@ -45,23 +44,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
     },
     routes: [
       GoRoute(
-        path: '/login',
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Login Screen'))),
-      ),
-      GoRoute(
-        path: '/register',
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Register Screen'))),
-      ),
-      GoRoute(
         path: '/select-role',
         builder: (context, state) => const SelectRoleScreen(),
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Profile Screen'))),
       ),
       GoRoute(
         path: '/products',
@@ -92,4 +76,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       
     ],
   );
+
+  ref.listen(authControllerProvider, (previous, next){
+    router.refresh();
+  });
+
+  return router;
 });
