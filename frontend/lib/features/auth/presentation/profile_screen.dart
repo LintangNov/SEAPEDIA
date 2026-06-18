@@ -93,6 +93,20 @@ class ProfileScreen extends ConsumerWidget {
                         context.go('/products');
                       },
                     ),
+                    if (profile.activeRole == 'SELLER') ...[
+                      const SizedBox(height: 12,),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange.withAlpha(51),
+                          foregroundColor: Colors.orange.shade800,
+                        ),
+                        icon: const Icon(Icons.storefront),
+                        label: const Text('Enter Seller Dashboard'),
+                        onPressed:() {
+                          context.go('/seller/dashboard');  // TODO: sesuaikan nama rute nanti
+                        },
+                      ),
+                    ]
                   ],
                 ),
               ),

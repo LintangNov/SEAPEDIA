@@ -11,3 +11,8 @@ final productDetailProvider = FutureProvider.autoDispose.family<Product, String>
   final repository = ref.watch(productRepositoryProvider);
   return repository.getProductById(id);
 });
+
+final sellerProductsProvider = FutureProvider.autoDispose<List<Product>>((ref) async {
+  final repository = ref.watch(productRepositoryProvider);
+  return repository.getSellerProducts();
+});
