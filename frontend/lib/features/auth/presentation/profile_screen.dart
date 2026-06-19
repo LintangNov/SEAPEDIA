@@ -6,7 +6,7 @@ import '../data/auth_models.dart';
 import '../data/auth_repository.dart';
 import 'auth_controller.dart';
 
-final profileProvider = FutureProvider<UserProfile>((ref) async {
+final profileProvider = FutureProvider.autoDispose<UserProfile>((ref) async {
   final repository = ref.watch(authRepositoryProvider);
   return await repository.getProfile();
 });

@@ -1,4 +1,7 @@
+import 'package:seapedia/features/products/presentation/product_form_screen.dart';
 import 'package:seapedia/features/reviews/presentation/reviews_screen.dart';
+import 'package:seapedia/features/seller/presentation/seller_dashboard_screen.dart';
+import 'package:seapedia/features/seller/presentation/store_profile_screen.dart';
 import '../../features/products/presentation/product_catalog_screen.dart';
 import '../../features/products/presentation/product_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +76,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/profile',
         builder: (context, state) => const ProfileScreen(),
       ),
-      
+      GoRoute(
+        path: '/seller/dashboard',
+        builder: (context, state) => const SellerDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/seller/store-profile',
+        builder: (context, state) => const StoreProfileScreen(),
+      ),
+      GoRoute(
+        path: '/seller/products/new',
+        builder: (context, state) => const ProductFormScreen(),
+      ),
     ],
   );
 
