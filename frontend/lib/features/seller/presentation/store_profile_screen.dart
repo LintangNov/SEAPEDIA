@@ -37,7 +37,9 @@ class _StoreProfileScreenState extends ConsumerState<StoreProfileScreen> {
         SnackBar(content: Text(state.error.toString())),
       );
     } else if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
         const SnackBar(content: Text('Store profile updated successfully')),
       );
       context.pop();

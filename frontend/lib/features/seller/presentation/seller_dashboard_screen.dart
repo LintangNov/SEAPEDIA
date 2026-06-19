@@ -13,8 +13,18 @@ class SellerDashboardScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          tooltip: 'Back to Profile',
+          onPressed: () => context.go('/profile'),
+        ),
         title: const Text('Seller Dashboard'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.shopping_bag),
+            tooltip: 'Go to Public Catalog',
+            onPressed: () => context.push('/products'),
+          ),
           IconButton(
             icon: const Icon(Icons.store),
             tooltip: 'Edit Store Profile',
@@ -38,7 +48,7 @@ class SellerDashboardScreen extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () => ref.refresh(sellerProductsProvider),
                 child: const Text('Retry'),
-              )
+              ),
             ],
           ),
         ),
@@ -55,8 +65,13 @@ class SellerDashboardScreen extends ConsumerWidget {
                 color: Colors.teal,
                 label: 'Seller Product Item',
                 child: ListTile(
-                  title: Text(product.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('Stock: ${product.stock} | Price: Rp${product.price}'),
+                  title: Text(
+                    product.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text(
+                    'Stock: ${product.stock} | Price: Rp${product.price}',
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

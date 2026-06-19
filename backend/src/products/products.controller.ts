@@ -12,12 +12,12 @@ export class ProductsController {
 
     @Get()
     findAll(){
-        return this.productService.findAll();
+        return this.productService.findAllPublic();
     }
 
     @Get(':id')
     findOne(@Param('id') id: string){
-        return this.productService.findOne(id);
+        return this.productService.findOnePublic(id);
     }
 
     @UseGuards(AuthGuard, RolesGuard)
