@@ -32,6 +32,9 @@ class AuthController extends Notifier<AuthState> {
   }
 
   Future<void> logout() async {
+    state = AuthState.guest;
+    availableRoles.clear();
+    
     try {
       final repository = ref.read(authRepositoryProvider);
       await repository.logout();
