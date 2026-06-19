@@ -17,6 +17,11 @@ class ProductCatalogScreen extends ConsumerWidget {
         title: const Text('Public Catalog'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.rate_review),
+            tooltip: 'Application Reviews',
+            onPressed: () => context.push('/reviews'),
+          ),
+          IconButton(
             icon: const Icon(Icons.person),
             onPressed: (){
               final authState = ref.read(authControllerProvider);
