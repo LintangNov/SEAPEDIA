@@ -22,9 +22,10 @@ class ReviewRepository{
     }
   }
 
-  Future<void> submitReview(int rating, String comment) async {
+  Future<void> submitReview(String reviewerName, int rating, String comment) async {
     try {
       await _dio.post('/reviews', data: {
+        'reviewerName': reviewerName,
         'rating': rating,
         'comment': comment,
       });

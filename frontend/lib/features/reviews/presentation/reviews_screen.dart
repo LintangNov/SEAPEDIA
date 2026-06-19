@@ -12,19 +12,29 @@ class ReviewsScreen extends ConsumerStatefulWidget {
 }
 
 class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
+  final _nameController = TextEditingController();
   final _commentController = TextEditingController();
   int _selectedRating = 5; 
   bool _isSubmitting = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _commentController.dispose();
     super.dispose();
   }
 
   Future<void> _handleSubmit() async {
+    final reviewerName = _nameController.text.trim();
     final comment = _commentController.text.trim();
     
+    if (reviewerName.isEmpty || reviewerName.length < 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Name must be at least 3 characters')),
+      );
+      return;
+    }
+
     if (_selectedRating < 1 || _selectedRating > 5) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Rating must be strictly between 1 and 5')),
@@ -40,8 +50,9 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
 
     setState(() => _isSubmitting = true);
     try {
-      await ref.read(reviewRepositoryProvider).submitReview(_selectedRating, comment);
+      await ref.read(reviewRepositoryProvider).submitReview(reviewerName, _selectedRating, comment);
       _commentController.clear();
+      _nameController.clear();
       setState(() => _selectedRating = 5);
       
       if (!mounted) return;
@@ -75,6 +86,13 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter your name',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -136,7 +154,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                       label: 'Review Item',
                       child: ListTile(
                         leading: CircleAvatar(child: Text(review.rating.toString())),
-                        title: Text(review.username, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        title: Text(review.reviewerName, style: const TextStyle(fontWeight: FontWeight.bold)),
                         subtitle: Text(review.comment),
                       ),
                     );
