@@ -1,14 +1,13 @@
 import { Controller, Get, UseGuards, Request, Patch, Body } from '@nestjs/common';
 import { AuthGuard } from "../auth/auth.guard";
-import { profile } from 'console';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { UpdateStoreDto } from './dto/update-store.dto';
-import { UserService } from './users.service';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
-    constructor(private readonly userService: UserService){}
+    constructor(private readonly userService: UsersService){}
 
     @UseGuards(AuthGuard)
     @Get('me')
@@ -22,7 +21,7 @@ export class UsersController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles('SELLER')
     @Patch('seller/store')
-    updateStore(@Request() requestAnimationFrame, @Body() dto: UpdateStoreDto){
-        return this.userService.updateStoreProfile(requestAnimationFrame.user.sub, dto);
+    updateStore(@Request() req, @Body() dto: UpdateStoreDto){
+        return this.userService.updateStoreProfile(req.user.sub, dto);
     }
 }
