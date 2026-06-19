@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Patch, Post, UseGuards, Request, Body, Delete } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from '../auth/auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { UpdateProductDto } from './dto/update-product.dto';
