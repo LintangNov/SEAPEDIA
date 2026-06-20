@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:seapedia/features/reviews/presentation/review_form_controller.dart';
 import '../../../core/widgets/debug_border.dart';
-import '../data/review_repository.dart';
 import 'reviews_provider.dart';
 
 class ReviewsScreen extends ConsumerStatefulWidget {
@@ -15,7 +15,6 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
   final _nameController = TextEditingController();
   final _commentController = TextEditingController();
   int _selectedRating = 5; 
-  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -41,6 +40,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
       );
       return;
     }
+    
     if (comment.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Comment cannot be empty')),
@@ -48,31 +48,35 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
       return;
     }
 
-    setState(() => _isSubmitting = true);
-    try {
-      await ref.read(reviewRepositoryProvider).submitReview(reviewerName, _selectedRating, comment);
+    await ref.read(reviewFormControllerProvider.notifier).submit(
+      reviewerName, 
+      _selectedRating, 
+      comment
+    );
+
+    if (!mounted) return;
+
+    final state = ref.read(reviewFormControllerProvider);
+    
+    if (state.hasError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(state.error.toString())),
+      );
+    } else {
       _commentController.clear();
       _nameController.clear();
       setState(() => _selectedRating = 5);
       
-      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Review submitted successfully')),
       );
-      ref.invalidate(reviewsListProvider);
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final reviewsAsync = ref.watch(reviewsListProvider);
+    final formState = ref.watch(reviewFormControllerProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Application Reviews')),
@@ -124,8 +128,8 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
-                    onPressed: _isSubmitting ? null : _handleSubmit,
-                    child: _isSubmitting 
+                    onPressed: formState.isLoading ? null : _handleSubmit,
+                    child: formState.isLoading
                         ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                         : const Text('Submit Review'),
                   ),
