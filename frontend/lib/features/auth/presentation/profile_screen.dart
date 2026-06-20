@@ -81,6 +81,17 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
+              const Divider(),
+              const ListTile(
+                leading: Icon(Icons.account_balance_wallet, color: Colors.blue),
+                title: Text('Wallet Balance'),
+                subtitle: Text('Rp 0 (Placeholder Level 1)'),
+              ),
+              const ListTile(
+                      leading: Icon(Icons.badge, color: Colors.purple),
+                      title: Text('Owned Roles'),
+                      subtitle: Text('SELLER, BUYER (Placeholder)'),
+                    ),
               DebugBorder(
                 color: Colors.purple,
                 label: 'System Actions',

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/products/data/product_models.dart';
 import '../../../core/widgets/debug_border.dart';
 import 'product_form_controller.dart';
 
 class ProductFormScreen extends ConsumerStatefulWidget {
-  const ProductFormScreen({super.key});
+  final Product? existingProduct;
+  const ProductFormScreen({super.key, this.existingProduct});
 
   @override
   ConsumerState<ProductFormScreen> createState() => _ProductFormScreenState();
@@ -17,6 +19,17 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
   final _descController = TextEditingController();
   final _priceController = TextEditingController();
   final _stockController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingProduct != null) {
+      _nameController.text = widget.existingProduct!.name;
+      _descController.text = widget.existingProduct!.description;
+      _priceController.text = widget.existingProduct!.price.toInt().toString();
+      _stockController.text = widget.existingProduct!.stock.toString();
+    }
+  }
 
   @override
   void dispose() {
