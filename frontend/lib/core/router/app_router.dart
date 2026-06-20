@@ -1,3 +1,4 @@
+import 'package:seapedia/features/products/data/product_models.dart';
 import 'package:seapedia/features/products/presentation/product_form_screen.dart';
 import 'package:seapedia/features/reviews/presentation/reviews_screen.dart';
 import 'package:seapedia/features/seller/presentation/seller_dashboard_screen.dart';
@@ -86,7 +87,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/seller/products/new',
-        builder: (context, state) => const ProductFormScreen(),
+        builder: (context, state) {
+          final productToEdit = state.extra as Product?;
+          return ProductFormScreen(existingProduct: productToEdit,);
+        },
       ),
     ],
   );

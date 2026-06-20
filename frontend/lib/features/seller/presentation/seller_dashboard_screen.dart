@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/products/data/product_repository.dart';
 import '../../../core/widgets/debug_border.dart';
 import '../../products/presentation/products_provider.dart';
 
@@ -78,7 +79,35 @@ class SellerDashboardScreen extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () {
-                          // TODO: implementasi edit form lengkap
+                          context.push('/seller/products/new', extra: product);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Delete Product'),
+                              content: const Text('Are you sure?'),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+                                TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
+                              ],
+                            ),
+                          );
+                          
+                          if (confirm == true) {
+                            try {
+                              await ref.read(productRepositoryProvider).deleteProduct(product.id);
+                              ref.invalidate(sellerProductsProvider);
+                              ref.invalidate(productsListProvider);
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                              }
+                            }
+                          }
                         },
                       ),
                     ],

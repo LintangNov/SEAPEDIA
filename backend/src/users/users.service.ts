@@ -27,4 +27,23 @@ export class UsersService{
             
         }
     }
+
+    async getUserProfile(userId: string, activeRole: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            include: { roles: { include: { role: true } } }
+        });
+
+        if (!user) throw new InternalServerErrorException("User not found");
+
+        return {
+            message: "Profile successfully retrieved",
+            profile: {
+                sub: user.id,
+                username: user.username,
+                activeRole: activeRole,
+                roles: user.roles.map(ur => ur.role.name),
+            }
+        };
+    }
 }

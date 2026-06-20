@@ -11,11 +11,10 @@ export class UsersController {
 
     @UseGuards(AuthGuard)
     @Get('me')
+    @UseGuards(AuthGuard)
+    @Get('me')
     getProfile(@Request() req){
-        return{
-            message: "Profile successfully retrieved",
-            profile: req.user,
-        };
+        return this.userService.getUserProfile(req.user.sub, req.user.activeRole);
     }
 
     @UseGuards(AuthGuard, RolesGuard)
