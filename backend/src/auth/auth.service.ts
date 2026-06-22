@@ -40,11 +40,11 @@ export class AuthService {
                 },
             }
         });
-        return { message: "Registration success", userId: user.id};
 
         delete (user as any).passwordHash;
         
         return {
+            message: "Registration success",
             id: user.id,
             username: user.username,
             roles: user.roles.map(ur => ur.role.name),
