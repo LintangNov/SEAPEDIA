@@ -1,11 +1,11 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { Observable } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService) {}
+    constructor(private jwtService: JwtService, private configService: ConfigService) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
@@ -17,10 +17,12 @@ export class AuthGuard implements CanActivate {
         }
 
         try {
-            const payload = await this.jwtService.verifyAsync(token, {
-                secret: process.env.JWT_SECRET || 'secret_fallback_dont_use_at_prod',
+            const secret = this.configService.get<string>('JWT_SECRET');
+            if (!secret) {
+                throw new Error("Critical configuration missing: JWT_SECRET");
+            }
 
-            });
+            const payload = await this.jwtService.verifyAsync(token, { secret });
             request['user'] = payload;
         } catch {
             throw new UnauthorizedException("Token is invalid or expired");
