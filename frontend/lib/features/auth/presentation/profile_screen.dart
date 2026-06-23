@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/buyer/presentation/buyer_wallet_controller.dart';
+import 'package:seapedia/features/buyer/presentation/top_up_dialog.dart';
 import '../../../core/widgets/debug_border.dart';
 import '../data/auth_models.dart';
 import '../data/auth_repository.dart';
@@ -82,16 +84,50 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               const Divider(),
+
+              if (profile.activeRole == 'BUYER')
+                Consumer(
+                  builder: (context, ref, child) {
+                    final walletState = ref.watch(buyerWalletControllerProvider);
+                    return walletState.when(
+                      loading: () => const ListTile(
+                        leading: CircularProgressIndicator(),
+                        title: Text('Loading Wallet...'),
+                      ),
+                      error: (error, _) => ListTile(
+                        leading: const Icon(Icons.error, color: Colors.red),
+                        title: const Text('Wallet Error'),
+                        subtitle: Text(error.toString()),
+                      ),
+                      data: (balance) => ListTile(
+                        leading: const Icon(Icons.account_balance_wallet, color: Colors.blue),
+                        title: const Text('Wallet Balance'),
+                        subtitle: Text('Rp ${balance.toStringAsFixed(2)}'),
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => const TopUpDialog(),
+                            );
+                          },
+                          child: const Text('Top Up'),
+                        ),
+                      ),
+                    );
+                  },
+                )
+              else 
+                const ListTile(
+                  leading: Icon(Icons.account_balance_wallet, color: Colors.grey),
+                  title: Text('Wallet Balance'),
+                  subtitle: Text('Switch to BUYER role to manage wallet'),
+                ),
+
               const ListTile(
-                leading: Icon(Icons.account_balance_wallet, color: Colors.blue),
-                title: Text('Wallet Balance'),
-                subtitle: Text('Rp 0 (Placeholder Level 1)'),
+                leading: Icon(Icons.badge, color: Colors.purple),
+                title: Text('Owned Roles'),
+                subtitle: Text('Check backend implementation'),
               ),
-              const ListTile(
-                      leading: Icon(Icons.badge, color: Colors.purple),
-                      title: Text('Owned Roles'),
-                      subtitle: Text('SELLER, BUYER (Placeholder)'),
-                    ),
               DebugBorder(
                 color: Colors.purple,
                 label: 'System Actions',
@@ -101,12 +137,10 @@ class ProfileScreen extends ConsumerWidget {
                     ElevatedButton.icon(
                       icon: const Icon(Icons.shopping_bag),
                       label: const Text('Go to Product Catalog'),
-                      onPressed: () {
-                        context.go('/products');
-                      },
+                      onPressed: () => context.go('/products'),
                     ),
                     if (profile.activeRole == 'SELLER') ...[
-                      const SizedBox(height: 12,),
+                      const SizedBox(height: 12),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange.withAlpha(51),
@@ -114,8 +148,23 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         icon: const Icon(Icons.storefront),
                         label: const Text('Enter Seller Dashboard'),
-                        onPressed:() {
-                          context.go('/seller/dashboard');  // TODO: sesuaikan nama rute nanti
+                        onPressed: () => context.go('/seller/dashboard'),
+                      ),
+                    ],
+                    if (profile.activeRole == 'BUYER') ...[
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.withAlpha(51),
+                          foregroundColor: Colors.blue.shade800,
+                        ),
+                        icon: const Icon(Icons.shopping_cart),
+                        label: const Text('Open Shopping Cart'),
+                        onPressed: () {
+                          // TODO: diimplementasikan di lapis kedua
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Cart screen coming next!')),
+                          );
                         },
                       ),
                     ]
