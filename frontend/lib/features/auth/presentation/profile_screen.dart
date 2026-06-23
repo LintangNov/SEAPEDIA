@@ -161,10 +161,7 @@ class ProfileScreen extends ConsumerWidget {
                         icon: const Icon(Icons.shopping_cart),
                         label: const Text('Open Shopping Cart'),
                         onPressed: () {
-                          // TODO: diimplementasikan di lapis kedua
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Cart screen coming next!')),
-                          );
+                          context.push('/cart');
                         },
                       ),
                     ]
