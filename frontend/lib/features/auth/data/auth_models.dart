@@ -36,11 +36,13 @@ class UserProfile{
   final String id;
   final String username;
   final String activeRole;
+  final List<String> roles;
 
   UserProfile({
     required this.id,
     required this.username,
     required this.activeRole,
+    required this.roles,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json){
@@ -48,6 +50,7 @@ class UserProfile{
       id: json['sub']?.toString() ?? json['id']?.toString() ?? '',
       username: json['username']?.toString() ?? 'Unknown',
       activeRole: json['activeRole']?.toString() ?? 'None',
+      roles: List<String>.from(json['roles'] ?? []),
     );
   }
 }

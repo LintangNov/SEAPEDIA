@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/buyer/presentation/buyer_wallet_controller.dart';
+import 'package:seapedia/features/buyer/presentation/top_up_dialog.dart';
 import '../../../core/widgets/debug_border.dart';
 import '../data/auth_models.dart';
 import '../data/auth_repository.dart';
@@ -82,16 +84,50 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
               const Divider(),
-              const ListTile(
-                leading: Icon(Icons.account_balance_wallet, color: Colors.blue),
-                title: Text('Wallet Balance'),
-                subtitle: Text('Rp 0 (Placeholder Level 1)'),
+              if (profile.activeRole == 'BUYER')
+                Consumer(
+                  builder: (context, ref, child) {
+                    final walletState = ref.watch(buyerWalletControllerProvider);
+                    return walletState.when(
+                      loading: () => const ListTile(
+                        leading: CircularProgressIndicator(),
+                        title: Text('Loading Wallet...'),
+                      ),
+                      error: (error, _) => ListTile(
+                        leading: const Icon(Icons.error, color: Colors.red),
+                        title: const Text('Wallet Error'),
+                        subtitle: Text(error.toString()),
+                      ),
+                      data: (balance) => ListTile(
+                        leading: const Icon(Icons.account_balance_wallet, color: Colors.blue),
+                        title: const Text('Wallet Balance'),
+                        subtitle: Text('Rp ${balance.toStringAsFixed(2)}'),
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => const TopUpDialog(),
+                            );
+                          },
+                          child: const Text('Top Up'),
+                        ),
+                      ),
+                    );
+                  },
+                )
+              else
+                const ListTile(
+                  leading: Icon(Icons.account_balance_wallet, color: Colors.grey),
+                  title: Text('Wallet Balance'),
+                  subtitle: Text('Switch to BUYER role to manage wallet'),
+                ),
+
+              ListTile(
+                leading: const Icon(Icons.badge, color: Colors.purple),
+                title: const Text('Owned Roles'),
+                subtitle: Text(profile.roles.join(', ')),
               ),
-              const ListTile(
-                      leading: Icon(Icons.badge, color: Colors.purple),
-                      title: Text('Owned Roles'),
-                      subtitle: Text('SELLER, BUYER (Placeholder)'),
-                    ),
+              
               DebugBorder(
                 color: Colors.purple,
                 label: 'System Actions',
