@@ -1,3 +1,5 @@
+import 'package:seapedia/features/cart/presentation/cart_screen.dart';
+import 'package:seapedia/features/order/presentation/checkout_screen.dart';
 import 'package:seapedia/features/products/data/product_models.dart';
 import 'package:seapedia/features/products/presentation/product_form_screen.dart';
 import 'package:seapedia/features/reviews/presentation/reviews_screen.dart';
@@ -91,6 +93,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           final productToEdit = state.extra as Product?;
           return ProductFormScreen(existingProduct: productToEdit,);
         },
+      ),
+      GoRoute(
+        path: '/cart',
+        builder: (context, state) => const CartScreen(),
+      ),
+      GoRoute(
+        path: '/checkout',
+        builder: (context, state) => const CheckoutScreen(),
       ),
     ],
   );

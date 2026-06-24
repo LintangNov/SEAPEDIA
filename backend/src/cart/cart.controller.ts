@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Request, Delete, Param } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request, Delete, Param, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,5 +19,15 @@ export class CartController {
     @Delete('items/:id')
     removeCartItem(@Request() req, @Param('id') cartItemId: string) {
         return this.cartService.removeCartItem(req.user.sub, cartItemId);
+    }
+
+    @Get()
+    getCart(@Request() req) {
+        return this.cartService.getCart(req.user.sub);
+    }
+
+    @Delete()
+    clearCart(@Request() req) {
+        return this.cartService.clearCart(req.user.sub);
     }
 }

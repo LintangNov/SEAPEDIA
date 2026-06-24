@@ -114,8 +114,20 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         icon: const Icon(Icons.storefront),
                         label: const Text('Enter Seller Dashboard'),
-                        onPressed:() {
-                          context.go('/seller/dashboard');  // TODO: sesuaikan nama rute nanti
+                        onPressed: () => context.go('/seller/dashboard'),
+                      ),
+                    ],
+                    if (profile.activeRole == 'BUYER') ...[
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue.withAlpha(51),
+                          foregroundColor: Colors.blue.shade800,
+                        ),
+                        icon: const Icon(Icons.shopping_cart),
+                        label: const Text('Open Shopping Cart'),
+                        onPressed: () {
+                          context.push('/cart');
                         },
                       ),
                     ]
