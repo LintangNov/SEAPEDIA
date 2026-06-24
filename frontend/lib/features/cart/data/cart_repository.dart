@@ -34,6 +34,14 @@ class CartRepository {
     }
   }
 
+  Future<void> updateQuantity(String cartItemId, int quantity) async {
+    try {
+      await _dio.patch('/cart/items/$cartItemId', data: {'quantity': quantity});
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Failed to update quantity');
+    }
+  }
+
   Future<void> removeCartItem(String cartItemId) async {
     try {
       await _dio.delete('/cart/items/$cartItemId');
