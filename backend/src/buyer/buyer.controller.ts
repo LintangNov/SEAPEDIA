@@ -6,7 +6,7 @@ import { BuyerService } from './buyer.service';
 import { TopUpDto } from './dto/top-up.dto';
 
 @UseGuards(AuthGuard, RolesGuard)
-@Roles('Buyer')
+@Roles('BUYER')
 @Controller('buyer')
 export class BuyerController {
     constructor(private readonly buyerService: BuyerService) { }

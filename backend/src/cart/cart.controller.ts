@@ -6,7 +6,7 @@ import { CartService } from './cart.service';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 
 @UseGuards(AuthGuard, RolesGuard)
-@Roles('Buyer')
+@Roles('BUYER')
 @Controller('cart')
 export class CartController {
     constructor(private readonly cartService: CartService){}
