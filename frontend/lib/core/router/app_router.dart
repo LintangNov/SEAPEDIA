@@ -1,5 +1,6 @@
 import 'package:seapedia/features/cart/presentation/cart_screen.dart';
 import 'package:seapedia/features/order/presentation/checkout_screen.dart';
+import 'package:seapedia/features/order/presentation/order_success_screen.dart';
 import 'package:seapedia/features/products/data/product_models.dart';
 import 'package:seapedia/features/products/presentation/product_form_screen.dart';
 import 'package:seapedia/features/reviews/presentation/reviews_screen.dart';
@@ -102,6 +103,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/checkout',
         builder: (context, state) => const CheckoutScreen(),
       ),
+      GoRoute(
+        path: '/order-success',
+        builder: (context, state) => const OrderSuccessScreen(),
+      )
     ],
   );
 

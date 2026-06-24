@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/auth/data/auth_repository.dart';
 import 'package:seapedia/features/auth/presentation/auth_controller.dart';
 import '../../../core/widgets/debug_border.dart';
 import 'products_provider.dart';
@@ -42,11 +43,7 @@ class ProductCatalogScreen extends ConsumerWidget {
               tooltip: 'Open Shopping Cart',
               onPressed: () => context.push('/cart'),
             ),
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            tooltip: 'Open Shopping Cart',
-            onPressed: () => context.push('/cart'),
-          ),
+          
           IconButton(
             icon: const Icon(Icons.rate_review),
             tooltip: 'Application Reviews',
