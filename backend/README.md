@@ -1,98 +1,133 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ⚙️ Seapedia Backend — NestJS Engine
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is the core REST API engine for the Seapedia application, built using the progressive Node.js framework [NestJS](https://nestjs.com), [Prisma ORM](https://prisma.io), and backed by a [PostgreSQL](https://postgresql.org) database.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🚀 Getting Started
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 1. Prerequisite Installations
+Ensure you have **Node.js (v22+)** and **npm** installed globally. You must also have a running **PostgreSQL** instance.
 
-## Project setup
-
+### 2. Local Installation
+Navigate to this folder and install all local dependencies:
 ```bash
-$ npm install
+cd backend
+npm install
 ```
 
-## Compile and run the project
+---
+
+## 🔒 Environment Variables
+
+Duplicate the template to define your environment configurations. Create a `.env` file in the root of the `/backend` directory:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Define the following environment variables inside `.env`:
+
+| Key | Description | Example / Recommended Value |
+| :--- | :--- | :--- |
+| `DATABASE_URL` | Connection string pointing to your PostgreSQL database. | `postgresql://postgres:password@localhost:5432/seapedia_db?schema=public` |
+| `JWT_SECRET` | Secret token signing string for security and session tokens. | `kcgkejedukbelalangsembah` *(Use a strong, unique secret key)* |
+| `PORT` | Optional. Defines what port the NestJS server binds to (default: `3000`). | `3000` |
+
+---
+
+## 🗄️ Database Management (Prisma)
+
+Prisma ORM is utilized for database modeling, migrations, and querying.
+
+### 🔌 Synchronizing Database Schema
+Synchronize the PostgreSQL database with the model design described in `prisma/schema.prisma`:
+```bash
+npx prisma db push
+```
+
+### 🧬 Generating Prisma Client
+Generate the client engine assets after changing any database models in `schema.prisma`:
+```bash
+npx prisma generate
+```
+
+### 📈 Database Migrations
+To track database versions and execute database schema upgrades:
+```bash
+npx prisma migrate dev --name init
+```
+
+### 🌱 Seeding Mock/Initial Data
+Seed the database with default roles (`ADMIN`, `SELLER`, `BUYER`, `DRIVER`) and a default `superadmin` profile:
+```bash
+npx prisma db seed
+```
+> [!IMPORTANT]
+> The seed script sets up a default admin profile with:
+> *   **Username**: `superadmin`
+> *   **Password**: `adminpassword123`
+
+---
+
+## 💻 Running the Server
+
+Run the development, debugging, or production build server using npm scripts:
 
 ```bash
-# unit tests
-$ npm run test
+# Development (with auto-reload/watch mode)
+npm run start:dev
 
-# e2e tests
-$ npm run test:e2e
+# Debugging mode (with Chrome DevTools attachment)
+npm run start:debug
 
-# test coverage
-$ npm run test:cov
+# Production build compilation
+npm run build
+
+# Running the production bundle
+npm run start:prod
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🧪 Testing Suite
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+Execute tests inside the engine:
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Run unit tests
+npm run test
+
+# Run end-to-end integration tests
+npm run test:e2e
+
+# Run test coverage checks
+npm run test:cov
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+## 📖 API Documentation (Swagger)
 
-Check out a few resources that may come in handy when working with NestJS:
+By default, the API route documentation is exposed at:
+🔗 **[http://localhost:3000/api](http://localhost:3000/api)** *(or the custom port specified in your `.env`)*
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+> [!NOTE]
+> If Swagger is not yet loaded in your environment, follow this simple snippet to enable it:
+>
+> 1. Install Swagger package:
+>    ```bash
+>    npm install --save @nestjs/swagger
+>    ```
+> 2. Add setup to `src/main.ts`:
+>    ```typescript
+>    import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+> 
+>    const config = new DocumentBuilder()
+>      .setTitle('Seapedia API')
+>      .setDescription('Seapedia Multi-Role Marketplace API Documentation')
+>      .setVersion('1.0')
+>      .addBearerAuth()
+>      .build();
+>    const document = SwaggerModule.createDocument(app, config);
+>    SwaggerModule.setup('api', app, document);
+>    ```
