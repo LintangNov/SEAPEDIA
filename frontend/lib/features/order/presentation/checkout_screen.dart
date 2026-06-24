@@ -48,7 +48,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         const SnackBar(content: Text('Checkout successfull!'))
       );
 
-      context.go('/profile'); // TODO: ganti ke halaman riwayat di lv 4
+      context.go('/order-success');
     }
   }
 

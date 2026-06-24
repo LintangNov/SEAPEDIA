@@ -17,6 +17,19 @@ class CartController extends AsyncNotifier<CartSummary?>{
     ref.invalidateSelf();
   }
 
+  Future<void> updateQuantity(String cartItemId, int newQuantity) async {
+    if (newQuantity < 1) {
+      return removeItem(cartItemId);
+    }
+    
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final repository = ref.read(cartRepositoryProvider);
+      await repository.updateQuantity(cartItemId, newQuantity);
+      return repository.getCart();
+    });
+  }
+
   Future<void> removeItem(String cartItemId) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {

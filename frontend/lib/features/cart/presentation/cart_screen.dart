@@ -51,16 +51,34 @@ class CartScreen extends ConsumerWidget {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text('Rp ${item.price} x ${item.quantity}'),
-                        trailing: IconButton(
-                          icon: const Icon(
-                            Icons.remove_circle_outline,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {
-                            ref
-                                .read(cartControllerProvider.notifier)
-                                .removeItem(item.id);
-                          },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle_outline, color: Colors.orange),
+                              onPressed: () {
+                                ref.read(cartControllerProvider.notifier)
+                                   .updateQuantity(item.id, item.quantity - 1);
+                              },
+                            ),
+                            Text(
+                              '${item.quantity}', 
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.add_circle_outline, color: Colors.green),
+                              onPressed: () {
+                                ref.read(cartControllerProvider.notifier)
+                                   .updateQuantity(item.id, item.quantity + 1);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline, color: Colors.red),
+                              onPressed: () {
+                                ref.read(cartControllerProvider.notifier).removeItem(item.id);
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     );

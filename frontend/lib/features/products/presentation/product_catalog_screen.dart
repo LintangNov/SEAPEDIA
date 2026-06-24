@@ -1,21 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/auth/data/auth_repository.dart';
 import 'package:seapedia/features/auth/presentation/auth_controller.dart';
 import '../../../core/widgets/debug_border.dart';
 import 'products_provider.dart';
+
+final cartVisibilityProvider = FutureProvider.autoDispose<bool>((ref) async {
+  final authState = ref.watch(authControllerProvider);
+  
+  if (authState != AuthState.authenticated) {
+    return false;
+  }
+  
+  try {
+    final repository = ref.watch(authRepositoryProvider);
+    final profile = await repository.getProfile();
+    return profile.activeRole == 'BUYER';
+  } catch (e) {
+    return false;
+  }
+});
 
 class ProductCatalogScreen extends ConsumerWidget {
   const ProductCatalogScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final showCart = ref.watch(cartVisibilityProvider).when(
+      data: (value) => value,
+      loading: () => false,
+      error: (_, __) => false,
+    );
     final productsAsync = ref.watch(productsListProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Public Catalog'),
         actions: [
+          if (showCart)
+            IconButton(
+              icon: const Icon(Icons.shopping_cart),
+              tooltip: 'Open Shopping Cart',
+              onPressed: () => context.push('/cart'),
+            ),
+          
           IconButton(
             icon: const Icon(Icons.rate_review),
             tooltip: 'Application Reviews',

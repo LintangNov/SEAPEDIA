@@ -80,6 +80,31 @@ export class CartService {
         });
     }
 
+    async updateCartItemQuantity(buyerId: string, cartItemId: string, quantity: number) {
+        return this.prisma.$transaction(async (tx) => {
+            const cart = await tx.cart.findUnique({
+                where: { buyerId },
+                include: { items: { include: { product: true } } }
+            });
+
+            if (!cart) throw new NotFoundException("Cart not found");
+
+            const item = cart.items.find(i => i.id === cartItemId);
+            if (!item) throw new NotFoundException("Item not found in cart");
+
+            if (item.product.stock < quantity) {
+                throw new ConflictException(`Only ${item.product.stock} items left in stock`);
+            }
+
+            const updatedItem = await tx.cartItem.update({
+                where: { id: cartItemId },
+                data: { quantity: quantity }
+            });
+
+            return { message: "Quantity updated", data: updatedItem };
+        });
+    }
+
     async removeCartItem(buyerId: string, cartItemId: string) {
         return this.prisma.$transaction(async (tx) => {
             const cart = await tx.cart.findUnique({
