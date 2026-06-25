@@ -27,6 +27,11 @@ enum TransactionType {
   REFUND
 }
 
+enum DiscountType {
+  VOUCHER
+  PROMO
+}
+
 model User {
   id           String   @id @default(uuid()) @db.Uuid
   username     String   @unique @db.VarChar(50)
@@ -161,12 +166,13 @@ model Order {
   sellerId String        @map("seller_id") @db.Uuid
   seller   SellerProfile @relation(fields: [sellerId], references: [userId])
 
-  subtotal       Decimal @db.Decimal(12, 2)
-  discountId     String? @map("discount_id") @db.Uuid
-  discountAmount Decimal @default(0.00) @map("discount_amount") @db.Decimal(12, 2)
-  deliveryFee    Decimal @map("delivery_fee") @db.Decimal(12, 2)
-  taxAmount      Decimal @default(0.00) @map("tax_amount") @db.Decimal(12, 2)
-  finalTotal     Decimal @map("final_total") @db.Decimal(12, 2)
+  subtotal       Decimal   @db.Decimal(12, 2)
+  discountId     String?   @map("discount_id") @db.Uuid
+  discount       Discount? @relation(fields: [discountId], references: [id])
+  discountAmount Decimal   @default(0.00) @map("discount_amount") @db.Decimal(12, 2)
+  deliveryFee    Decimal   @map("delivery_fee") @db.Decimal(12, 2)
+  taxAmount      Decimal   @default(0.00) @map("tax_amount") @db.Decimal(12, 2)
+  finalTotal     Decimal   @map("final_total") @db.Decimal(12, 2)
 
   deliveryMethod DeliveryMethod @map("delivery_method")
   status         OrderStatus    @default(SEDANG_DIKEMAS)
@@ -232,4 +238,18 @@ model WalletTransaction {
   createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamp(6)
 
   @@map("wallet_transactions")
+}
+
+model Discount {
+  id             String       @id @default(uuid()) @db.Uuid
+  code           String       @unique @db.VarChar(50)
+  type           DiscountType
+  amount         Decimal      @db.Decimal(12, 2)
+  expiryDate     DateTime     @map("expiry_date") @db.Timestamp(6)
+  remainingUsage Int?         @map("remaining_usage")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  orders    Order[]
+
+  @@map("discounts")
 }
