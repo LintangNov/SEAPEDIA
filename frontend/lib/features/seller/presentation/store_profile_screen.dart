@@ -24,24 +24,28 @@ class _StoreProfileScreenState extends ConsumerState<StoreProfileScreen> {
     final storeName = _storeNameController.text.trim();
     if (storeName.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Store name must be at least 3 characters')),
+        const SnackBar(
+          content: Text('Store name must be at least 3 characters'),
+        ),
       );
       return;
     }
 
-    await ref.read(storeProfileControllerProvider.notifier).updateStoreName(storeName);
-    
+    await ref
+        .read(storeProfileControllerProvider.notifier)
+        .updateStoreName(storeName);
+
     final state = ref.read(storeProfileControllerProvider);
     if (state.hasError && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.error.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.error.toString())));
     } else if (mounted) {
       ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(content: Text('Store profile updated successfully')),
-      );
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(content: Text('Store profile updated successfully')),
+        );
       context.pop();
     }
   }
@@ -76,10 +80,10 @@ class _StoreProfileScreenState extends ConsumerState<StoreProfileScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: state.isLoading ? null : _handleSubmit,
-              child: state.isLoading 
+              child: state.isLoading
                   ? const CircularProgressIndicator()
                   : const Text('Save Store Profile'),
-            )
+            ),
           ],
         ),
       ),

@@ -17,5 +17,5 @@ class StoreProfileController extends AsyncNotifier<void> {
 
 final storeProfileControllerProvider =
     AsyncNotifierProvider.autoDispose<StoreProfileController, void>(
-  StoreProfileController.new,
-);
+      StoreProfileController.new,
+    );

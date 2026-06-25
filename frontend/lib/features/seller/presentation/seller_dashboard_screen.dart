@@ -22,6 +22,11 @@ class SellerDashboardScreen extends ConsumerWidget {
         title: const Text('Seller Dashboard'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.list_alt),
+            tooltip: 'Manage Incoming Orders',
+            onPressed: () => context.push('/seller/orders'),
+          ),
+          IconButton(
             icon: const Icon(Icons.shopping_bag),
             tooltip: 'Go to Public Catalog',
             onPressed: () => context.push('/products'),
@@ -91,20 +96,30 @@ class SellerDashboardScreen extends ConsumerWidget {
                               title: const Text('Delete Product'),
                               content: const Text('Are you sure?'),
                               actions: [
-                                TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-                                TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete')),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text('Delete'),
+                                ),
                               ],
                             ),
                           );
-                          
+
                           if (confirm == true) {
                             try {
-                              await ref.read(productRepositoryProvider).deleteProduct(product.id);
+                              await ref
+                                  .read(productRepositoryProvider)
+                                  .deleteProduct(product.id);
                               ref.invalidate(sellerProductsProvider);
                               ref.invalidate(productsListProvider);
                             } catch (e) {
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.toString())),
+                                );
                               }
                             }
                           }
