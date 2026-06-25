@@ -14,7 +14,7 @@ class ReviewsScreen extends ConsumerStatefulWidget {
 class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
   final _nameController = TextEditingController();
   final _commentController = TextEditingController();
-  int _selectedRating = 5; 
+  int _selectedRating = 5;
 
   @override
   void dispose() {
@@ -26,7 +26,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
   Future<void> _handleSubmit() async {
     final reviewerName = _nameController.text.trim();
     final comment = _commentController.text.trim();
-    
+
     if (reviewerName.isEmpty || reviewerName.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Name must be at least 3 characters')),
@@ -36,37 +36,37 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
 
     if (_selectedRating < 1 || _selectedRating > 5) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Rating must be strictly between 1 and 5')),
-      );
-      return;
-    }
-    
-    if (comment.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Comment cannot be empty')),
+        const SnackBar(
+          content: Text('Rating must be strictly between 1 and 5'),
+        ),
       );
       return;
     }
 
-    await ref.read(reviewFormControllerProvider.notifier).submit(
-      reviewerName, 
-      _selectedRating, 
-      comment
-    );
+    if (comment.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Comment cannot be empty')));
+      return;
+    }
+
+    await ref
+        .read(reviewFormControllerProvider.notifier)
+        .submit(reviewerName, _selectedRating, comment);
 
     if (!mounted) return;
 
     final state = ref.read(reviewFormControllerProvider);
-    
+
     if (state.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.error.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.error.toString())));
     } else {
       _commentController.clear();
       _nameController.clear();
       setState(() => _selectedRating = 5);
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Review submitted successfully')),
       );
@@ -100,7 +100,10 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Rating (1-5):', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Rating (1-5):',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       DropdownButton<int>(
                         value: _selectedRating,
                         items: [1, 2, 3, 4, 5].map((int value) {
@@ -130,14 +133,18 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                   ElevatedButton(
                     onPressed: formState.isLoading ? null : _handleSubmit,
                     child: formState.isLoading
-                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : const Text('Submit Review'),
                   ),
                 ],
               ),
             ),
           ),
-          
+
           const Divider(thickness: 2),
 
           Expanded(
@@ -146,7 +153,9 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
               error: (error, stack) => Center(child: Text('Error: $error')),
               data: (reviews) {
                 if (reviews.isEmpty) {
-                  return const Center(child: Text('No reviews yet. Be the first!'));
+                  return const Center(
+                    child: Text('No reviews yet. Be the first!'),
+                  );
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.all(16.0),
@@ -157,8 +166,13 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                       color: Colors.blue,
                       label: 'Review Item',
                       child: ListTile(
-                        leading: CircleAvatar(child: Text(review.rating.toString())),
-                        title: Text(review.reviewerName, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        leading: CircleAvatar(
+                          child: Text(review.rating.toString()),
+                        ),
+                        title: Text(
+                          review.reviewerName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         subtitle: Text(review.comment),
                       ),
                     );

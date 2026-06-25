@@ -8,7 +8,7 @@ class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
@@ -26,15 +26,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _handleLogin() async {
     setState(() => _isLoading = true);
     try {
-      await ref.read(authControllerProvider.notifier).login(
-        _usernameController.text,
-        _passwordController.text,
-      );
+      await ref
+          .read(authControllerProvider.notifier)
+          .login(_usernameController.text, _passwordController.text);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -73,15 +72,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               label: 'Submit Action',
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _handleLogin,
-                child: _isLoading 
-                    ? const CircularProgressIndicator() 
+                child: _isLoading
+                    ? const CircularProgressIndicator()
                     : const Text('Login'),
               ),
             ),
             TextButton(
               onPressed: () => context.push('/register'),
               child: const Text('No account? Register here'),
-            )
+            ),
           ],
         ),
       ),

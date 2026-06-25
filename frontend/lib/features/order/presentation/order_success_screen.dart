@@ -37,7 +37,10 @@ class OrderSuccessScreen extends StatelessWidget {
                     SizedBox(height: 8),
                     Text(
                       'Waiting for Driver...',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     SizedBox(height: 8),
                     Text(
@@ -51,13 +54,17 @@ class OrderSuccessScreen extends StatelessWidget {
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () => context.go('/profile'),
-              style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
               child: const Text('Back to Profile'),
             ),
             const SizedBox(height: 8),
             OutlinedButton(
               onPressed: () => context.go('/products'),
-              style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
               child: const Text('Continue Shopping'),
             ),
           ],

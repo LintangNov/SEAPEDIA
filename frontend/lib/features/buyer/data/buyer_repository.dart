@@ -14,7 +14,10 @@ class BuyerRepository {
   Future<double> getWalletBalance() async {
     try {
       final response = await _dio.get('/users/me');
-      return double.tryParse(response.data['profile']?['walletBalance']?.toString() ?? '0') ?? 0.0;
+      return double.tryParse(
+            response.data['profile']?['walletBalance']?.toString() ?? '0',
+          ) ??
+          0.0;
     } catch (e) {
       return 0.0;
     }
@@ -26,7 +29,8 @@ class BuyerRepository {
         '/buyer/topup',
         data: {'amount': amount},
       );
-      return double.tryParse(response.data['balance']?.toString() ?? '0') ?? 0.0;
+      return double.tryParse(response.data['balance']?.toString() ?? '0') ??
+          0.0;
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Failed to top up wallet');
     }

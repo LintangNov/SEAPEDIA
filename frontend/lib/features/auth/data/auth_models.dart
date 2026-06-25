@@ -32,7 +32,7 @@ class SelectRoleResponse {
   }
 }
 
-class UserProfile{
+class UserProfile {
   final String id;
   final String username;
   final String activeRole;
@@ -45,7 +45,7 @@ class UserProfile{
     required this.roles,
   });
 
-  factory UserProfile.fromJson(Map<String, dynamic> json){
+  factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       id: json['sub']?.toString() ?? json['id']?.toString() ?? '',
       username: json['username']?.toString() ?? 'Unknown',

@@ -38,5 +38,5 @@ class ProductFormController extends AsyncNotifier<void> {
 
 final productFormControllerProvider =
     AsyncNotifierProvider.autoDispose<ProductFormController, void>(
-  ProductFormController.new,
-);
+      ProductFormController.new,
+    );

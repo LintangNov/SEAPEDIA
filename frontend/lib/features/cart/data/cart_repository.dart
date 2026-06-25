@@ -25,10 +25,10 @@ class CartRepository {
 
   Future<void> addToCart(String productId, int quantity) async {
     try {
-      await _dio.post('/cart/items', data: {
-        'productId': productId,
-        'quantity': quantity
-      });
+      await _dio.post(
+        '/cart/items',
+        data: {'productId': productId, 'quantity': quantity},
+      );
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Failed to add to cart');
     }
@@ -38,7 +38,9 @@ class CartRepository {
     try {
       await _dio.patch('/cart/items/$cartItemId', data: {'quantity': quantity});
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to update quantity');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to update quantity',
+      );
     }
   }
 

@@ -9,11 +9,15 @@ class CheckoutController extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<void> processCheckout(String method, String address) async {
+  Future<void> processCheckout(
+    String method,
+    String address,
+    String? discountCode,
+  ) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final repository = ref.read(orderRepositoryProvider);
-      await repository.checkout(method, address);
+      await repository.checkout(method, address, discountCode);
 
       ref.invalidate(cartControllerProvider);
       ref.invalidate(buyerWalletControllerProvider);
@@ -21,6 +25,7 @@ class CheckoutController extends AsyncNotifier<void> {
   }
 }
 
-final checkoutControllerProvider = AsyncNotifierProvider.autoDispose<CheckoutController, void>(
-  CheckoutController.new
-);
+final checkoutControllerProvider =
+    AsyncNotifierProvider.autoDispose<CheckoutController, void>(
+      CheckoutController.new,
+    );

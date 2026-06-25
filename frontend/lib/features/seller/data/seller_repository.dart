@@ -13,12 +13,11 @@ class SellerRepository {
 
   Future<void> updateStoreProfile(String storeName) async {
     try {
-      await _dio.patch(
-        '/users/seller/store',
-        data: {'storeName' : storeName},
-      );
+      await _dio.patch('/users/seller/store', data: {'storeName': storeName});
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to update store profile');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to update store profile',
+      );
     }
   }
 }

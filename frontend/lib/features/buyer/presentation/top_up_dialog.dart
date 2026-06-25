@@ -23,7 +23,9 @@ class _TopUpDialogState extends ConsumerState<TopUpDialog> {
     final amount = double.tryParse(_amountController.text) ?? 0.0;
     if (amount <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid amount greater than 0')),
+        const SnackBar(
+          content: Text('Please enter a valid amount greater than 0'),
+        ),
       );
       return;
     }
@@ -34,13 +36,13 @@ class _TopUpDialogState extends ConsumerState<TopUpDialog> {
 
     final state = ref.read(buyerWalletControllerProvider);
     if (state.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.error.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.error.toString())));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Top-up successful!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Top-up successful!')));
       Navigator.of(context).pop();
     }
   }
@@ -54,7 +56,9 @@ class _TopUpDialogState extends ConsumerState<TopUpDialog> {
       content: TextField(
         controller: _amountController,
         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))],
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+        ],
         decoration: const InputDecoration(
           labelText: 'Amount (Rp)',
           hintText: 'e.g. 50000',
@@ -68,7 +72,11 @@ class _TopUpDialogState extends ConsumerState<TopUpDialog> {
         ElevatedButton(
           onPressed: state.isLoading ? null : _handleTopUp,
           child: state.isLoading
-              ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
               : const Text('Top Up'),
         ),
       ],

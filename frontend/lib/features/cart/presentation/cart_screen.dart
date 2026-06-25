@@ -55,27 +55,43 @@ class CartScreen extends ConsumerWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.remove_circle_outline, color: Colors.orange),
+                              icon: const Icon(
+                                Icons.remove_circle_outline,
+                                color: Colors.orange,
+                              ),
                               onPressed: () {
-                                ref.read(cartControllerProvider.notifier)
-                                   .updateQuantity(item.id, item.quantity - 1);
+                                ref
+                                    .read(cartControllerProvider.notifier)
+                                    .updateQuantity(item.id, item.quantity - 1);
                               },
                             ),
                             Text(
-                              '${item.quantity}', 
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)
+                              '${item.quantity}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.add_circle_outline, color: Colors.green),
+                              icon: const Icon(
+                                Icons.add_circle_outline,
+                                color: Colors.green,
+                              ),
                               onPressed: () {
-                                ref.read(cartControllerProvider.notifier)
-                                   .updateQuantity(item.id, item.quantity + 1);
+                                ref
+                                    .read(cartControllerProvider.notifier)
+                                    .updateQuantity(item.id, item.quantity + 1);
                               },
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete_outline, color: Colors.red),
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                              ),
                               onPressed: () {
-                                ref.read(cartControllerProvider.notifier).removeItem(item.id);
+                                ref
+                                    .read(cartControllerProvider.notifier)
+                                    .removeItem(item.id);
                               },
                             ),
                           ],

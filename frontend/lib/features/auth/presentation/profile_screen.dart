@@ -31,7 +31,7 @@ class ProfileScreen extends ConsumerWidget {
               context.go('/login');
             },
             tooltip: 'Logout',
-          )
+          ),
         ],
       ),
       body: profileAsyncValue.when(
@@ -44,7 +44,7 @@ class ProfileScreen extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () => ref.refresh(profileProvider),
                 child: const Text('Retry'),
-              )
+              ),
             ],
           ),
         ),
@@ -65,18 +65,27 @@ class ProfileScreen extends ConsumerWidget {
                     const SizedBox(height: 16),
                     Text(
                       profile.username,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green.withAlpha(51),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
                         'Role: ${profile.activeRole}',
-                        style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -87,7 +96,9 @@ class ProfileScreen extends ConsumerWidget {
               if (profile.activeRole == 'BUYER')
                 Consumer(
                   builder: (context, ref, child) {
-                    final walletState = ref.watch(buyerWalletControllerProvider);
+                    final walletState = ref.watch(
+                      buyerWalletControllerProvider,
+                    );
                     return walletState.when(
                       loading: () => const ListTile(
                         leading: CircularProgressIndicator(),
@@ -99,7 +110,10 @@ class ProfileScreen extends ConsumerWidget {
                         subtitle: Text(error.toString()),
                       ),
                       data: (balance) => ListTile(
-                        leading: const Icon(Icons.account_balance_wallet, color: Colors.blue),
+                        leading: const Icon(
+                          Icons.account_balance_wallet,
+                          color: Colors.blue,
+                        ),
                         title: const Text('Wallet Balance'),
                         subtitle: Text('Rp ${balance.toStringAsFixed(2)}'),
                         trailing: ElevatedButton(
@@ -117,7 +131,10 @@ class ProfileScreen extends ConsumerWidget {
                 )
               else
                 const ListTile(
-                  leading: Icon(Icons.account_balance_wallet, color: Colors.grey),
+                  leading: Icon(
+                    Icons.account_balance_wallet,
+                    color: Colors.grey,
+                  ),
                   title: Text('Wallet Balance'),
                   subtitle: Text('Switch to BUYER role to manage wallet'),
                 ),
@@ -127,7 +144,7 @@ class ProfileScreen extends ConsumerWidget {
                 title: const Text('Owned Roles'),
                 subtitle: Text(profile.roles.join(', ')),
               ),
-              
+
               DebugBorder(
                 color: Colors.purple,
                 label: 'System Actions',
@@ -142,7 +159,7 @@ class ProfileScreen extends ConsumerWidget {
                       },
                     ),
                     if (profile.activeRole == 'SELLER') ...[
-                      const SizedBox(height: 12,),
+                      const SizedBox(height: 12),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange.withAlpha(51),
@@ -166,7 +183,14 @@ class ProfileScreen extends ConsumerWidget {
                           context.push('/cart');
                         },
                       ),
-                    ]
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green.withAlpha(51), foregroundColor: Colors.green.shade800),
+                        icon: const Icon(Icons.receipt_long),
+                        label: const Text('View Order History & Spending'),
+                        onPressed: () => context.push('/buyer/orders'),
+                      ),
+                    ],
                   ],
                 ),
               ),

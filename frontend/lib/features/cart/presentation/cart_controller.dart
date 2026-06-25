@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/cart/data/cart_models.dart';
 import 'package:seapedia/features/cart/data/cart_repository.dart';
 
-class CartController extends AsyncNotifier<CartSummary?>{
+class CartController extends AsyncNotifier<CartSummary?> {
   @override
   FutureOr<CartSummary?> build() async {
     final repository = ref.watch(cartRepositoryProvider);
@@ -21,7 +21,7 @@ class CartController extends AsyncNotifier<CartSummary?>{
     if (newQuantity < 1) {
       return removeItem(cartItemId);
     }
-    
+
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final repository = ref.read(cartRepositoryProvider);
@@ -51,5 +51,5 @@ class CartController extends AsyncNotifier<CartSummary?>{
 
 final cartControllerProvider =
     AsyncNotifierProvider.autoDispose<CartController, CartSummary?>(
-  CartController.new,
-);
+      CartController.new,
+    );
