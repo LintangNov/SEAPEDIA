@@ -16,10 +16,7 @@ void main() async {
   container.read(authControllerProvider.notifier).checkStatus(hasToken);
 
   runApp(
-    UncontrolledProviderScope(
-      container: container,
-      child: const SeapediaApp(),
-    ),
+    UncontrolledProviderScope(container: container, child: const SeapediaApp()),
   );
 }
 

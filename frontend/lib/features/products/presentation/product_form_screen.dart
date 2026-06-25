@@ -46,23 +46,27 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
 
     if (_nameController.text.isEmpty || price < 0 || stock < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid input. Price and stock must be >= 0.')),
+        const SnackBar(
+          content: Text('Invalid input. Price and stock must be >= 0.'),
+        ),
       );
       return;
     }
 
-    await ref.read(productFormControllerProvider.notifier).submit(
-      name: _nameController.text,
-      description: _descController.text,
-      price: price,
-      stock: stock,
-    );
+    await ref
+        .read(productFormControllerProvider.notifier)
+        .submit(
+          name: _nameController.text,
+          description: _descController.text,
+          price: price,
+          stock: stock,
+        );
 
     final state = ref.read(productFormControllerProvider);
     if (state.hasError && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.error.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(state.error.toString())));
     } else if (mounted) {
       context.pop();
     }
@@ -86,7 +90,9 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                 children: [
                   TextField(
                     controller: _nameController,
-                    decoration: const InputDecoration(labelText: 'Product Name'),
+                    decoration: const InputDecoration(
+                      labelText: 'Product Name',
+                    ),
                   ),
                   const SizedBox(height: 8),
                   TextField(
@@ -106,9 +112,17 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                   Expanded(
                     child: TextField(
                       controller: _priceController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}'))],
-                      decoration: const InputDecoration(labelText: 'Price (Rp)'),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,2}'),
+                        ),
+                      ],
+                      decoration: const InputDecoration(
+                        labelText: 'Price (Rp)',
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -126,10 +140,10 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: state.isLoading ? null : _handleSubmit,
-              child: state.isLoading 
-                  ? const CircularProgressIndicator() 
+              child: state.isLoading
+                  ? const CircularProgressIndicator()
                   : const Text('Save Product'),
-            )
+            ),
           ],
         ),
       ),

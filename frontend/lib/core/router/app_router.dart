@@ -1,6 +1,8 @@
 import 'package:seapedia/features/cart/presentation/cart_screen.dart';
+import 'package:seapedia/features/order/presentation/buyer_orders_screen.dart';
 import 'package:seapedia/features/order/presentation/checkout_screen.dart';
 import 'package:seapedia/features/order/presentation/order_success_screen.dart';
+import 'package:seapedia/features/order/presentation/seller_orders_screen.dart';
 import 'package:seapedia/features/products/data/product_models.dart';
 import 'package:seapedia/features/products/presentation/product_form_screen.dart';
 import 'package:seapedia/features/reviews/presentation/reviews_screen.dart';
@@ -92,13 +94,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/seller/products/new',
         builder: (context, state) {
           final productToEdit = state.extra as Product?;
-          return ProductFormScreen(existingProduct: productToEdit,);
+          return ProductFormScreen(existingProduct: productToEdit);
         },
       ),
-      GoRoute(
-        path: '/cart',
-        builder: (context, state) => const CartScreen(),
-      ),
+      GoRoute(path: '/cart', builder: (context, state) => const CartScreen()),
       GoRoute(
         path: '/checkout',
         builder: (context, state) => const CheckoutScreen(),
@@ -106,11 +105,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/order-success',
         builder: (context, state) => const OrderSuccessScreen(),
-      )
+      ),
+      GoRoute(
+        path: '/buyer/orders',
+        builder: (context, state) => const BuyerOrdersScreen(),
+      ),
+      GoRoute(
+        path: '/seller/orders',
+        builder: (context, state) => const SellerOrdersScreen(),
+      ),
     ],
   );
 
-  ref.listen(authControllerProvider, (previous, next){
+  ref.listen(authControllerProvider, (previous, next) {
     router.refresh();
   });
 

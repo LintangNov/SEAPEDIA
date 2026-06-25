@@ -4,16 +4,16 @@ import 'package:seapedia/features/cart/presentation/cart_controller.dart';
 import '../../../core/widgets/debug_border.dart';
 import 'products_provider.dart';
 
-class ProductDetailScreen extends ConsumerWidget{
+class ProductDetailScreen extends ConsumerWidget {
   final String productId;
   const ProductDetailScreen({super.key, required this.productId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref){
+  Widget build(BuildContext context, WidgetRef ref) {
     final productAsync = ref.watch(productDetailProvider(productId));
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Product Detail'),),
+      appBar: AppBar(title: const Text('Product Detail')),
       body: productAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
@@ -42,18 +42,28 @@ class ProductDetailScreen extends ConsumerWidget{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        product.name, 
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                        product.name,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Rp${product.price}', 
-                        style: const TextStyle(fontSize: 20, color: Colors.green, fontWeight: FontWeight.bold),
+                        'Rp${product.price}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Text('Stock: ${product.stock} items available'),
                       const SizedBox(height: 16),
-                      const Text('Description:', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Description:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       Text(product.description),
                     ],
                   ),
@@ -69,24 +79,31 @@ class ProductDetailScreen extends ConsumerWidget{
                         label: const Text('Add to Cart'),
                         onPressed: () async {
                           try {
-                            await ref.read(cartControllerProvider.notifier).addToCart(product.id, 1);
+                            await ref
+                                .read(cartControllerProvider.notifier)
+                                .addToCart(product.id, 1);
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Product added to cart')),
+                              const SnackBar(
+                                content: Text('Product added to cart'),
+                              ),
                             );
                           } catch (e) {
                             if (!context.mounted) return;
                             final errorMessage = e.toString();
-                            
-                            if (errorMessage.toLowerCase().contains('single-store') || 
-                                errorMessage.toLowerCase().contains('another store')) {
-                              
+
+                            if (errorMessage.toLowerCase().contains(
+                                  'single-store',
+                                ) ||
+                                errorMessage.toLowerCase().contains(
+                                  'another store',
+                                )) {
                               showDialog(
                                 context: context,
                                 builder: (ctx) => AlertDialog(
                                   content: Text(
                                     'You can only buy products from one store at a time.\n\n'
-                                    'Do you want to clear your current cart and add this product from ${product.storeName} instead?'
+                                    'Do you want to clear your current cart and add this product from ${product.storeName} instead?',
                                   ),
                                   actions: [
                                     TextButton(
@@ -94,14 +111,30 @@ class ProductDetailScreen extends ConsumerWidget{
                                       child: const Text('Cancel'),
                                     ),
                                     ElevatedButton(
-                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                      ),
                                       onPressed: () async {
                                         Navigator.pop(ctx);
-                                        await ref.read(cartControllerProvider.notifier).clearCart();
-                                        await ref.read(cartControllerProvider.notifier).addToCart(product.id, 1);
+                                        await ref
+                                            .read(
+                                              cartControllerProvider.notifier,
+                                            )
+                                            .clearCart();
+                                        await ref
+                                            .read(
+                                              cartControllerProvider.notifier,
+                                            )
+                                            .addToCart(product.id, 1);
                                         if (context.mounted) {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Cart cleared and new product added.')),
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                'Cart cleared and new product added.',
+                                              ),
+                                            ),
                                           );
                                         }
                                       },
@@ -118,7 +151,7 @@ class ProductDetailScreen extends ConsumerWidget{
                           }
                         },
                       );
-                    }
+                    },
                   ),
                 ),
               ],

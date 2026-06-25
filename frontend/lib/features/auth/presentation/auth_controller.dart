@@ -12,7 +12,11 @@ class AuthController extends Notifier<AuthState> {
     return AuthState.guest;
   }
 
-  Future<void> register(String username, String password, List<String> roles) async {
+  Future<void> register(
+    String username,
+    String password,
+    List<String> roles,
+  ) async {
     final repository = ref.read(authRepositoryProvider);
     await repository.register(username, password, roles);
   }
@@ -21,7 +25,7 @@ class AuthController extends Notifier<AuthState> {
     final repository = ref.read(authRepositoryProvider);
     final response = await repository.login(username, password);
     availableRoles = response.availableRoles;
-    
+
     state = AuthState.partial;
   }
 
@@ -34,11 +38,10 @@ class AuthController extends Notifier<AuthState> {
   Future<void> logout() async {
     state = AuthState.guest;
     availableRoles.clear();
-    
+
     try {
       final repository = ref.read(authRepositoryProvider);
       await repository.logout();
-      
     } catch (e) {
       debugPrint('Secure Storage Logout Error: $e');
     } finally {

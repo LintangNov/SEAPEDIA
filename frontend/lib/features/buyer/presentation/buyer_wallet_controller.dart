@@ -19,6 +19,7 @@ class BuyerWalletController extends AsyncNotifier<double> {
   }
 }
 
-final buyerWalletControllerProvider = AsyncNotifierProvider.autoDispose<BuyerWalletController, double>(
-  BuyerWalletController.new,
-);
+final buyerWalletControllerProvider =
+    AsyncNotifierProvider.autoDispose<BuyerWalletController, double>(
+      BuyerWalletController.new,
+    );

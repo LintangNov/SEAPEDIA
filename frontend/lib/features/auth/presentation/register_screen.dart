@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/widgets/debug_border.dart';
 import 'auth_controller.dart';
 
-class RegisterScreen extends ConsumerStatefulWidget{
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
@@ -15,22 +15,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-
   final List<String> _availableRoles = ['SELLER', 'BUYER', 'DRIVER'];
   final List<String> _selectedRoles = [];
 
   bool _isLoading = false;
 
   @override
-  void dispose(){
+  void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _toggleRole(String role, bool? isChecked){
-    setState((){
-      if (isChecked == true){
+  void _toggleRole(String role, bool? isChecked) {
+    setState(() {
+      if (isChecked == true) {
         _selectedRoles.add(role);
       } else {
         _selectedRoles.remove(role);
@@ -38,43 +37,45 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
   }
 
-  Future<void> _handleRegister() async{
-    if (_selectedRoles.isEmpty){
+  Future<void> _handleRegister() async {
+    if (_selectedRoles.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select at least one role'),),
+        const SnackBar(content: Text('Please select at least one role')),
       );
       return;
     }
 
-    setState(()=> _isLoading = true);
+    setState(() => _isLoading = true);
 
-    try{
-      await ref.read(authControllerProvider.notifier).register(
-        _usernameController.text,
-        _passwordController.text,
-        _selectedRoles,
-      );
+    try {
+      await ref
+          .read(authControllerProvider.notifier)
+          .register(
+            _usernameController.text,
+            _passwordController.text,
+            _selectedRoles,
+          );
 
-      if(!mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Registration successful! Please login.')),
       );
 
       context.go('/login');
-    } catch (e){
-      if(!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
-      if (mounted) setState(()=> _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register'),),
+      appBar: AppBar(title: const Text('Register')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -94,7 +95,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               child: TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(hintText: 'Enter password (min. 6 chars)'),
+                decoration: const InputDecoration(
+                  hintText: 'Enter password (min. 6 chars)',
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -120,15 +123,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               label: 'Submit Action',
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _handleRegister,
-                child: _isLoading 
-                    ? const CircularProgressIndicator() 
+                child: _isLoading
+                    ? const CircularProgressIndicator()
                     : const Text('Register'),
               ),
             ),
             TextButton(
               onPressed: () => context.go('/login'),
               child: const Text('Already have an account? Login here'),
-            )
+            ),
           ],
         ),
       ),

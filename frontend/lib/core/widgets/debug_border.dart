@@ -16,15 +16,10 @@ class DebugBorder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: color, width: 2),
-      ),
+      decoration: BoxDecoration(border: Border.all(color: color, width: 2)),
       child: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: child,
-          ),
+          Padding(padding: const EdgeInsets.all(8.0), child: child),
           if (label.isNotEmpty)
             Positioned(
               top: 0,
@@ -37,7 +32,7 @@ class DebugBorder extends StatelessWidget {
                   style: const TextStyle(fontSize: 10, color: Colors.white),
                 ),
               ),
-            )
+            ),
         ],
       ),
     );

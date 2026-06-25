@@ -8,11 +8,11 @@ import 'products_provider.dart';
 
 final cartVisibilityProvider = FutureProvider.autoDispose<bool>((ref) async {
   final authState = ref.watch(authControllerProvider);
-  
+
   if (authState != AuthState.authenticated) {
     return false;
   }
-  
+
   try {
     final repository = ref.watch(authRepositoryProvider);
     final profile = await repository.getProfile();
@@ -27,11 +27,13 @@ class ProductCatalogScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showCart = ref.watch(cartVisibilityProvider).when(
-      data: (value) => value,
-      loading: () => false,
-      error: (_, __) => false,
-    );
+    final showCart = ref
+        .watch(cartVisibilityProvider)
+        .when(
+          data: (value) => value,
+          loading: () => false,
+          error: (_, __) => false,
+        );
     final productsAsync = ref.watch(productsListProvider);
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +45,7 @@ class ProductCatalogScreen extends ConsumerWidget {
               tooltip: 'Open Shopping Cart',
               onPressed: () => context.push('/cart'),
             ),
-          
+
           IconButton(
             icon: const Icon(Icons.rate_review),
             tooltip: 'Application Reviews',
@@ -51,7 +53,7 @@ class ProductCatalogScreen extends ConsumerWidget {
           ),
           IconButton(
             icon: const Icon(Icons.person),
-            onPressed: (){
+            onPressed: () {
               final authState = ref.read(authControllerProvider);
               if (authState == AuthState.authenticated) {
                 context.go('/profile');
@@ -62,7 +64,7 @@ class ProductCatalogScreen extends ConsumerWidget {
               }
             },
             tooltip: 'Profile / Login',
-          )
+          ),
         ],
       ),
       body: productsAsync.when(
@@ -75,7 +77,7 @@ class ProductCatalogScreen extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () => ref.refresh(productsListProvider),
                 child: const Text('Retry'),
-              )
+              ),
             ],
           ),
         ),
@@ -93,10 +95,12 @@ class ProductCatalogScreen extends ConsumerWidget {
                 label: 'Product Item Card',
                 child: ListTile(
                   title: Text(
-                    product.name, 
+                    product.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  subtitle: Text('Store: ${product.storeName}\nPrice: Rp${product.price}'),
+                  subtitle: Text(
+                    'Store: ${product.storeName}\nPrice: Rp${product.price}',
+                  ),
                   isThreeLine: true,
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {

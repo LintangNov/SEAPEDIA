@@ -3,22 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/dio_provider.dart';
 import 'product_models.dart';
 
-final productRepositoryProvider = Provider<ProductRepository>((ref){
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
   return ProductRepository(dio: ref.watch(dioProvider));
 });
 
-class ProductRepository{
+class ProductRepository {
   final Dio _dio;
 
-  ProductRepository({required Dio dio}): _dio = dio;
+  ProductRepository({required Dio dio}) : _dio = dio;
 
   Future<List<Product>> getProducts() async {
     try {
       final response = await _dio.get('/products');
       final List<dynamic> data = response.data['data'];
-      return data.map((json) => Product.fromJson(json as Map<String, dynamic>)).toList();
+      return data
+          .map((json) => Product.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to fetch product catalog');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to fetch product catalog',
+      );
     }
   }
 
@@ -27,17 +31,23 @@ class ProductRepository{
       final response = await _dio.get('/products/$id');
       return Product.fromJson(response.data['data'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to load product detail');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to load product detail',
+      );
     }
   }
 
   Future<List<Product>> getSellerProducts() async {
-    try{
+    try {
       final response = await _dio.get('/products/seller/mine');
       final List<dynamic> data = response.data['data'] ?? [];
-      return data.map((json) => Product.fromJson(json as Map<String, dynamic>)).toList();
+      return data
+          .map((json) => Product.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to fetch seller products');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to fetch seller products',
+      );
     }
   }
 
@@ -45,7 +55,9 @@ class ProductRepository{
     try {
       await _dio.post('/products', data: dto);
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to create product');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to create product',
+      );
     }
   }
 
@@ -53,7 +65,9 @@ class ProductRepository{
     try {
       await _dio.patch('/products/$id', data: dto);
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to update product');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to update product',
+      );
     }
   }
 
@@ -61,8 +75,9 @@ class ProductRepository{
     try {
       await _dio.delete('/products/$id');
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Failed to delete product');
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to delete product',
+      );
     }
   }
 }
-

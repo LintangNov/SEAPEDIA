@@ -30,18 +30,16 @@ class CartSummary {
   final String? sellerId;
   final List<CartItem> items;
 
-  CartSummary({
-    required this.id,
-    this.sellerId,
-    required this.items,
-  });
+  CartSummary({required this.id, this.sellerId, required this.items});
 
   factory CartSummary.fromJson(Map<String, dynamic> json) {
     final itemsList = json['items'] as List<dynamic>? ?? [];
     return CartSummary(
       id: json['id']?.toString() ?? '',
       sellerId: json['sellerId']?.toString(),
-      items: itemsList.map((i) => CartItem.fromJson(i as Map<String, dynamic>)).toList(),
+      items: itemsList
+          .map((i) => CartItem.fromJson(i as Map<String, dynamic>))
+          .toList(),
     );
   }
 }
