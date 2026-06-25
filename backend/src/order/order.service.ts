@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CheckoutDto } from './dto/checkout.dto';
 import { DeliveryMethod, Prisma } from '@prisma/client';
@@ -20,7 +20,6 @@ export class OrderService {
                 throw new BadRequestException("Your cart is empty or invalid.");
             }
 
-            const sellerId = cart.sellerId;
 
             const buyerProfile = await tx.buyerProfile.findUnique({
                 where: {userId: buyerId}
@@ -41,28 +40,49 @@ export class OrderService {
                 subtotal = subtotal.add(itemTotal);
             }
 
-            let deliveryFreeAmount = 0;
+            let discountAmount = new Prisma.Decimal(0);
+            let appliedDiscountId: string | null = null;
+
+            if (dto.discountCode) {
+                const discount = await tx.discount.findUnique({where: {code: dto.discountCode}});
+                if (!discount) throw new BadRequestException("Invalid discount code.");
+                if (new Date() > discount.expiryDate) throw new BadRequestException("Discount code has expired.");
+
+                if (discount.type === 'VOUCHER' && discount.remainingUsage !== null) {
+                    if (discount.remainingUsage <= 0) throw new BadRequestException("Voucher usage limit reached");
+                    await tx.discount.update({
+                        where: {id: discount.id},
+                        data: {remainingUsage: {decrement: 1}}
+                    });
+                    
+                }
+
+                discountAmount = discount.amount;
+                appliedDiscountId = discount.id;
+            }
+
+            let discountedSubtotal = subtotal.sub(discountAmount);
+            if (discountedSubtotal.lessThan(0)) discountedSubtotal = new Prisma.Decimal(0);
+
+            let deliveryFeeAmount = 0;
             switch (dto.deliveryMethod) {
                 case DeliveryMethod.INSTANT:
-                    deliveryFreeAmount = 20000;
+                    deliveryFeeAmount = 20000
                     break;
                 case DeliveryMethod.NEXT_DAY:
-                    deliveryFreeAmount = 15000;
+                    deliveryFeeAmount = 15000
                     break;
                 case DeliveryMethod.REGULAR:
-                    deliveryFreeAmount = 10000;
+                    deliveryFeeAmount = 20000
                     break;
             }
 
-            const deliveryFee = new Prisma.Decimal(deliveryFreeAmount);
-
-            const taxAmount = subtotal.mul(0.12);
-
-            const discountAmount = new Prisma.Decimal(0);
-            const finalTotal = subtotal.add(deliveryFee).add(taxAmount).sub(discountAmount);
+            const deliveryFee = new Prisma.Decimal(deliveryFeeAmount);
+            const taxAmount = discountedSubtotal.mul(0.12);
+            const finalTotal = discountedSubtotal.add(deliveryFee).add(taxAmount);
 
             if (new Prisma.Decimal(buyerProfile.walletBalance).lessThan(finalTotal)){
-                throw new ConflictException("Insufficient wallet balance for this transaction.");
+                throw new ConflictException("Insufficient wallet balance.");
                 
             }
 
@@ -75,19 +95,22 @@ export class OrderService {
             });
 
             await tx.walletTransaction.create({
-                data: {
-                    buyerId,
-                    amount: finalTotal,
-                    type: 'CHECKOUT',
-                    description: 'Checkout orger from store',
-                }
+                data: {buyerId, amount: finalTotal, type: 'CHECKOUT', description: 'Order Checkout'}
             });
+
+            for (const item of cart.items) {
+                await tx.product.update({
+                    where: {id: item.productId},
+                    data: {stock: {decrement: item.quantity}}
+                });
+            }
 
             const order = await tx.order.create({
                 data: {
                     buyerId,
-                    sellerId,
+                    sellerId: cart.sellerId,
                     subtotal,
+                    discountId: appliedDiscountId,
                     discountAmount,
                     deliveryFee,
                     taxAmount,
@@ -101,36 +124,60 @@ export class OrderService {
                             priceAtPurchase: item.product.price,
                         }))
                     },
-                    statusHistory: {
-                        create: [{ status: 'SEDANG_DIKEMAS' }]
-                    }
+                    statusHistory: {create: [{status: 'SEDANG_DIKEMAS'}]}
                 }
             });
 
-            for (const item of cart.items) {
-                await tx.product.update({
-                    where: {id: item.productId},
-                    data: {stock: {decrement: item.quantity}}
-                });
-            }
-
             await tx.cartItem.deleteMany({where: {cartId: cart.id}});
-            await tx.cart.update({
-                where: {id: cart.id},
-                data: {sellerId: null},
-            });
+            await tx.cart.update({where: {id: cart.id}, data: {sellerId: null}});
 
-            return {
-                message: "Checkout successfull",
-                orderId: order.id,
-                finalTotal: finalTotal.toNumber()
-            };
-        },
-        {
-            isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-            maxWait: 5000,
-            timeout: 1000,
+            return {message: "Checkout successful", orderId: order.id, finalTotal: finalTotal.toNumber()};
+
+        }, {
+            isolationLevel: Prisma.TransactionIsolationLevel.Serializable, maxWait: 5000, timeout: 10000
         }
     );
+    }
+
+    async processSellerOrder(sellerId: string, orderId: string) {
+        return this.prisma.$transaction(async (tx) => {
+            const order = await tx.order.findUnique({where: {id: orderId}});
+
+            if (!order) throw new NotFoundException("Order not found.");
+            if (order.sellerId !== sellerId) throw new Error("You don't own this order.");
+            if (order.status !== 'SEDANG_DIKEMAS') throw new BadRequestException("Order cannot be processed.");
+            
+            const updatedOrder = await tx.order.update({
+                where: {id: orderId},
+                data: {status: 'MENUNGGU_PENGIRIM'},
+            });
+            
+            await tx.orderStatusHistory.create({
+                data: {orderId, status: 'MENUNGGU_PENGIRIM'}
+            });
+
+            return {message: 'Order processed to MENUNGGU_PENGIRIM', data: updatedOrder};
+
+        }, {
+            isolationLevel:Prisma.TransactionIsolationLevel.Serializable
+        });
+    }
+
+    async getSellerOrders(sellerId: string) {
+        const orders = await this.prisma.order.findMany({
+            where: {sellerId},
+            include: {items: {include: {product: {select: {name: true}}}}, statusHistory: true},
+            orderBy: {createdAt: 'desc'}
+        });
+        return {message: "Seller orders retrieved", data: orders};
+    }
+
+    async getBuyerOrders(buyerId: string) {
+        const orders = await this.prisma.order.findMany({
+            where: {buyerId},
+            include: {items: {include: {product: {select: {name: true}}}}, statusHistory: true, seller: {select: {storeName: true}}},
+            orderBy: {createdAt: 'desc'}
+        });
+        return {message: "Buyer orders retrieved", data: orders};
     }
 }

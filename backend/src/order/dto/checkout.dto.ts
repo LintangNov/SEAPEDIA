@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { DeliveryMethod } from '@prisma/client';
 
 export class CheckoutDto {
@@ -9,4 +9,8 @@ export class CheckoutDto {
     @IsString()
     @IsNotEmpty()
     deliveryAddress!: string;
+
+    @IsString()
+    @IsOptional()
+    discountCode?: string;
 }
