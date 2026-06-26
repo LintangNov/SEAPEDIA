@@ -191,6 +191,18 @@ class ProfileScreen extends ConsumerWidget {
                         onPressed: () => context.push('/buyer/orders'),
                       ),
                     ],
+                    if (profile.activeRole == 'ADMIN') ...[
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.withAlpha(51),
+                          foregroundColor: Colors.red.shade800,
+                        ),
+                        icon: const Icon(Icons.admin_panel_settings),
+                        label: const Text('Open Admin Dashboard'),
+                        onPressed: () => context.push('/admin/dashboard'),
+                      ),
+                    ],
                   ],
                 ),
               ),

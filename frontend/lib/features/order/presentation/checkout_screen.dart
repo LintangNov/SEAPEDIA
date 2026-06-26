@@ -111,9 +111,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
         data: (cart) {
-          if (cart == null || cart.items.isEmpty)
+          if (cart == null || cart.items.isEmpty){
             return const Center(child: Text('Your cart is empty.'));
-
+          }
           double subtotal = cart.items.fold(
             0,
             (sum, item) => sum + (item.price * item.quantity),
@@ -164,8 +164,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         )
                         .toList(),
                     onChanged: (val) {
-                      if (val != null)
+                      if (val != null){
                         setState(() => _selectedDeliveryMethod = val);
+                      }
                     },
                   ),
                 ),
