@@ -12,9 +12,12 @@ class CartController extends AsyncNotifier<CartSummary?> {
   }
 
   Future<void> addToCart(String productId, int quantity) async {
-    final repository = ref.read(cartRepositoryProvider);
-    await repository.addToCart(productId, quantity);
-    ref.invalidateSelf();
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final repository = ref.read(cartRepositoryProvider);
+      await repository.addToCart(productId, quantity);
+      return repository.getCart();
+    });
   }
 
   Future<void> updateQuantity(String cartItemId, int newQuantity) async {
