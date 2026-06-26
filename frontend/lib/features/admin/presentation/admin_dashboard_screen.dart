@@ -90,6 +90,23 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                 ElevatedButton(onPressed: state.isLoading ? null : _handleCreate, child: state.isLoading ? const CircularProgressIndicator() : const Text('Create Discount'))
               ],
             ),
+          ), 
+          const Divider(),
+          Expanded(
+            child: state.when(
+              data: (discounts) => ListView.builder(
+                itemCount: discounts.length,
+                itemBuilder: (context, index){
+                  final d = discounts[index];
+                  return ListTile(
+                    title: Text('${d.code} (${d.type}) - Rp${d.amount}'),
+                    subtitle: Text('Expires: ${d.expiryDate.toLocal()}'),
+                  );
+                },
+              ), 
+              error: (err, _) => Center(child: Text('Error: $err'),), 
+              loading: () => const Center(child: CircularProgressIndicator(),)
+              ),
           )
         ],
       ),

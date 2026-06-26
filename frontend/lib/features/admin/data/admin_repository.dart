@@ -13,7 +13,7 @@ class AdminRepository {
 
   Future<void> createDiscount(String code, String type, double amount, DateTime expiryDate, int? remainingUsage) async{
     try {
-      await _dio.post('/dicounts', data: {
+      await _dio.post('/discounts', data: {
         'code': code,
         'type': type,
         'amount': amount,

@@ -13,7 +13,7 @@ class AdminDiscountController extends AsyncNotifier<List<Discount>> {
   Future<void> createDiscount(String code, String type, double amount, DateTime expiryDate, int? remainingUsage) async{
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async{
-      await ref.read(adminRepositoryProvider).getDiscounts();
+      await ref.read(adminRepositoryProvider).createDiscount(code, type, amount, expiryDate, remainingUsage);
       return await ref.read(adminRepositoryProvider).getDiscounts();
     });
   }
