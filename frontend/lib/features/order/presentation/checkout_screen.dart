@@ -46,22 +46,47 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     final code = _discountController.text.trim();
     if (code.isEmpty) return;
 
-    try {
-      final discount = _availableDiscounts.firstWhere(
-        (d) =>
-            d.code.toUpperCase() == code.toUpperCase() &&
-            d.expiryDate.isAfter(DateTime.now()),
+    if (_availableDiscounts.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No active discounts available from server. Check backend connection.',
+          ),
+        ),
       );
-      setState(() => _appliedDiscount = discount);
+      return;
+    }
+
+    final discountMatches = _availableDiscounts
+        .where((d) => d.code.toUpperCase() == code.toUpperCase())
+        .toList();
+
+    if (discountMatches.isEmpty) {
+      setState(() => _appliedDiscount = null);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Discount applied!')));
-    } catch (e) {
+      ).showSnackBar(const SnackBar(content: Text('Discount code not found.')));
+      return;
+    }
+
+    final discount = discountMatches.first;
+
+    if (!discount.expiryDate.isAfter(DateTime.now())) {
       setState(() => _appliedDiscount = null);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid or expired discount code.')),
+        SnackBar(
+          content: Text(
+            'Discount expired on ${discount.expiryDate.toLocal().toString().split('.')[0]}',
+          ),
+        ),
       );
+      return;
     }
+
+    setState(() => _appliedDiscount = discount);
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Discount applied!')));
   }
 
   Future<void> _handleCheckout() async {
@@ -111,7 +136,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
         data: (cart) {
-          if (cart == null || cart.items.isEmpty){
+          if (cart == null || cart.items.isEmpty) {
             return const Center(child: Text('Your cart is empty.'));
           }
           double subtotal = cart.items.fold(
@@ -164,7 +189,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                         )
                         .toList(),
                     onChanged: (val) {
-                      if (val != null){
+                      if (val != null) {
                         setState(() => _selectedDeliveryMethod = val);
                       }
                     },
