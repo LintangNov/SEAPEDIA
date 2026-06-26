@@ -10,6 +10,7 @@ import { PrismaService } from './prisma.service';
 import { BuyerModule } from './buyer/buyer.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
+import { DiscountModule } from './discount/discount.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { OrderModule } from './order/order.module';
     ReviewsModule,
     BuyerModule,
     CartModule,
-    OrderModule
+    OrderModule,
+    DiscountModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
