@@ -1,3 +1,4 @@
+import 'package:seapedia/features/admin/presentation/admin_dashboard_screen.dart';
 import 'package:seapedia/features/cart/presentation/cart_screen.dart';
 import 'package:seapedia/features/order/presentation/buyer_orders_screen.dart';
 import 'package:seapedia/features/order/presentation/checkout_screen.dart';
@@ -113,6 +114,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/seller/orders',
         builder: (context, state) => const SellerOrdersScreen(),
+      ),
+      GoRoute(
+        path: '/admin/dashboard',
+        builder: (context, state) => const AdminDashboardScreen(),
       ),
     ],
   );

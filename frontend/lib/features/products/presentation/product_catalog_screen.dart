@@ -32,7 +32,7 @@ class ProductCatalogScreen extends ConsumerWidget {
         .when(
           data: (value) => value,
           loading: () => false,
-          error: (_, __) => false,
+          error: (_, _) => false,
         );
     final productsAsync = ref.watch(productsListProvider);
     return Scaffold(

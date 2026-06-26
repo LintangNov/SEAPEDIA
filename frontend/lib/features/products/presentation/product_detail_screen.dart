@@ -90,7 +90,7 @@ class ProductDetailScreen extends ConsumerWidget {
                             );
                           } catch (e) {
                             if (!context.mounted) return;
-                            final errorMessage = e.toString();
+                            final errorMessage = e.toString().replaceAll('Exception: ', '').trim();
 
                             if (errorMessage.toLowerCase().contains(
                                   'single-store',
