@@ -64,7 +64,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                   controller: _codeController,
                   decoration: const InputDecoration(labelText: 'Discount Code'),
                 ),
-                DropdownButton(items: ['PROMO', 'VOUCHER'].map((e) => DropdownMenuItem(value: e, child: Text(e),)).toList(), 
+                DropdownButton<String>(value: _selectedType, isExpanded: true,items: ['PROMO', 'VOUCHER'].map((e) => DropdownMenuItem(value: e, child: Text(e),)).toList(), 
                 onChanged: (val) => setState(() => _selectedType = val!),
                 ),
                 TextField(
