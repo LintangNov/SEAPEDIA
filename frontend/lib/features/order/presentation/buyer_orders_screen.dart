@@ -18,7 +18,7 @@ class BuyerOrdersScreen extends ConsumerWidget {
         data: (orders) {
           if (orders.isEmpty) return const Center(child: Text('No orders found.'));
 
-          final totalSpent = orders.fold(0.0, (sum, order) => sum + order.finalTotal);
+          final totalSpent = orders.where((o) => o.status != 'RETURNED').fold(0.0, (sum, order) => sum + order.finalTotal);
 
           return Column(
             children: [
@@ -41,7 +41,17 @@ class BuyerOrdersScreen extends ConsumerWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: ListTile(
                           title: Text('Store: ${order.storeName ?? "Unknown"}'),
-                          subtitle: Text('Status: ${order.status}\nTotal: Rp ${order.finalTotal}\nDate: ${order.createdAt.toLocal().toString().split('.')[0]}'),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Status: ${order.status}\nTotal: Rp ${order.finalTotal}'),
+                              const SizedBox(height: 4,),
+                              const Text(
+                                'Timeline:',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                              ),...order.history.map((h) => Text('- ${h.status} (${h.createdAt.toLocal().toString().split('.')[0]})', style: const TextStyle(fontSize: 12),))
+                            ],
+                          ),
                           isThreeLine: true,
                           trailing: const Icon(Icons.receipt_long),
                         ),
