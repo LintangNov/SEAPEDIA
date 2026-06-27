@@ -203,6 +203,18 @@ class ProfileScreen extends ConsumerWidget {
                         onPressed: () => context.push('/admin/dashboard'),
                       ),
                     ],
+                    if (profile.activeRole == 'DRIVER')...[
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal.withAlpha(51),
+                          foregroundColor: Colors.teal.shade800,
+                        ),
+                        icon: const Icon(Icons.two_wheeler),
+                        label: const Text('Enter Driver Dashboard'),
+                        onPressed: () => context.push('/driver/dashboard'),
+                      ),
+                    ]
                   ],
                 ),
               ),
