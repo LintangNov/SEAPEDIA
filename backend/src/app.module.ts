@@ -11,6 +11,10 @@ import { BuyerModule } from './buyer/buyer.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { DiscountModule } from './discount/discount.module';
+import { DriverModule } from './driver/driver.module';
+import { AdminModule } from './admin/admin.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -18,6 +22,7 @@ import { DiscountModule } from './discount/discount.module';
       isGlobal: true,
       envFilePath: '.env'
     }),
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     ProductsModule,
@@ -26,6 +31,9 @@ import { DiscountModule } from './discount/discount.module';
     CartModule,
     OrderModule,
     DiscountModule,
+    DriverModule,
+    AdminModule,
+    SchedulerModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
