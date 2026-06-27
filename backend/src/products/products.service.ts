@@ -35,7 +35,7 @@ export class ProductsService {
 
     async findSellerProducts(sellerId: string) {
         const products = await this.prisma.product.findMany({
-            where: {sellerId},
+            where: {sellerId, isActive: true},
             orderBy: {createdAt: 'desc'}
         });
         return {
@@ -58,8 +58,9 @@ export class ProductsService {
     async remove(sellerId: string, productId: string) {
         await this.verifyProductOwnership(sellerId, productId);
 
-        await this.prisma.product.delete({
-            where: { id: productId }
+        await this.prisma.product.update({
+            where: { id: productId },
+            data: {isActive: false}
         });
 
         return { message: "Product deleted successfully" };
@@ -83,8 +84,9 @@ export class ProductsService {
     async findAllPublic() {
         const products = await this.prisma.product.findMany({
             include: {
-                seller: { select: { storeName: true } } // Sertakan info toko
+                seller: { select: { storeName: true } },
             },
+            where: {isActive: true},
             orderBy: { createdAt: 'desc' }
         });
 
@@ -93,7 +95,7 @@ export class ProductsService {
 
     async findOnePublic(id: string) {
         const product = await this.prisma.product.findUnique({
-            where: { id },
+            where: { id, isActive: true },
             include: {
                 seller: { select: { storeName: true } }
             }

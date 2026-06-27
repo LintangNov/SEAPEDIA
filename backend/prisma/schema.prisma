@@ -8,11 +8,11 @@ datasource db {
 }
 
 enum OrderStatus {
-  SEDANG_DIKEMAS
-  MENUNGGU_PENGIRIM
-  SEDANG_DIKIRIM
-  PESANAN_SELESAI
-  DIKEMBALIKAN
+  BEING_PACKED
+  AWAITING_SHIPMENT
+  BEING_SHIPPED
+  ORDER_COMPLETED
+  RETURNED
 }
 
 enum DeliveryMethod {
@@ -124,6 +124,7 @@ model Product {
   description String? @db.Text
   price       Decimal @db.Decimal(10, 2)
   stock       Int     @default(0)
+  isActive    Boolean @default(true) @map("is_active")
 
   cartItems  CartItem[]
   orderItems OrderItem[]
@@ -175,7 +176,7 @@ model Order {
   finalTotal     Decimal   @map("final_total") @db.Decimal(12, 2)
 
   deliveryMethod DeliveryMethod @map("delivery_method")
-  status         OrderStatus    @default(SEDANG_DIKEMAS)
+  status         OrderStatus    @default(BEING_PACKED)
 
   items         OrderItem[]
   statusHistory OrderStatusHistory[]
