@@ -37,6 +37,7 @@ class OrderModel {
   final String deliveryMethod;
   final String? storeName;
   final DateTime createdAt;
+  final List<OrderStatusHistory> history;
 
   OrderModel({
     required this.id,
@@ -49,9 +50,11 @@ class OrderModel {
     required this.deliveryMethod,
     this.storeName,
     required this.createdAt,
+    required this.history,
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
+    final historyList = json['statusHistory'] as List<dynamic>? ?? [];
     return OrderModel(
       id: json['id']?.toString() ?? '',
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '0') ?? 0.0,
@@ -67,6 +70,21 @@ class OrderModel {
       createdAt:
           DateTime.tryParse(json['createdAt']?.toString() ?? '') ??
           DateTime.now(),
+      history: historyList.map((e) => OrderStatusHistory.fromJson(e as Map<String, dynamic>)).toList(),
+    );
+  }
+}
+
+class OrderStatusHistory {
+  final String status;
+  final DateTime createdAt;
+
+  OrderStatusHistory({required this.status, required this.createdAt});
+
+  factory OrderStatusHistory.fromJson(Map<String, dynamic> json) {
+    return OrderStatusHistory(
+      status: json['status']?.toString() ?? 'unknown',
+      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
     );
   }
 }
