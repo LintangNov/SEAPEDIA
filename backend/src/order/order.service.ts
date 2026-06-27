@@ -5,7 +5,7 @@ import { DeliveryMethod, Prisma } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
-    constructor(private prisma: PrismaService) {}
+    constructor(private prisma: PrismaService) { }
 
     async checkout(buyerId: string, dto: CheckoutDto) {
         return this.prisma.$transaction(async (tx) => {
@@ -37,7 +37,7 @@ export class OrderService {
                 const discount = await tx.discount.findUnique({ where: { code: dto.discountCode } });
                 if (!discount) throw new BadRequestException("Invalid discount code.");
                 if (new Date() > discount.expiryDate) throw new BadRequestException("Discount code has expired.");
-                
+
                 if (discount.type === 'VOUCHER' && discount.remainingUsage !== null) {
                     if (discount.remainingUsage <= 0) throw new BadRequestException("Voucher usage limit reached.");
                     await tx.discount.update({
@@ -59,8 +59,8 @@ export class OrderService {
                 case DeliveryMethod.REGULAR: deliveryFeeAmount = 10000; break;
             }
             const deliveryFee = new Prisma.Decimal(deliveryFeeAmount);
-            
-            const taxAmount = discountedSubtotal.mul(0.12); 
+
+            const taxAmount = discountedSubtotal.mul(0.12);
             const finalTotal = discountedSubtotal.add(deliveryFee).add(taxAmount);
 
             if (new Prisma.Decimal(buyerProfile.walletBalance).lessThan(finalTotal)) {
@@ -97,7 +97,7 @@ export class OrderService {
                     taxAmount,
                     finalTotal,
                     deliveryMethod: dto.deliveryMethod,
-                    status: 'SEDANG_DIKEMAS',
+                    status: 'BEING_PACKED',
                     items: {
                         create: cart.items.map(item => ({
                             productId: item.productId,
@@ -105,14 +105,14 @@ export class OrderService {
                             priceAtPurchase: item.product.price,
                         }))
                     },
-                    statusHistory: { create: [{ status: 'SEDANG_DIKEMAS' }] }
+                    statusHistory: { create: [{ status: 'BEING_PACKED' }] }
                 }
             });
 
             await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
             await tx.cart.update({ where: { id: cart.id }, data: { sellerId: null } });
 
-            return { message: "Checkout successful", orderId: order.id, finalTotal: finalTotal.toNumber() };
+            return { message: "Checkout successful", orderId: order.id, finalTotal: finalTotal.toString() };
         }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, maxWait: 5000, timeout: 10000 });
     }
 
@@ -122,18 +122,18 @@ export class OrderService {
 
             if (!order) throw new NotFoundException("Order not found.");
             if (order.sellerId !== sellerId) throw new ForbiddenException("You don't own this order.");
-            if (order.status !== 'SEDANG_DIKEMAS') throw new BadRequestException("Order cannot be processed.");
+            if (order.status !== 'BEING_PACKED') throw new BadRequestException("Order cannot be processed.");
 
             const updatedOrder = await tx.order.update({
                 where: { id: orderId },
-                data: { status: 'MENUNGGU_PENGIRIM' },
+                data: { status: 'AWAITING_SHIPMENT' },
             });
 
             await tx.orderStatusHistory.create({
-                data: { orderId: order.id, status: 'MENUNGGU_PENGIRIM' }
+                data: { orderId: order.id, status: 'AWAITING_SHIPMENT' }
             });
 
-            return { message: "Order processed to MENUNGGU_PENGIRIM", data: updatedOrder };
+            return { message: "Order processed to AWAITING_SHIPMENT", data: updatedOrder };
         }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     }
 
@@ -143,7 +143,10 @@ export class OrderService {
             include: { items: { include: { product: { select: { name: true } } } }, statusHistory: true },
             orderBy: { createdAt: 'desc' }
         });
-        return { message: "Seller orders retrieved", data: orders };
+
+        const totalRevenue = orders.filter(o => o.status !== 'RETURNED').reduce((sum, order) => sum.add(order.subtotal), new Prisma.Decimal(0));
+
+        return { message: "Seller orders retrieved", data: orders, summary: { totalRevenue: totalRevenue.toString() } };
     }
 
     async getBuyerOrders(buyerId: string) {
@@ -152,6 +155,9 @@ export class OrderService {
             include: { items: { include: { product: { select: { name: true } } } }, statusHistory: true, seller: { select: { storeName: true } } },
             orderBy: { createdAt: 'desc' }
         });
-        return { message: "Buyer orders retrieved", data: orders };
+
+        const totalExpense = orders.filter(o => o.status !== 'RETURNED').reduce((sum, order) => sum.add(order.finalTotal), new Prisma.Decimal(0));
+
+        return { message: "Buyer orders retrieved", summary: { totalExpense: totalExpense.toString() }, data: orders };
     }
 }
