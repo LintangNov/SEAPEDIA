@@ -1,5 +1,8 @@
 import 'package:seapedia/features/admin/presentation/admin_dashboard_screen.dart';
 import 'package:seapedia/features/cart/presentation/cart_screen.dart';
+import 'package:seapedia/features/driver/presentation/driver_dashboard_screen.dart';
+import 'package:seapedia/features/driver/presentation/driver_history_screen.dart';
+import 'package:seapedia/features/driver/presentation/find_jobs_screen.dart';
 import 'package:seapedia/features/order/presentation/buyer_orders_screen.dart';
 import 'package:seapedia/features/order/presentation/checkout_screen.dart';
 import 'package:seapedia/features/order/presentation/order_success_screen.dart';
@@ -118,6 +121,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/admin/dashboard',
         builder: (context, state) => const AdminDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/driver/dashboard',
+        builder: (context, state) => const DriverDashboardScreen(),
+      ),
+      GoRoute(
+        path: '/driver/find-jobs',
+        builder: (context, state) => const FindJobsScreen(),
+      ),
+      GoRoute(
+        path: '/driver/history',
+        builder:(context, state) => const DriverHistoryScreen(),
       ),
     ],
   );
