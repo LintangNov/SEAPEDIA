@@ -35,4 +35,21 @@ class AdminRepository {
       throw Exception(e.response?.data['message'] ?? 'Failed to load discounts');
     }
   }
+
+  Future<Map<String, dynamic>> getMonitoringData() async {
+    try {
+      final response = await _dio.get('/admin/monitoring');
+      return response.data['data'] as Map<String, dynamic>;
+    } on DioException catch(e) {
+      throw Exception(e.response?.data['message'] ?? 'Failed to load monitoring data');
+    }
+  }
+
+  Future<void> simulateOverdue(int days) async {
+    try{
+      await _dio.post('/admin/simulate-overdue', data: {'daysToAdvance': days});
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Failed to simulate overdue');
+    }
+  }
 }
