@@ -131,8 +131,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 onPressed: () {
                   Navigator.pop(ctx);
 
-                  showDialog(context: context, builder: (context) => const TopUpDialog())
-                },
+                  showDialog(context: context, builder: (context) => const TopUpDialog());
+                }, child: const Text('Top-up now'),
               ),
             ],
           )
