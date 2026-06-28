@@ -7,19 +7,20 @@ export class AdminService {
     constructor(private prisma: PrismaService, private scheduler: SchedulerService) {}
 
     async getMonitoringData() {
-        const [users, stores, products, orders, returnedOrders, discounts, activeDeliveries] = await Promise.all([
+        const [users, stores, products, orders, returnedOrders, autoRefunds, discounts, activeDeliveries] = await Promise.all([
             this.prisma.user.count(),
             this.prisma.sellerProfile.count({ where: { storeName: { not: null } } }),
             this.prisma.product.count(),
             this.prisma.order.count(),
             this.prisma.order.count({ where: { status: 'RETURNED' } }),
+            this.prisma.walletTransaction.count({ where: { type: 'REFUND', description: { contains: 'overdue' } } }),
             this.prisma.discount.count(),
             this.prisma.deliveryJob.count({ where: { completedAt: null } })
         ]);
 
         return {
-            message: "monitoring data retrieved",
-            data: {totalUsers: users, totalStores: stores, totalProducts: products, totalOrders: orders, totalReturnedOrders: returnedOrders, totalDiscounts: discounts, activeDeliveries}
+            message: "Monitoring data retrieved",
+            data: { totalUsers: users, totalStores: stores, totalProducts: products, totalOrders: orders, totalReturnedOrders: returnedOrders, totalAutoRefunds: autoRefunds, totalDiscounts: discounts, activeDeliveries }
         };
     }
 

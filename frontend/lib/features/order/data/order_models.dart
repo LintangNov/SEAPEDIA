@@ -4,6 +4,8 @@ class Discount {
   final String type;
   final double amount;
   final DateTime expiryDate;
+  final int? remainingUsage;
+  final DateTime createdAt;
 
   Discount({
     required this.id,
@@ -11,6 +13,8 @@ class Discount {
     required this.type,
     required this.amount,
     required this.expiryDate,
+    this.remainingUsage,
+    required this.createdAt,
   });
 
   factory Discount.fromJson(Map<String, dynamic> json) {
@@ -21,6 +25,10 @@ class Discount {
       amount: double.tryParse(json['amount']?.toString() ?? '0') ?? 0.0,
       expiryDate:
           DateTime.tryParse(json['expiryDate']?.toString() ?? '') ??
+          DateTime.now(),
+      remainingUsage: (json['remainingUsage'] as num?)?.toInt(),
+      createdAt: 
+          DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? 
           DateTime.now(),
     );
   }
