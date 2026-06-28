@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Request, Get } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -14,5 +14,10 @@ export class BuyerController {
     @Post('topup')
     topUp(@Request() req, @Body() dto: TopUpDto) {
         return this.buyerService.topUp(req.user.sub, dto.amount);
+    }
+
+    @Get('wallet/history')
+    getWalletHistory(@Request() req) {
+        return this.buyerService.getWalletHistory(req.user.sub);
     }
 }
