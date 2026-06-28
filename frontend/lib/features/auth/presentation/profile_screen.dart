@@ -74,46 +74,73 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                          icon: const Icon(
+                            Icons.edit,
+                            size: 20,
+                            color: Colors.blue,
+                          ),
                           onPressed: () async {
-                            final textController = TextEditingController(text: profile.username);
+                            final textController = TextEditingController(
+                              text: profile.username,
+                            );
                             final newName = await showDialog<String>(
                               context: context,
                               builder: (ctx) => AlertDialog(
                                 title: const Text('Change Username'),
                                 content: TextField(
                                   controller: textController,
-                                  decoration: const InputDecoration(labelText: 'New Username'),
+                                  decoration: const InputDecoration(
+                                    labelText: 'New Username',
+                                  ),
                                 ),
                                 actions: [
-                                  TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: const Text('Cancel'),
+                                  ),
                                   ElevatedButton(
-                                    onPressed: () => Navigator.pop(ctx, textController.text.trim()),
+                                    onPressed: () => Navigator.pop(
+                                      ctx,
+                                      textController.text.trim(),
+                                    ),
                                     child: const Text('Save'),
                                   ),
                                 ],
                               ),
                             );
 
-                            if (newName != null && newName != profile.username && newName.length >= 3) {
+                            if (newName != null &&
+                                newName != profile.username &&
+                                newName.length >= 3) {
                               try {
-                                await ref.read(authRepositoryProvider).updateUsername(newName);
+                                await ref
+                                    .read(authRepositoryProvider)
+                                    .updateUsername(newName);
                                 ref.invalidate(profileProvider);
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Username updated')));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Username updated'),
+                                    ),
+                                  );
                                 }
                               } catch (e) {
                                 if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(e.toString())),
+                                  );
                                 }
                               }
                             }
                           },
-                        )
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
-                    const Text('Active Role:', style: TextStyle(color: Colors.grey)),
+                    const Text(
+                      'Active Role:',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8.0,
@@ -124,21 +151,37 @@ class ProfileScreen extends ConsumerWidget {
                           label: Text(role),
                           selected: isActive,
                           selectedColor: Colors.green.withAlpha(100),
-                          onSelected: isActive ? null : (selected) async {
-                            if (selected) {
-                              try {
-                                await ref.read(authControllerProvider.notifier).selectRole(role);
-                                ref.invalidate(profileProvider);
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Switched role to $role')));
-                                }
-                              } catch (e) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-                                }
-                              }
-                            }
-                          },
+                          onSelected: isActive
+                              ? null
+                              : (selected) async {
+                                  if (selected) {
+                                    try {
+                                      await ref
+                                          .read(authControllerProvider.notifier)
+                                          .selectRole(role);
+                                      ref.invalidate(profileProvider);
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Switched role to $role',
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(content: Text(e.toString())),
+                                        );
+                                      }
+                                    }
+                                  }
+                                },
                         );
                       }).toList(),
                     ),
@@ -163,23 +206,45 @@ class ProfileScreen extends ConsumerWidget {
                         title: const Text('Wallet Error'),
                         subtitle: Text(error.toString()),
                       ),
-                      data: (balance) => ListTile(
-                        leading: const Icon(
-                          Icons.account_balance_wallet,
-                          color: Colors.blue,
-                        ),
-                        title: const Text('Wallet Balance'),
-                        subtitle: Text('Rp ${balance.toStringAsFixed(2)}'),
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => const TopUpDialog(),
-                            );
-                          },
-                          child: const Text('Top Up'),
-                        ),
-                      ),
+                      data: (balance) {
+                        return Column(
+                          children: [
+                            ListTile(
+                              leading: const Icon(
+                                Icons.account_balance_wallet,
+                                color: Colors.blue,
+                              ),
+                              title: const Text('Wallet Balance'),
+                              subtitle: Text(
+                                'Rp ${balance.toStringAsFixed(2)}',
+                              ),
+                              trailing: ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => const TopUpDialog(),
+                                  );
+                                },
+                                child: const Text('Top Up'),
+                              ),
+                            ),
+                            const Divider(),
+                            ListTile(
+                              leading: const Icon(
+                                Icons.history,
+                                color: Colors.blue,
+                              ),
+                              title: const Text('View Wallet History'),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                              ),
+                              onTap: () =>
+                                  context.push('/buyer/wallet-history'),
+                            ),
+                          ],
+                        );
+                      },
                     );
                   },
                 )
@@ -239,7 +304,10 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 12),
                       ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.green.withAlpha(51), foregroundColor: Colors.green.shade800),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.withAlpha(51),
+                          foregroundColor: Colors.green.shade800,
+                        ),
                         icon: const Icon(Icons.receipt_long),
                         label: const Text('View Order History & Spending'),
                         onPressed: () => context.push('/buyer/orders'),
@@ -257,7 +325,7 @@ class ProfileScreen extends ConsumerWidget {
                         onPressed: () => context.push('/admin/dashboard'),
                       ),
                     ],
-                    if (profile.activeRole == 'DRIVER')...[
+                    if (profile.activeRole == 'DRIVER') ...[
                       const SizedBox(height: 12),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
@@ -268,7 +336,7 @@ class ProfileScreen extends ConsumerWidget {
                         label: const Text('Enter Driver Dashboard'),
                         onPressed: () => context.push('/driver/dashboard'),
                       ),
-                    ]
+                    ],
                   ],
                 ),
               ),

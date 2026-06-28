@@ -35,4 +35,13 @@ class BuyerRepository {
       throw Exception(e.response?.data['message'] ?? 'Failed to top up wallet');
     }
   }
+
+  Future<List<Map<String, dynamic>>> getWalletHistory() async {
+    try {
+      final response = await _dio.get('/buyer/wallet/history');
+      return List<Map<String, dynamic>>.from(response.data['data'] ?? []);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Failed to load wallet history');
+    }
+  }
 }

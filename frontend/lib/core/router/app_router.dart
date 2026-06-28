@@ -1,4 +1,5 @@
 import 'package:seapedia/features/admin/presentation/admin_dashboard_screen.dart';
+import 'package:seapedia/features/buyer/presentation/wallet_history_screen.dart';
 import 'package:seapedia/features/cart/presentation/cart_screen.dart';
 import 'package:seapedia/features/driver/presentation/driver_dashboard_screen.dart';
 import 'package:seapedia/features/driver/presentation/driver_history_screen.dart';
@@ -113,6 +114,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/buyer/orders',
         builder: (context, state) => const BuyerOrdersScreen(),
+      ),
+      GoRoute(
+        path: '/buyer/wallet-history',
+        builder: (context, state) => const WalletHistoryScreen(),
       ),
       GoRoute(
         path: '/seller/orders',

@@ -42,4 +42,12 @@ export class BuyerService {
             balance: result.updatedProfile.walletBalance,
         };
     }
+
+    async getWalletHistory(userId: string) {
+        const history = await this.prisma.walletTransaction.findMany({
+            where: { buyerId: userId },
+            orderBy: { createdAt: 'desc' }
+        });
+        return { message: "Wallet history retrieved", data: history };
+    }
 }
