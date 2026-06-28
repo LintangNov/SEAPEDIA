@@ -63,30 +63,84 @@ class ProfileScreen extends ConsumerWidget {
                       child: Icon(Icons.person, size: 40),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      profile.username,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          profile.username,
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
+                          onPressed: () async {
+                            final textController = TextEditingController(text: profile.username);
+                            final newName = await showDialog<String>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Change Username'),
+                                content: TextField(
+                                  controller: textController,
+                                  decoration: const InputDecoration(labelText: 'New Username'),
+                                ),
+                                actions: [
+                                  TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(ctx, textController.text.trim()),
+                                    child: const Text('Save'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (newName != null && newName != profile.username && newName.length >= 3) {
+                              try {
+                                await ref.read(authRepositoryProvider).updateUsername(newName);
+                                ref.invalidate(profileProvider);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Username updated')));
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                                }
+                              }
+                            }
+                          },
+                        )
+                      ],
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.withAlpha(51),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Text(
-                        'Role: ${profile.activeRole}',
-                        style: const TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    const Text('Active Role:', style: TextStyle(color: Colors.grey)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8.0,
+                      alignment: WrapAlignment.center,
+                      children: profile.roles.map((role) {
+                        final isActive = profile.activeRole == role;
+                        return ChoiceChip(
+                          label: Text(role),
+                          selected: isActive,
+                          selectedColor: Colors.green.withAlpha(100),
+                          onSelected: isActive ? null : (selected) async {
+                            if (selected) {
+                              try {
+                                await ref.read(authControllerProvider.notifier).selectRole(role);
+                                ref.invalidate(profileProvider);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Switched role to $role')));
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                                }
+                              }
+                            }
+                          },
+                        );
+                      }).toList(),
                     ),
                   ],
                 ),
