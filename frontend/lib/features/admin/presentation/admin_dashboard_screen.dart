@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/admin/data/admin_repository.dart';
 import 'package:seapedia/features/admin/presentation/admin_discount_controller.dart';
+import 'package:seapedia/features/order/data/order_models.dart';
 
 final adminMonitoringProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref)  async {
   return ref.watch(adminRepositoryProvider).getMonitoringData();
@@ -69,6 +70,33 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Discount Created')));
     }
   }
+
+  void _showDiscountDetail(BuildContext context, Discount d) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Detail: ${d.code}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Type: ${d.type}', style: const TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('Amount: Rp ${d.amount}'),
+            Text('Created At: ${d.createdAt.toLocal().toString().split('.')[0]}'),
+            Text('Expiry Date: ${d.expiryDate.toLocal().toString().split('.')[0]}'),
+            if (d.type == 'VOUCHER') ...[
+              const Divider(),
+              Text('Remaining Quota: ${d.remainingUsage ?? "Unlimited"}', style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+            ]
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close'))
+        ],
+      )
+    );
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -123,7 +151,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                             ListTile(leading: const Icon(Icons.store), title: const Text('Total Stores'), trailing: Text('${data['totalStores']}', style: const TextStyle(fontSize: 20))),
                             ListTile(leading: const Icon(Icons.shopping_bag), title: const Text('Total Products'), trailing: Text('${data['totalProducts']}', style: const TextStyle(fontSize: 20))),
                             ListTile(leading: const Icon(Icons.receipt), title: const Text('Total Orders'), trailing: Text('${data['totalOrders']}', style: const TextStyle(fontSize: 20))),
-                            ListTile(leading: const Icon(Icons.assignment_return, color: Colors.red), title: const Text('Returned / Auto-Refunded'), trailing: Text('${data['totalReturnedOrders']}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold))),
+                            ListTile(leading: const Icon(Icons.assignment_return, color: Colors.orange), title: const Text('Total Returned (All)'), trailing: Text('${data['totalReturnedOrders']}', style: const TextStyle(fontSize: 20, color: Colors.orange, fontWeight: FontWeight.bold))),
+                            ListTile(leading: const Icon(Icons.warning, color: Colors.red), title: const Text('SLA Auto-Refunded'), trailing: Text('${data['totalAutoRefunds']}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold))),
                             ListTile(leading: const Icon(Icons.discount), title: const Text('Total Discounts'), trailing: Text('${data['totalDiscounts']}', style: const TextStyle(fontSize: 20))),
                             ListTile(leading: const Icon(Icons.motorcycle), title: const Text('Active Deliveries'), trailing: Text('${data['activeDeliveries']}', style: const TextStyle(fontSize: 20))),
                           ]
@@ -177,7 +206,9 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                         final d = discounts[index];
                         return ListTile(
                           title: Text('${d.code} (${d.type}) - Rp${d.amount}'),
-                          subtitle: Text('Expires: ${d.expiryDate.toLocal()}'),
+                          subtitle: Text('Expires: ${d.expiryDate.toLocal().toString().split(' ')[0]}'),
+                          trailing: const Icon(Icons.info_outline, color: Colors.blue),
+                          onTap: () => _showDiscountDetail(context, d),
                         );
                       },
                     ), 
