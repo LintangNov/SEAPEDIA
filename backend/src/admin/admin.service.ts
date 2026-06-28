@@ -4,7 +4,7 @@ import { SchedulerService } from '../scheduler/scheduler.service';
 
 @Injectable()
 export class AdminService {
-    constructor(private prisma: PrismaService, private scheduler: SchedulerService) {}
+    constructor(private prisma: PrismaService, private scheduler: SchedulerService) { }
 
     async getMonitoringData() {
         const [users, stores, products, orders, returnedOrders, autoRefunds, discounts, activeDeliveries] = await Promise.all([
@@ -15,7 +15,15 @@ export class AdminService {
             this.prisma.order.count({ where: { status: 'RETURNED' } }),
             this.prisma.walletTransaction.count({ where: { type: 'REFUND', description: { contains: 'overdue' } } }),
             this.prisma.discount.count(),
-            this.prisma.deliveryJob.count({ where: { completedAt: null } })
+            this.prisma.walletTransaction.count({
+                where: {
+                    type: 'REFUND',
+                    description: {
+                        contains: 'overdue',
+                        mode: 'insensitive'
+                    }
+                }
+            }),
         ]);
 
         return {
