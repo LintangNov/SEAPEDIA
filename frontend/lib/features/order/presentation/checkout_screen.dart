@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:seapedia/features/buyer/presentation/top_up_dialog.dart';
 import '../../../core/widgets/debug_border.dart';
 import '../../cart/presentation/cart_controller.dart';
 import '../data/order_models.dart';
@@ -110,9 +111,37 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
     final state = ref.read(checkoutControllerProvider);
     if (state.hasError && mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(state.error.toString())));
+      final errorMessage = state.error.toString();
+      
+      if (errorMessage.toLowerCase().contains('insufficient wallet balance')){
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('Insufficient funds'),
+            content: const Text(
+              'Your wallet balance is insufficient to pay for this order. Would you like to top up now?'
+            ),
+            actions: [
+              TextButton(
+                onPressed:() => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, foregroundColor: Colors.white),
+                onPressed: () {
+                  Navigator.pop(ctx);
+
+                  showDialog(context: context, builder: (context) => const TopUpDialog());
+                }, child: const Text('Top-up now'),
+              ),
+            ],
+          )
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage.replaceAll('Exception: ', '')))
+        );
+      }
     } else if (mounted) {
       context.go('/order-success');
     }

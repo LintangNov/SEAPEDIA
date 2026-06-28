@@ -75,6 +75,14 @@ class AuthRepository {
     }
   }
 
+  Future<void> updateUsername(String newUsername) async {
+    try {
+      await _dio.patch('/users/me/username', data: {'username': newUsername});
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Failed to update username');
+    }
+  }
+
   Future<void> logout() async {
     await _storage.delete(key: 'accessToken');
   }

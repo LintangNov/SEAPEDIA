@@ -44,6 +44,12 @@ export class CartService {
             if (!product) throw new NotFoundException("Product not found");
             if (product.stock < quantity) throw new ConflictException("Insufficient stock");
 
+            await tx.buyerProfile.upsert({
+                where: {userId: buyerId},
+                update: {},
+                create: {userId: buyerId}
+            });
+
             let cart = await tx.cart.upsert({
                 where: { buyerId },
                 update: {},

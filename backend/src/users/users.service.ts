@@ -58,4 +58,19 @@ export class UsersService{
             }
         };
     }
+
+    async updateUsername(userId: string, newUsername: string) {
+        try {
+            const updatedUser = await this.prisma.user.update({
+                where: { id: userId },
+                data: { username: newUsername }
+            });
+            return { message: "Username updated successfully", data: updatedUser.username };
+        } catch (error: any) {
+            if (error.code === 'P2002') {
+                throw new ConflictException(`Username '${newUsername}' is already taken.`);
+            }
+            throw new InternalServerErrorException("An error occurred while updating username.");
+        }
+    }
 }

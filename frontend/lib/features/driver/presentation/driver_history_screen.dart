@@ -32,7 +32,7 @@ class DriverHistoryScreen extends ConsumerWidget {
                 child: Card(
                   child: ListTile(
                     leading: const Icon(Icons.check_circle, color: Colors.green),
-                    title: Text('Order ID: ${job.id.substring(0, 8)}...'),
+                    title: Text('Order ID: ${job.id.length >= 8 ? job.id.substring(0, 8) : job.id}...'),
                     subtitle: Text('Earned: Rp ${job.deliveryFee}\nDate: ${job.createdAt.toLocal().toString().split('.')[0]}'),
                     isThreeLine: true,
                   ),

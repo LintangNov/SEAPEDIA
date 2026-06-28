@@ -154,10 +154,7 @@ export class DriverService {
             where: { driverId, completedAt: { not: null } },
             include: {
                 order: {
-                    select: {
-                        finalTotal: true,
-                        deliveryFee: true,
-                        deliveryMethod: true,
+                    include: {
                         buyer: { select: { deliveryAddress: true } },
                         seller: { select: { storeName: true } }
                     }
