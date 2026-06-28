@@ -27,6 +27,8 @@ export class AdminService {
     async triggerOverdueSimulation(daysToAdvance: number) {
         const simulatedTime = new Date();
         simulatedTime.setDate(simulatedTime.getDate() + daysToAdvance);
+
+        await this.scheduler.processOverdueOrders(simulatedTime);
         return { message: `Simulated overdue check for time: ${simulatedTime.toISOString()}` };
     }
 }
