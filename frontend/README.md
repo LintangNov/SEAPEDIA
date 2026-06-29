@@ -10,7 +10,32 @@ Ini adalah frontend aplikasi mobile untuk **Seapedia Marketplace**, dibangun men
 ## 🚀 Memulai (Getting Started)
 
 ### 1. Kebutuhan Awal
-Pastikan Anda telah mengonfigurasi **Flutter SDK (v3.x)** di environment path perangkat Anda. Pastikan juga emulator target (Android/iOS) atau browser web siap digunakan.
+Sebelum menjalankan aplikasi frontend secara lokal, pastikan perangkat Anda telah memenuhi prasyarat lingkungan pengembangan berikut:
+
+#### A. Prasyarat Umum Flutter
+*   **Flutter SDK (v3.x)** & **Dart SDK** terinstal dan telah didaftarkan pada PATH environment system Anda.
+*   **Git** terinstal di perangkat untuk mengambil dependencies Dart.
+*   **Verifikasi Lingkungan**: Jalankan perintah `flutter doctor` di terminal untuk memeriksa kesiapan development kit Flutter Anda.
+
+#### B. Prasyarat Target Platform **Windows (Desktop)**
+*   **Visual Studio 2022** (edisi Community, Professional, atau Enterprise) — **Wajib**.
+*   Saat instalasi Visual Studio, centang beban kerja (workload) **"Desktop development with C++"** (Pengembangan desktop dengan C++).
+*   Pastikan komponen default berikut di dalam beban kerja tersebut ikut terinstal:
+    *   *MSVC v143 - VS 2022 C++ x64/x86 build tools*
+    *   *Windows 10 SDK* atau *Windows 11 SDK*
+    *   *C++ CMake tools for Windows*
+
+#### C. Prasyarat Target Platform **Android (Mobile)**
+*   **Android Studio** (versi terbaru disarankan) atau **Android SDK Command-line Tools** (`cmdline-tools`).
+*   **Android SDK** terinstal (Android SDK Platform-Tools, SDK Build-Tools, dan SDK Platform target).
+*   **Java Development Kit (JDK)**: Direkomendasikan JDK 17 (biasanya otomatis terpaket di dalam folder instalasi Android Studio).
+*   **Persetujuan Lisensi Android SDK**: Wajib menyetujui lisensi SDK dengan menjalankan perintah berikut di terminal:
+    ```bash
+    flutter doctor --android-licenses
+    ```
+*   **Perangkat Pengujian**:
+    *   *Emulator*: Konfigurasikan Virtual Device (AVD) melalui Device Manager di Android Studio.
+    *   *Perangkat Fisik*: Aktifkan **Developer Options** (Opsi Pengembang) dan **USB Debugging** pada HP Android Anda, serta instal *Google USB Driver* di Windows (jika menggunakan HP fisik).
 
 ### 2. Persiapan Lokal
 Masuk ke folder `/frontend` dan jalankan perintah berikut untuk mengunduh seluruh dependensi Dart:
