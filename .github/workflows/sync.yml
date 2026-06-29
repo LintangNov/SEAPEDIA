@@ -1,0 +1,21 @@
+name: Sync to Hugging Face Space
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Wajib 0 agar git subtree bisa membaca riwayat
+      
+      - name: Push Backend Subdirectory to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          # Perintah ini akan mengekstrak folder 'backend' dan mengirimkannya ke Hugging Face
+          git subtree push --prefix backend https://USERNAME_HF:$HF_TOKEN@huggingface.co/spaces/lintangnv/seapedia-api main
