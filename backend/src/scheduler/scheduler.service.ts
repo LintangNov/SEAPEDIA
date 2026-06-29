@@ -59,7 +59,7 @@ export class SchedulerService {
                                 buyerId: order.buyerId,
                                 amount: order.finalTotal,
                                 type: 'REFUND',
-                                description: `Auto-refund Overdue orders (SLA ${order.deliveryMethod})`
+                                description: `Auto-refund overdue orders (SLA ${order.deliveryMethod})`
                             }
                         });
 
