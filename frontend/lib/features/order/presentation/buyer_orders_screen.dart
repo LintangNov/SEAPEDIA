@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/order/presentation/buyer_order_controller.dart';
-import '../../../core/widgets/debug_border.dart';
-
 class BuyerOrdersScreen extends ConsumerWidget {
   const BuyerOrdersScreen({super.key});
 
@@ -22,22 +20,17 @@ class BuyerOrdersScreen extends ConsumerWidget {
 
           return Column(
             children: [
-              DebugBorder(
-                color: Colors.green, label: 'Spending Report',
-                child: ListTile(
+              ListTile(
                   title: const Text('Total Spending', style: TextStyle(fontWeight: FontWeight.bold)),
                   trailing: Text('Rp ${totalSpent.toStringAsFixed(2)}', style: const TextStyle(fontSize: 18, color: Colors.green, fontWeight: FontWeight.bold)),
                 ),
-              ),
               const Divider(),
               Expanded(
                 child: ListView.builder(
                   itemCount: orders.length,
                   itemBuilder: (context, index) {
                     final order = orders[index];
-                    return DebugBorder(
-                      color: Colors.blue, label: 'Order Status Tracker',
-                      child: Card(
+                    return Card(
                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         child: ListTile(
                           title: Text('Store: ${order.storeName ?? "Unknown"}'),
@@ -55,8 +48,7 @@ class BuyerOrdersScreen extends ConsumerWidget {
                           isThreeLine: true,
                           trailing: const Icon(Icons.receipt_long),
                         ),
-                      ),
-                    );
+                      );
                   },
                 ),
               ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/auth/presentation/auth_controller.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'products_provider.dart';
 
 final cartVisibilityProvider = Provider.autoDispose<bool>((ref) {
@@ -77,10 +76,7 @@ class ProductCatalogScreen extends ConsumerWidget {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return DebugBorder(
-                color: Colors.blue,
-                label: 'Product Item Card',
-                child: ListTile(
+              return ListTile(
                   title: Text(
                     product.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -93,8 +89,7 @@ class ProductCatalogScreen extends ConsumerWidget {
                   onTap: () {
                     context.push('/products/${product.id}');
                   },
-                ),
-              );
+                );
             },
           );
         },

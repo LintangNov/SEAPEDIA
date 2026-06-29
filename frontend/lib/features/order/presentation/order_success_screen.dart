@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/widgets/debug_border.dart';
-
 class OrderSuccessScreen extends StatelessWidget {
   const OrderSuccessScreen({super.key});
 
@@ -26,10 +24,7 @@ class OrderSuccessScreen extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            DebugBorder(
-              color: Colors.blue,
-              label: 'Delivery Tracking (Placeholder Level 4)',
-              child: const Padding(
+            const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   children: [
@@ -50,7 +45,6 @@ class OrderSuccessScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () => context.go('/profile'),

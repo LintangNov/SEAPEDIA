@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/buyer/data/buyer_repository.dart';
 
 final walletHistoryProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
@@ -28,9 +27,7 @@ class WalletHistoryScreen extends ConsumerWidget {
             itemBuilder: (context, index){
               final trx = history[index];
               final isTopUp = trx['type'] == 'TOP_UP' || trx['type'] == 'REFUND';
-              return DebugBorder(
-                color: isTopUp ? Colors.green : Colors.red, label: trx['type'],
-                child: ListTile(
+              return ListTile(
                   leading: Icon(isTopUp ? Icons.arrow_downward : Icons.arrow_upward, color: isTopUp ? Colors.green : Colors.red),
                   title: Text(trx['description'] ?? 'Transaction'),
                   subtitle: Text(DateTime.parse(trx['createdAt']).toLocal().toString().split('.')[0]),
@@ -38,8 +35,7 @@ class WalletHistoryScreen extends ConsumerWidget {
                     '${isTopUp ? '+' : '-'} Rp ${trx['amount']}',
                     style: TextStyle(color: isTopUp ? Colors.green : Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                ),
-              );
+                );
             },
           );
         }

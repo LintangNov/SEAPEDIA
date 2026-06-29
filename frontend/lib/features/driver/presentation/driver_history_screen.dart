@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/driver/data/driver_repository.dart';
 import 'package:seapedia/features/order/data/order_models.dart';
 
@@ -27,17 +26,14 @@ class DriverHistoryScreen extends ConsumerWidget {
             itemCount: history.length,
             itemBuilder: (context, index) {
               final job = history[index];
-              return DebugBorder(
-                color: Colors.blue, label: 'Completed Job',
-                child: Card(
+              return Card(
                   child: ListTile(
                     leading: const Icon(Icons.check_circle, color: Colors.green),
                     title: Text('Order ID: ${job.id.length >= 8 ? job.id.substring(0, 8) : job.id}...'),
                     subtitle: Text('Earned: Rp ${job.deliveryFee}\nDate: ${job.createdAt.toLocal().toString().split('.')[0]}'),
                     isThreeLine: true,
                   ),
-                ),
-              );
+                );
             },
           );
         },

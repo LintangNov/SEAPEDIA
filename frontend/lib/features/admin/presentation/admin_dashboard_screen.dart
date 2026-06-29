@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/admin/data/admin_repository.dart';
 import 'package:seapedia/features/admin/presentation/admin_discount_controller.dart';
 import 'package:seapedia/features/order/data/order_models.dart';
@@ -126,10 +125,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                   child: ListView(
                     padding: const EdgeInsets.all(16),
                     children: [
-                      DebugBorder(
-                        color: Colors.red,
-                        label: 'Auto-Refund Mechanism',
-                        child: Column(
+                      Column(
                           children: [
                             const Text('The system will automatically check for orders that have exceeded the SLA (Instant: 24h, Next Day: 48h, Regular: 120h).', textAlign: TextAlign.center,),
                             const SizedBox(height: 12),
@@ -141,11 +137,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                             ),
                           ],
                         ),
-                      ),
                       const SizedBox(height: 16),
-                      DebugBorder(
-                        color: Colors.blue, label: 'Platform Data',
-                        child: Column(
+                      Column(
                           children: [
                             ListTile(leading: const Icon(Icons.people), title: const Text('Total Users'), trailing: Text('${data['totalUsers']}', style: const TextStyle(fontSize: 20))),
                             ListTile(leading: const Icon(Icons.store), title: const Text('Total Stores'), trailing: Text('${data['totalStores']}', style: const TextStyle(fontSize: 20))),
@@ -157,7 +150,6 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                             ListTile(leading: const Icon(Icons.motorcycle), title: const Text('Active Deliveries'), trailing: Text('${data['activeDeliveries']}', style: const TextStyle(fontSize: 20))),
                           ]
                         )
-                      )
                     ]
                   )
                 )

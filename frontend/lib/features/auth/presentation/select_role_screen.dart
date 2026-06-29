@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'auth_controller.dart';
 
 class SelectRoleScreen extends ConsumerStatefulWidget {
@@ -105,10 +104,7 @@ class _SelectRoleScreenState extends ConsumerState<SelectRoleScreen> {
                       ...availableRoles.map(
                         (role) => Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
-                          child: DebugBorder(
-                            color: Colors.blueAccent,
-                            label: 'Role Selection Button',
-                            child: SizedBox(
+                          child: SizedBox(
                               width: double.infinity,
                               child: ElevatedButton.icon(
                                 onPressed: _isLoading
@@ -130,7 +126,6 @@ class _SelectRoleScreenState extends ConsumerState<SelectRoleScreen> {
                                 ),
                               ),
                             ),
-                          ),
                         ),
                       ),
                       if (_isLoading)

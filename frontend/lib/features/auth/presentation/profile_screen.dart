@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/buyer/presentation/buyer_wallet_controller.dart';
 import 'package:seapedia/features/buyer/presentation/top_up_dialog.dart';
-import '../../../core/widgets/debug_border.dart';
 import '../data/auth_models.dart';
 import '../data/auth_repository.dart';
 import 'auth_controller.dart';
@@ -54,10 +53,7 @@ class ProfileScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DebugBorder(
-                  color: Colors.blue,
-                  label: 'User Info Card',
-                  child: Column(
+                Column(
                     children: [
                       const CircleAvatar(
                         radius: 40,
@@ -197,7 +193,6 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ),
                 const SizedBox(height: 24),
                 const Divider(),
                 if (profile.activeRole == 'BUYER')
@@ -274,10 +269,7 @@ class ProfileScreen extends ConsumerWidget {
                   subtitle: Text(profile.roles.join(', ')),
                 ),
         
-                DebugBorder(
-                  color: Colors.purple,
-                  label: 'System Actions',
-                  child: Column(
+                Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ElevatedButton.icon(
@@ -349,7 +341,6 @@ class ProfileScreen extends ConsumerWidget {
                       ],
                     ],
                   ),
-                ),
               ],
             ),
           ),

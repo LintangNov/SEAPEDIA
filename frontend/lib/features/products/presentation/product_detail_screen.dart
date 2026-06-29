@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/cart/presentation/cart_controller.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'products_provider.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
@@ -23,22 +22,15 @@ class ProductDetailScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DebugBorder(
-                  color: Colors.orange,
-                  label: 'Image Placeholder',
-                  child: Container(
+                Container(
                     height: 200,
                     color: Colors.grey.shade300,
                     child: const Center(
                       child: Icon(Icons.image, size: 50, color: Colors.grey),
                     ),
                   ),
-                ),
                 const SizedBox(height: 16),
-                DebugBorder(
-                  color: Colors.green,
-                  label: 'Product Info',
-                  child: Column(
+                Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -67,12 +59,8 @@ class ProductDetailScreen extends ConsumerWidget {
                       Text(product.description),
                     ],
                   ),
-                ),
                 const SizedBox(height: 24),
-                DebugBorder(
-                  color: Colors.red,
-                  label: 'Action Buttons',
-                  child: Consumer(
+                Consumer(
                     builder: (context, ref, child) {
                       return ElevatedButton.icon(
                         icon: const Icon(Icons.shopping_cart),
@@ -153,7 +141,6 @@ class ProductDetailScreen extends ConsumerWidget {
                       );
                     },
                   ),
-                ),
               ],
             ),
           );

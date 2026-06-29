@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/driver/data/driver_repository.dart';
 import 'package:seapedia/features/driver/presentation/driver_dashboard_controller.dart';
 import 'package:seapedia/features/order/data/order_models.dart';
@@ -54,9 +53,7 @@ class FindJobsScreen extends ConsumerWidget {
             itemCount: jobs.length,
             itemBuilder: (context, index) {
               final job = jobs[index];
-              return DebugBorder(
-                color: Colors.purpleAccent, label: 'Job List',
-                child: Card(
+              return Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -88,8 +85,7 @@ class FindJobsScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                ),
-              );
+                );
             },
           );
         }

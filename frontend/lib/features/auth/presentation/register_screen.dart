@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'auth_controller.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -224,10 +223,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
-                    DebugBorder(
-                      color: Colors.orange,
-                      label: 'Username Input',
-                      child: TextField(
+                    TextField(
                         controller: _usernameController,
                         decoration: InputDecoration(
                           hintText: 'Username',
@@ -238,12 +234,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 16),
-                    DebugBorder(
-                      color: Colors.purple,
-                      label: 'Password Input',
-                      child: TextField(
+                    TextField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
@@ -265,7 +257,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 16),
                     TextField(
                       controller: _confirmPasswordController,
@@ -299,22 +290,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    DebugBorder(
-                      color: Colors.teal,
-                      label: 'Role Selection (Multi-select)',
-                      child: Column(
+                    Column(
                         children: [
                           _buildRoleCard('BUYER', Icons.shopping_basket_outlined, 'Browse products & checkout items'),
                           _buildRoleCard('SELLER', Icons.storefront_outlined, 'Open store & sell your catalog'),
                           _buildRoleCard('DRIVER', Icons.two_wheeler, 'Deliver packages & earn income'),
                         ],
                       ),
-                    ),
                     const SizedBox(height: 24),
-                    DebugBorder(
-                      color: Colors.red,
-                      label: 'Submit Action',
-                      child: ElevatedButton(
+                    ElevatedButton(
                         onPressed: _isLoading ? null : _handleRegister,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -330,7 +314,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               )
                             : const Text('Register'),
                       ),
-                    ),
                   ],
                 ),
               ),

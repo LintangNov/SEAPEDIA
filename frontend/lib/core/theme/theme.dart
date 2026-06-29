@@ -17,6 +17,7 @@ class AppColors {
 
   static const Color textPrimaryDark = Color(0xFFF8FAFC);
   static const Color textSecondaryDark = Color(0xFF94A3B8);
+  static const Color scaffoldBgLight = Color(0xFFF4F7FA);
 }
 
 class AppTheme {
@@ -35,7 +36,7 @@ class AppTheme {
         onPrimaryContainer: AppColors.textPrimaryLight,
         surfaceContainerHighest: AppColors.paleSun,
       ),
-      scaffoldBackgroundColor: AppColors.bgLight,
+      scaffoldBackgroundColor: AppColors.scaffoldBgLight,
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.oceanBlue,
         foregroundColor: AppColors.textPrimaryLight,

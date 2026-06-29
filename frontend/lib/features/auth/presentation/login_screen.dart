@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'auth_controller.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -91,10 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
-                    DebugBorder(
-                      color: Colors.blue,
-                      label: 'Username Input',
-                      child: TextField(
+                    TextField(
                         controller: _usernameController,
                         decoration: InputDecoration(
                           hintText: 'Username',
@@ -105,12 +101,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 16),
-                    DebugBorder(
-                      color: Colors.green,
-                      label: 'Password Input',
-                      child: TextField(
+                    TextField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
@@ -132,12 +124,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 24),
-                    DebugBorder(
-                      color: Colors.red,
-                      label: 'Submit Action',
-                      child: ElevatedButton(
+                    ElevatedButton(
                         onPressed: _isLoading ? null : _handleLogin,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -153,7 +141,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               )
                             : const Text('Login'),
                       ),
-                    ),
                   ],
                 ),
               ),

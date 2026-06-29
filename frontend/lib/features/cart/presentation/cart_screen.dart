@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/cart/presentation/cart_controller.dart';
 
 class CartScreen extends ConsumerWidget {
@@ -42,10 +41,7 @@ class CartScreen extends ConsumerWidget {
                   itemCount: cart.items.length,
                   itemBuilder: (context, index) {
                     final item = cart.items[index];
-                    return DebugBorder(
-                      color: Colors.blue,
-                      label: 'Cart Item',
-                      child: ListTile(
+                    return ListTile(
                         title: Text(
                           item.productName,
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -96,8 +92,7 @@ class CartScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      ),
-                    );
+                      );
                   },
                 ),
               ),

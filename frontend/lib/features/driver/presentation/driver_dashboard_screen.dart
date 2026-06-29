@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/driver/presentation/driver_dashboard_controller.dart';
 
 class DriverDashboardScreen extends ConsumerWidget {
@@ -30,24 +29,17 @@ class DriverDashboardScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DebugBorder(
-                  color: Colors.green,
-                  label: 'Earnings',
-                  child: ListTile(
+                ListTile(
                     leading: const Icon(Icons.account_balance_wallet, color: Colors.green, size: 24,),
                     title: const Text('Total Earnings'),
                     subtitle: Text('Rp ${profile.earnings.toStringAsFixed(2)}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                   ),
-                ),
                 const SizedBox(height: 24,),
 
                 if (activeJob != null)...[
                   const Text('Active Delivery Job', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 8),
-                  DebugBorder(
-                    color: Colors.orange,
-                    label: 'Current Job',
-                    child: Card(
+                  Card(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -83,13 +75,9 @@ class DriverDashboardScreen extends ConsumerWidget {
                           ],
                         ),
                       ),
-                    ),
-                  )
+                    )
                 ] else...[
-                  DebugBorder(
-                    color: Colors.blue,
-                    label: 'Actions',
-                    child: Column(
+                  Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ElevatedButton.icon(
@@ -99,7 +87,6 @@ class DriverDashboardScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                  ),
                 ],
                 const SizedBox(height: 16,),
                 OutlinedButton.icon(

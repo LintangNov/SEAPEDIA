@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/products/data/product_repository.dart';
-import '../../../core/widgets/debug_border.dart';
 import '../../products/presentation/products_provider.dart';
 
 class SellerDashboardScreen extends ConsumerWidget {
@@ -67,10 +66,7 @@ class SellerDashboardScreen extends ConsumerWidget {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return DebugBorder(
-                color: Colors.teal,
-                label: 'Seller Product Item',
-                child: ListTile(
+              return ListTile(
                   title: Text(
                     product.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -127,8 +123,7 @@ class SellerDashboardScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ),
-              );
+                );
             },
           );
         },

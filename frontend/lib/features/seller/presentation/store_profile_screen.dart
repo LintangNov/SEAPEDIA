@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'store_profile_controller.dart';
 
 class StoreProfileScreen extends ConsumerStatefulWidget {
@@ -66,17 +65,13 @@ class _StoreProfileScreenState extends ConsumerState<StoreProfileScreen> {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            DebugBorder(
-              color: Colors.blue,
-              label: 'Store Name Input',
-              child: TextField(
+            TextField(
                 controller: _storeNameController,
                 decoration: const InputDecoration(
                   labelText: 'Store Name',
                   border: OutlineInputBorder(),
                 ),
               ),
-            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: state.isLoading ? null : _handleSubmit,

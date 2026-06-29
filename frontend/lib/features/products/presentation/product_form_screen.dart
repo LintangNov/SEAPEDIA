@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/products/data/product_models.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'product_form_controller.dart';
 
 class ProductFormScreen extends ConsumerStatefulWidget {
@@ -83,10 +82,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DebugBorder(
-              color: Colors.orange,
-              label: 'Product Details',
-              child: Column(
+            Column(
                 children: [
                   TextField(
                     controller: _nameController,
@@ -102,12 +98,8 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                   ),
                 ],
               ),
-            ),
             const SizedBox(height: 16),
-            DebugBorder(
-              color: Colors.purple,
-              label: 'Pricing & Inventory',
-              child: Row(
+            Row(
                 children: [
                   Expanded(
                     child: TextField(
@@ -136,7 +128,6 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                   ),
                 ],
               ),
-            ),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: state.isLoading ? null : _handleSubmit,

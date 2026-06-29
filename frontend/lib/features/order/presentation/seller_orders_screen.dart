@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/order/presentation/seller_order_controller.dart';
-import '../../../core/widgets/debug_border.dart';
-
 class SellerOrdersScreen extends ConsumerWidget {
   const SellerOrdersScreen({super.key});
 
@@ -28,10 +26,7 @@ class SellerOrdersScreen extends ConsumerWidget {
               );
           return Column(
             children: [
-              DebugBorder(
-                color: Colors.green,
-                label: 'Income Report',
-                child: ListTile(
+              ListTile(
                   title: const Text(
                     'Estimated Revenue',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -46,17 +41,13 @@ class SellerOrdersScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ),
               const Divider(),
               Expanded(
                 child: ListView.builder(
                   itemCount: orders.length,
                   itemBuilder: (context, index) {
                     final order = orders[index];
-                    return DebugBorder(
-                      color: Colors.orange,
-                      label: 'Order Processing',
-                      child: Card(
+                    return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
@@ -94,8 +85,7 @@ class SellerOrdersScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                      ),
-                    );
+                      );
                   },
                 ),
               ),

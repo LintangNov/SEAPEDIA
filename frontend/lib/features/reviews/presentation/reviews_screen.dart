@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/reviews/presentation/review_form_controller.dart';
-import '../../../core/widgets/debug_border.dart';
 import 'reviews_provider.dart';
 
 class ReviewsScreen extends ConsumerStatefulWidget {
@@ -84,10 +83,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: DebugBorder(
-              color: Colors.purple,
-              label: 'Review Form',
-              child: Column(
+            child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextField(
@@ -142,7 +138,6 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                   ),
                 ],
               ),
-            ),
           ),
 
           const Divider(thickness: 2),
@@ -162,10 +157,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                   itemCount: reviews.length,
                   itemBuilder: (context, index) {
                     final review = reviews[index];
-                    return DebugBorder(
-                      color: Colors.blue,
-                      label: 'Review Item',
-                      child: ListTile(
+                    return ListTile(
                         leading: CircleAvatar(
                           child: Text(review.rating.toString()),
                         ),
@@ -174,8 +166,7 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text(review.comment),
-                      ),
-                    );
+                      );
                   },
                 );
               },
