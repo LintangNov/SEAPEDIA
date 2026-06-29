@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,9 +5,7 @@ import '../storage/secure_storage_provider.dart';
 import '../../features/auth/presentation/auth_controller.dart';
 
 String get _baseUrl {
-  if (kIsWeb) return 'http://localhost:3000';
-  if (Platform.isAndroid) return 'http://10.0.2.2:3000';
-  return 'http://localhost:3000';
+  return 'https://lintangnv-seapedia-api.hf.space';
 }
 
 final dioProvider = Provider<Dio>((ref) {
