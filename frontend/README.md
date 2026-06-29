@@ -98,18 +98,25 @@ flutter run -d chrome
 *(Tekan tombol `r` di terminal untuk memicu Hot Reload saat mengubah kode)*
 
 ### 📦 Membangun Paket Produksi (Release Build)
-Untuk memaketkan aplikasi ke dalam berkas siap rilis:
+Untuk memaketkan aplikasi ke dalam berkas siap rilis pada masing-masing platform:
 
 ```bash
-# Membangun file APK Android (Hasil di build/app/outputs/flutter-apk/)
+# Membangun file APK Android (Hasil di build/app/outputs/flutter-apk/app-release.apk)
 flutter build apk --release
 
 # Membangun berkas App Bundle Android (untuk Google Play)
 flutter build appbundle --release
 
-# Membangun bundel iOS (Hasil berupa payload IPA)
-flutter build ipa --release
+# Membangun executable Windows (Hasil di build/windows/runner/Release/)
+flutter build windows --release
 
-# Membangun file distribusi Web
+# Membangun file distribusi Web (Hasil di build/web/)
 flutter build web --release
 ```
+
+---
+
+## 📦 Unduh Aplikasi Pre-built (Download Links)
+Untuk mempermudah penguji/reviewer menjalankan aplikasi tanpa harus meng-compile kode sumber dari awal:
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (Tulis link download APK Anda di sini)](TULIS_LINK_DOWNLOAD_APK_DI_SINI)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (Tulis link download ZIP Windows Anda di sini)](TULIS_LINK_DOWNLOAD_EXE_DI_SINI)

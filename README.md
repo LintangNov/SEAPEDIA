@@ -28,6 +28,14 @@ Backend untuk proyek SEAPEDIA ini telah berhasil di-deploy ke Hugging Face Space
 
 ---
 
+## 📦 Unduh Aplikasi Pre-built (Download Links)
+
+Untuk mempermudah pengujian tanpa harus membangun (*compile*) kode sumber Flutter secara manual dari awal, Anda dapat mengunduh berkas rilis aplikasi siap pakai berikut:
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (Tulis link download APK Anda di sini)](TULIS_LINK_DOWNLOAD_APK_DI_SINI)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (Tulis link download ZIP Windows Anda di sini)](TULIS_LINK_DOWNLOAD_EXE_DI_SINI)
+
+---
+
 ## 🏗️ Arsitektur Sistem
 
 Operasi SEAPEDIA dibagi menjadi empat peran utama: **Admin**, **Seller**, **Buyer**, dan **Driver**. Seluruh interaksi client-server dijembatani melalui REST API yang divalidasi dengan token otentikasi JWT yang memuat informasi peran aktif pengguna.
