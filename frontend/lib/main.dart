@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'core/theme/theme.dart';
 import 'core/router/app_router.dart';
 import 'features/auth/presentation/auth_controller.dart';
 
@@ -32,6 +33,9 @@ class SeapediaApp extends ConsumerWidget {
       title: 'Seapedia',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
     );
   }
 }
