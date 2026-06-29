@@ -6,7 +6,10 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Riverpod](https://img.shields.io/badge/Riverpod-3.x-02569B?logo=flutter&logoColor=white)](https://riverpod.dev)
 
-**SEAPEDIA** adalah platform e-commerce multi-role yang menghubungkan Pembeli (Buyer), Penjual (Seller), dan Pengemudi (Driver/Courier) dalam satu ekosistem marketplace maritim. Proyek ini dikelola secara monorepo, mencakup backend REST API berbasis NestJS dan frontend mobile berbasis Flutter.
+**SEAPEDIA** adalah platform e-commerce multi-role yang menghubungkan Pembeli (Buyer), Penjual (Seller), dan Pengemudi (Driver/Courier) dalam satu ekosistem marketplace. Proyek ini dikelola secara monorepo, mencakup backend REST API berbasis NestJS dan frontend mobile berbasis Flutter.
+
+> [!IMPORTANT]
+> Aplikasi ini mendukung platform **Android** dan **Windows**. Namun, desain antarmuka pengguna (UI/UX) dimaksimalkan khusus untuk perangkat **Android** (tampilan mobile). Build platform **Windows** disediakan semata-mata untuk kemudahan evaluasi dan pengujian (*testing*) oleh reviewer di PC.
 
 ---
 
@@ -212,7 +215,7 @@ Untuk menguji seluruh fitur marketplace SEAPEDIA dari awal hingga akhir, ikuti s
     *   Login menggunakan akun tersebut. Halaman pemilihan peran (`/select-role`) akan muncul.
     *   Pilih peran **Seller** untuk masuk ke dashboard penjual.
 3.  **Pembuatan Toko & Produk (Seller)**
-    *   Pada dashboard penjual, klik menu Toko dan buat nama toko unik Anda (misalnya: "Maritime Store").
+    *   Pada dashboard penjual, klik menu Toko dan buat nama toko unik Anda (misalnya: "Seapedia Store").
     *   Masuk ke menu Manajemen Produk, tambahkan produk baru (masukkan nama, deskripsi, harga, dan stok). Produk ini sekarang akan muncul di katalog publik.
 4.  **Belanja, Keranjang & Checkout (Buyer)**
     *   Kembali ke menu profil, ganti peran aktif Anda menjadi **Buyer**.

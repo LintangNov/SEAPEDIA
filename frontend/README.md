@@ -1,6 +1,9 @@
 # 📱 Seapedia Mobile App — Flutter Experience
 
-Ini adalah frontend aplikasi mobile untuk **Seapedia Marketplace**, dibangun menggunakan **Flutter SDK** dan **Dart**. Aplikasi ini dioptimalkan untuk lingkungan multi-platform (Android, iOS, dan Web) serta menerapkan standar manajemen state dan jaringan modern.
+Ini adalah frontend aplikasi mobile untuk **Seapedia Marketplace**, dibangun menggunakan **Flutter SDK** dan **Dart**.
+
+> [!IMPORTANT]
+> Aplikasi ini mendukung platform **Android** dan **Windows**. Namun, desain antarmuka pengguna (UI/UX) dimaksimalkan khusus untuk perangkat **Android** (tampilan mobile). Build platform **Windows** disediakan semata-mata untuk kemudahan evaluasi dan pengujian (*testing*) oleh reviewer di PC tanpa perlu menjalankan emulator Android.
 
 ---
 
