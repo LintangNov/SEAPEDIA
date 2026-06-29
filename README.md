@@ -17,6 +17,17 @@
 
 ---
 
+## 🌐 Tautan Deployment Backend (Live Demo)
+
+Backend untuk proyek SEAPEDIA ini telah berhasil di-deploy ke Hugging Face Spaces secara publik di URL berikut:
+🔗 **[https://lintangnv-seapedia-api.hf.space](https://lintangnv-seapedia-api.hf.space)**
+*   **Swagger API Docs (Live)**: **[https://lintangnv-seapedia-api.hf.space/api/docs](https://lintangnv-seapedia-api.hf.space/api/docs)**
+
+> [!NOTE]
+> Secara default, aplikasi frontend Flutter diatur untuk langsung terhubung dengan link deployment backend di atas (dikonfigurasi dalam file [dio_provider.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/network/dio_provider.dart)). Namun, penguji tetap dapat menjalankan backend secara lokal dengan mengikuti panduan di bawah.
+
+---
+
 ## 🏗️ Arsitektur Sistem
 
 Operasi SEAPEDIA dibagi menjadi empat peran utama: **Admin**, **Seller**, **Buyer**, dan **Driver**. Seluruh interaksi client-server dijembatani melalui REST API yang divalidasi dengan token otentikasi JWT yang memuat informasi peran aktif pengguna.

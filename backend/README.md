@@ -13,6 +13,14 @@ Ini adalah mesin REST API utama untuk aplikasi Seapedia, dibangun menggunakan fr
 
 ---
 
+## 🌐 Tautan Deployment Backend (Live Demo)
+
+Backend untuk proyek SEAPEDIA ini telah berhasil di-deploy ke Hugging Face Spaces secara publik di URL berikut:
+🔗 **[https://lintangnv-seapedia-api.hf.space](https://lintangnv-seapedia-api.hf.space)**
+*   **Swagger API Docs (Live)**: **[https://lintangnv-seapedia-api.hf.space/api/docs](https://lintangnv-seapedia-api.hf.space/api/docs)**
+
+---
+
 ## 🚀 Memulai (Getting Started)
 
 ### 1. Kebutuhan Instalasi
