@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/admin/data/admin_repository.dart';
 import 'package:seapedia/features/admin/presentation/admin_discount_controller.dart';
 import 'package:seapedia/features/order/data/order_models.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 final adminMonitoringProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref)  async {
   return ref.watch(adminRepositoryProvider).getMonitoringData();
@@ -100,12 +102,23 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final discountState = ref.watch(adminDiscountProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/admin/dashboard'),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const Text('Admin Dashboard'),
+          actions: [
+            IconButton(
+              icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+              onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+              tooltip: 'Toggle Theme',
+            ),
+          ],
           bottom: const TabBar(
             tabs: [
               Tab(icon: Icon(Icons.monitor), text: 'Monitoring & Logs'),

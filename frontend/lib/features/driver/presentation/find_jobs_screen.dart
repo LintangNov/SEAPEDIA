@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/driver/data/driver_repository.dart';
 import 'package:seapedia/features/driver/presentation/driver_dashboard_controller.dart';
 import 'package:seapedia/features/order/data/order_models.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 class FindJobsController extends AsyncNotifier<List<OrderModel>> {
   @override
@@ -31,9 +33,22 @@ class FindJobsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(findJobsProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Available Delivery Jobs'),),
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/driver/find-jobs'),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Available Delivery Jobs'),
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
+          ),
+        ],
+      ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(

@@ -81,7 +81,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Welcome to Seapedia login now!',
+                      'Welcome to Seapedia!',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,

@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/order/presentation/buyer_order_controller.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
+
 class BuyerOrdersScreen extends ConsumerWidget {
   const BuyerOrdersScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(buyerOrdersProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Orders & Spending')),
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/buyer/orders'),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('My Orders & Spending'),
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
+          ),
+        ],
+      ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),

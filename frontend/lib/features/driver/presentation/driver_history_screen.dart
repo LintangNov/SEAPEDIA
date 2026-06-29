@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/driver/data/driver_repository.dart';
 import 'package:seapedia/features/order/data/order_models.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 final driverHistoryProvider = FutureProvider.autoDispose<List<OrderModel>>((ref) async {
   return ref.watch(driverRepositoryProvider).getHistory();
@@ -13,8 +15,22 @@ class DriverHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(driverHistoryProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Delivery History')),
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/driver/history'),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Delivery History'),
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
+          ),
+        ],
+      ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
