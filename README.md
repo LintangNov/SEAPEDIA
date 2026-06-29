@@ -34,8 +34,8 @@ Backend untuk proyek SEAPEDIA ini telah berhasil di-deploy ke Hugging Face Space
 ## 📦 Unduh Aplikasi Pre-built (Download Links)
 
 Untuk mempermudah pengujian tanpa harus membangun (*compile*) kode sumber Flutter secara manual dari awal, Anda dapat mengunduh berkas rilis aplikasi siap pakai berikut:
-*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (Tulis link download APK Anda di sini)](TULIS_LINK_DOWNLOAD_APK_DI_SINI)
-*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (Tulis link download ZIP Windows Anda di sini)](TULIS_LINK_DOWNLOAD_EXE_DI_SINI)
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (PLACEHOLDER LINK APK)](LINK_DOWNLOAD_APK_DI_SINI)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (PLACEHOLDER LINK APK)](LINK_DOWNLOAD_EXE_DI_SINI)
 
 ---
 
