@@ -6,7 +6,10 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Riverpod](https://img.shields.io/badge/Riverpod-3.x-02569B?logo=flutter&logoColor=white)](https://riverpod.dev)
 
-**SEAPEDIA** adalah platform e-commerce multi-role yang menghubungkan Pembeli (Buyer), Penjual (Seller), dan Pengemudi (Driver/Courier) dalam satu ekosistem marketplace maritim. Proyek ini dikelola secara monorepo, mencakup backend REST API berbasis NestJS dan frontend mobile berbasis Flutter.
+**SEAPEDIA** adalah platform e-commerce multi-role yang menghubungkan Pembeli (Buyer), Penjual (Seller), dan Pengemudi (Driver/Courier) dalam satu ekosistem marketplace. Proyek ini dikelola secara monorepo, mencakup backend REST API berbasis NestJS dan frontend mobile berbasis Flutter.
+
+> [!IMPORTANT]
+> Aplikasi ini mendukung platform **Android** dan **Windows**. Namun, desain antarmuka pengguna (UI/UX) dimaksimalkan khusus untuk perangkat **Android** (tampilan mobile). Build platform **Windows** disediakan semata-mata untuk kemudahan evaluasi dan pengujian (*testing*) oleh reviewer di PC.
 
 ---
 
@@ -25,6 +28,14 @@ Backend untuk proyek SEAPEDIA ini telah berhasil di-deploy ke Hugging Face Space
 
 > [!NOTE]
 > Secara default, aplikasi frontend Flutter diatur untuk langsung terhubung dengan link deployment backend di atas (dikonfigurasi dalam file [dio_provider.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/network/dio_provider.dart)). Namun, penguji tetap dapat menjalankan backend secara lokal dengan mengikuti panduan di bawah.
+
+---
+
+## 📦 Unduh Aplikasi Pre-built (Download Links)
+
+Untuk mempermudah pengujian tanpa harus membangun (*compile*) kode sumber Flutter secara manual dari awal, Anda dapat mengunduh berkas rilis aplikasi siap pakai berikut:
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (Tulis link download APK Anda di sini)](TULIS_LINK_DOWNLOAD_APK_DI_SINI)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (Tulis link download ZIP Windows Anda di sini)](TULIS_LINK_DOWNLOAD_EXE_DI_SINI)
 
 ---
 
@@ -138,10 +149,36 @@ Untuk peran non-admin (Buyer, Seller, Driver), Anda dapat mendaftarkan akun baru
 ## 🚀 Panduan Menjalankan Aplikasi Secara Lokal
 
 ### Kebutuhan Awal (Prerequisites)
-Pastikan perangkat Anda telah terinstal:
-*   **Node.js (v22+)** & npm
-*   **PostgreSQL (v15+)**
-*   **Flutter SDK (v3.x)** & Dart SDK
+Sebelum menjalankan aplikasi secara lokal, pastikan perangkat Anda telah memenuhi prasyarat lingkungan pengembangan berikut:
+
+#### 1. Backend & Database
+*   **Node.js (v22+)** & `npm` untuk mengompilasi dan menjalankan server NestJS.
+*   **PostgreSQL (v15+)** yang berjalan secara lokal atau hosting cloud (koneksi diatur melalui `DATABASE_URL` di `.env`).
+
+#### 2. Frontend Flutter (Umum)
+*   **Flutter SDK (v3.x)** & **Dart SDK** terinstal dan telah didaftarkan pada PATH environment system Anda.
+*   **Git** terinstal di perangkat untuk mengambil dependencies Flutter.
+*   **Verifikasi Lingkungan**: Jalankan perintah `flutter doctor` di terminal Anda untuk memeriksa kesiapan development kit.
+
+#### 3. Prasyarat Target Platform **Windows (Desktop)**
+*   **Visual Studio 2022** (edisi Community, Professional, atau Enterprise) — **Wajib**.
+*   Saat instalasi Visual Studio, centang beban kerja (workload) **"Desktop development with C++"** (Pengembangan desktop dengan C++).
+*   Pastikan komponen default berikut di dalam beban kerja tersebut ikut terinstal:
+    *   *MSVC v143 - VS 2022 C++ x64/x86 build tools*
+    *   *Windows 10 SDK* atau *Windows 11 SDK*
+    *   *C++ CMake tools for Windows*
+
+#### 4. Prasyarat Target Platform **Android (Mobile)**
+*   **Android Studio** (versi terbaru disarankan) atau **Android SDK Command-line Tools** (`cmdline-tools`).
+*   **Android SDK** terinstal (Android SDK Platform-Tools, SDK Build-Tools, dan SDK Platform target).
+*   **Java Development Kit (JDK)**: Direkomendasikan JDK 17 (biasanya otomatis terpaket di dalam folder instalasi Android Studio).
+*   **Persetujuan Lisensi Android SDK**: Wajib menyetujui lisensi SDK dengan menjalankan perintah berikut di terminal:
+    ```bash
+    flutter doctor --android-licenses
+    ```
+*   **Perangkat Pengujian**:
+    *   *Emulator*: Konfigurasikan Virtual Device (AVD) melalui Device Manager di Android Studio.
+    *   *Perangkat Fisik*: Aktifkan **Developer Options** (Opsi Pengembang) dan **USB Debugging** pada HP Android Anda, serta instal *Google USB Driver* di Windows (jika menggunakan HP fisik).
 
 ### Langkah 1: Persiapan Database dan Backend
 1. Masuk ke direktori backend:
@@ -204,7 +241,7 @@ Untuk menguji seluruh fitur marketplace SEAPEDIA dari awal hingga akhir, ikuti s
     *   Login menggunakan akun tersebut. Halaman pemilihan peran (`/select-role`) akan muncul.
     *   Pilih peran **Seller** untuk masuk ke dashboard penjual.
 3.  **Pembuatan Toko & Produk (Seller)**
-    *   Pada dashboard penjual, klik menu Toko dan buat nama toko unik Anda (misalnya: "Maritime Store").
+    *   Pada dashboard penjual, klik menu Toko dan buat nama toko unik Anda (misalnya: "Seapedia Store").
     *   Masuk ke menu Manajemen Produk, tambahkan produk baru (masukkan nama, deskripsi, harga, dan stok). Produk ini sekarang akan muncul di katalog publik.
 4.  **Belanja, Keranjang & Checkout (Buyer)**
     *   Kembali ke menu profil, ganti peran aktif Anda menjadi **Buyer**.
