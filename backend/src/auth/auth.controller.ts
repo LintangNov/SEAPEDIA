@@ -27,4 +27,10 @@ export class AuthController {
     const userId = req.user.sub; 
     return this.authService.selectRole(userId, dto.activeRole);
   }
+
+  @Post('logout')
+  @UseGuards(AuthGuard)
+  logout() {
+    return { message: "Successfully logged out. Please clear your local tokens." };
+  }
 }

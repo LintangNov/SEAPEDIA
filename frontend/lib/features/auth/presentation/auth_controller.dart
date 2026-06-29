@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/storage/secure_storage_provider.dart';
 import 'package:seapedia/features/auth/data/auth_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,6 +46,7 @@ class AuthController extends Notifier<AuthState> {
     } catch (e) {
       debugPrint('Secure Storage Logout Error: $e');
     } finally {
+      await ref.read(secureStorageProvider).delete(key: 'jwt');
       availableRoles.clear();
       state = AuthState.guest;
     }

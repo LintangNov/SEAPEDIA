@@ -1,8 +1,9 @@
-import { IsString, IsInt, Min, Max, MinLength } from 'class-validator';
+import { IsString, IsInt, Min, Max, MinLength, MaxLength, maxLength } from 'class-validator';
 
 export class CreateReviewDto {
     @IsString()
     @MinLength(3)
+    @MaxLength(100)
     reviewerName!: string;
 
     @IsInt()
@@ -12,5 +13,6 @@ export class CreateReviewDto {
 
     @IsString()
     @MinLength(5)
+    @MaxLength(1000)
     comment!: string;
 }
