@@ -1,16 +1,16 @@
 # 📱 Seapedia Mobile App — Flutter Experience
 
-This is the mobile application frontend for the **Seapedia Marketplace**, built using **Flutter SDK** and **Dart**. The app is optimized for multi-platform environments (Android, iOS, and Web) and implements modern state management and networking standards.
+Ini adalah frontend aplikasi mobile untuk **Seapedia Marketplace**, dibangun menggunakan **Flutter SDK** dan **Dart**. Aplikasi ini dioptimalkan untuk lingkungan multi-platform (Android, iOS, dan Web) serta menerapkan standar manajemen state dan jaringan modern.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Memulai (Getting Started)
 
-### 1. Prerequisites
-Ensure you have the **Flutter SDK (v3.x)** configured in your global path environment. Ensure you also have the appropriate emulators (Android/iOS) or web server targets installed.
+### 1. Kebutuhan Awal
+Pastikan Anda telah mengonfigurasi **Flutter SDK (v3.x)** di environment path perangkat Anda. Pastikan juga emulator target (Android/iOS) atau browser web siap digunakan.
 
-### 2. Local Setup
-Navigate to this folder and fetch the Dart dependencies:
+### 2. Persiapan Lokal
+Masuk ke folder `/frontend` dan jalankan perintah berikut untuk mengunduh seluruh dependensi Dart:
 ```bash
 cd frontend
 flutter pub get
@@ -18,91 +18,98 @@ flutter pub get
 
 ---
 
-## 📐 Architectural Design Pattern
+## 📐 Pola Arsitektur MVVM (Model-View-ViewModel)
 
-The codebase adheres strictly to the **MVVM (Model-View-ViewModel)** architectural pattern coupled with clean layer isolation. This keeps concerns isolated, testable, and highly responsive.
+Arsitektur aplikasi mobile ini dirancang menggunakan pola **MVVM** yang terisolasi dengan baik guna memudahkan pengujian dan pemeliharaan kode:
 
 ```text
 frontend/lib/
 ├── core/
-│   ├── network/          # Global Dio Network Clients & Interceptors
-│   ├── router/           # GoRouter Routing Manifests
-│   ├── storage/          # Secure Storage Providers
-│   └── widgets/          # Shared Cross-Feature UI components
-└── features/             # Subsystem Feature Folders (e.g., auth, buyer, seller)
-    └── <feature_name>/
-        ├── data/         # Models & Repositories
-        └── presentation/ # Controllers (ViewModels) & Screen Widgets (Views)
+│   ├── network/          # Konfigurasi Dio Client & Interceptor Otentikasi
+│   ├── router/           # Navigasi Aplikasi dengan GoRouter
+│   ├── storage/          # Penyimpanan Aman (Secure Storage Provider)
+│   └── widgets/          # Komponen UI Bersama (Button, Input, Card, Shells)
+└── features/             # Folder Fitur Berdasarkan SubSistem (auth, buyer, seller, dll.)
+    └── <nama_fitur>/
+        ├── data/         # Model Data & Repositori API
+        └── presentation/ # Pengendali UI (Controller/ViewModel) & Layar Tampilan (View)
 ```
 
-### Component Roles & Responsibilities
-
-1.  **Model (`/data/` models)**
-    *   Plain Dart classes defining raw properties and JSON translation logic (e.g., `auth_models.dart`).
-    *   Decoupled entirely from UI or framework dependencies.
-
-2.  **View (`/presentation/` screens & widgets)**
-    *   Standard Flutter declarative layout code (e.g., `login_screen.dart`).
-    *   Subscribes to Riverpod states to dynamically update UI.
-    *   Forwards user gestures/inputs directly to the Controller.
-
-3.  **ViewModel/Controller (`/presentation/` controllers)**
-    *   State Notifiers/Controllers managed by **Riverpod 3.x** (e.g., `auth_controller.dart`).
-    *   Responsible for storing the immediate UI state (loading, error, authenticated, etc.).
-    *   Coordinates with the data repositories to fetch updates, updating states reactively.
-
-4.  **Repository (`/data/` repositories)**
-    *   Data providers encapsulating API fetch operations (e.g., `auth_repository.dart`).
-    *   Communicates with the backend using the global `Dio` client provider (`dioProvider`).
+### Pembagian Tugas Komponen:
+1.  **Model (`/data/` models)**: Dart class murni yang merepresentasikan skema data dan translasi JSON (dari/ke API), bersih dari framework Flutter.
+2.  **View (`/presentation/` screens & widgets)**: Representasi UI deklaratif Flutter yang mengamati perubahan state dari ViewModel dan meneruskan interaksi pengguna ke Controller.
+3.  **ViewModel/Controller (`/presentation/` controllers)**: State notifier yang dikelola oleh **Riverpod 3.x** untuk mengontrol keadaan UI (loading, error, detail data) dan berkoordinasi dengan data repositori.
+4.  **Repository (`/data/` repositories)**: Layer penyedia data yang memanggil endpoint backend menggunakan client Dio.
 
 ---
 
-## 🌐 Network Layer & Auth Interceptors
+## 🌐 Koneksi Jaringan & Interceptor Otentikasi
 
-API networking is powered by **Dio (v5.x)**, which is configured centrally inside [dio_provider.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/network/dio_provider.dart):
+Pengelolaan REST API diimplementasikan menggunakan **Dio (v5.x)** yang diatur secara terpusat di dalam [dio_provider.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/network/dio_provider.dart):
 
-*   **Smart API Routing**: The app automatically resolves the backend base URL depending on the runtime platform:
-    *   **Android Emulator**: `http://10.0.2.2:3000` (bridges to host localhost).
-    *   **iOS Emulator / Web**: `http://localhost:3000`.
-*   **Authorization Interceptor**: A custom request interceptor automatically pulls the JWT token from **Flutter Secure Storage** and adds the HTTP header `Authorization: Bearer <accessToken>` to every outgoing request.
-*   **Session Guard**: If any API response yields an HTTP `401 Unauthorized` status (due to token expiry or invalidation), the interceptor automatically triggers a global `logout()` operation through the `authControllerProvider` to secure the app state.
+*   **Penyelarasan IP Otomatis**: Aplikasi mendeteksi target emulator yang sedang aktif:
+    *   **Emulator Android**: Dialihkan ke IP khusus `http://10.0.2.2:3000` agar terhubung ke localhost mesin host.
+    *   **iOS Emulator / Web**: Dialihkan langsung ke `http://localhost:3000`.
+*   **Otentikasi Interceptor**: Menangkap token JWT dari `FlutterSecureStorage` dan menyisipkan header `Authorization: Bearer <accessToken>` pada setiap request keluar secara otomatis.
+*   **Deteksi Sesi Habis**: Jika backend merespon dengan status HTTP `401 Unauthorized` (karena token kadaluwarsa atau di-logout), interceptor akan memicu fungsi `logout()` secara otomatis untuk mengamankan data sesi lokal.
 
 ---
 
-## 💻 Running & Building
+## ⚙️ Penanganan Aturan Bisnis pada Frontend
 
-### 🔍 Find Available Devices
-Verify that your target emulator, simulator, or browser is active:
+Aplikasi mobile mengawal aturan bisnis SEAPEDIA melalui fitur-fitur berikut:
+
+### 1. Guard Navigasi Pemilihan Peran (Role Selection Guard)
+*   Sistem navigasi dikelola oleh **GoRouter** di [app_router.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/router/app_router.dart).
+*   Jika pengguna memiliki beberapa peran (misal Buyer & Seller) dan baru saja login, status sesi diubah menjadi `AuthState.partial`.
+*   Pengguna akan diarahkan ke halaman `/select-role` dan diblokir dari rute privat lainnya hingga memilih peran aktifnya. Setelah peran aktif dipilih dan token baru didapatkan, status berubah menjadi `AuthState.authenticated`.
+
+### 2. Validasi Keranjang Satu Toko (Single-Store Cart Enforcement)
+*   Saat Buyer menambahkan item ke keranjang (`CartScreen`), frontend mengirim data ke API.
+*   Jika produk yang ditambahkan berasal dari toko yang berbeda dengan produk yang sudah ada di keranjang, frontend akan menerima error `ConflictException` dari backend.
+*   Frontend akan menangkap pesan kesalahan tersebut dan menampilkan dialog modal konfirmasi yang jelas kepada pengguna agar mereka dapat memilih untuk **mengosongkan keranjang belanja** terlebih dahulu sebelum menambahkan produk baru.
+
+### 3. Tampilan Informasi Peran Aktif & Saldo Dompet
+*   Peran aktif pengguna selalu ditampilkan di Navbar utama atau bagian atas halaman profil (`ProfileScreen`).
+*   Header aplikasi menampilkan detail finansial khusus peran aktif (Saldo Dompet untuk Buyer, Total Pendapatan untuk Seller/Driver).
+
+---
+
+## 💻 Cara Menjalankan & Membangun Aplikasi
+
+### 🔍 Mencari Emulator/Perangkat yang Tersedia
+Pastikan emulator Android, simulator iOS, atau browser web Anda sudah aktif:
 ```bash
 flutter devices
 ```
 
-### 🏃 Running in Development Mode
-Run the app dynamically with hot reload enabled:
+### 🏃 Menjalankan Aplikasi (Mode Development)
+Jalankan perintah berikut untuk menjalankan aplikasi:
 ```bash
-# Run on the default active device
+# Menjalankan pada perangkat default yang aktif
 flutter run
 
-# Run on a specific device ID
-flutter run -d <device-id>
+# Menjalankan pada ID perangkat tertentu
+flutter run -d <id-perangkat>
 
-# Run on Web Server
+# Menjalankan di Browser Chrome
 flutter run -d chrome
 ```
+*(Tekan tombol `r` di terminal untuk memicu Hot Reload saat mengubah kode)*
 
-### 📦 Building Production Assets
-Compile production bundles for distribution:
+### 📦 Membangun Paket Produksi (Release Build)
+Untuk memaketkan aplikasi ke dalam berkas siap rilis:
 
 ```bash
-# Build Android APK (outputs to build/app/outputs/flutter-apk/)
+# Membangun file APK Android (Hasil di build/app/outputs/flutter-apk/)
 flutter build apk --release
 
-# Build Android App Bundle (for Google Play Console submission)
+# Membangun berkas App Bundle Android (untuk Google Play)
 flutter build appbundle --release
 
-# Build iOS Bundle (outputs IPA payload)
+# Membangun bundel iOS (Hasil berupa payload IPA)
 flutter build ipa --release
 
-# Build Web distribution files
+# Membangun file distribusi Web
 flutter build web --release
 ```

@@ -8,6 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   const storage = FlutterSecureStorage();
+  await storage.deleteAll();
   final token = await storage.read(key: 'accessToken');
   final hasToken = token != null && token.isNotEmpty;
 

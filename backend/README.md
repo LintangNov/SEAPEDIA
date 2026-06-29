@@ -9,17 +9,17 @@ pinned: false
 
 # ⚙️ Seapedia Backend — NestJS Engine
 
-This is the core REST API engine for the Seapedia application, built using the progressive Node.js framework [NestJS](https://nestjs.com), [Prisma ORM](https://prisma.io), and backed by a [PostgreSQL](https://postgresql.org) database.
+Ini adalah mesin REST API utama untuk aplikasi Seapedia, dibangun menggunakan framework progressive Node.js [NestJS](https://nestjs.com), [Prisma ORM](https://prisma.io), dan didukung oleh database [PostgreSQL](https://postgresql.org).
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Memulai (Getting Started)
 
-### 1. Prerequisite Installations
-Ensure you have **Node.js (v22+)** and **npm** installed globally. You must also have a running **PostgreSQL** instance.
+### 1. Kebutuhan Instalasi
+Pastikan Anda memiliki **Node.js (v22+)** dan **npm** terinstal secara global, serta memiliki instance **PostgreSQL** yang berjalan.
 
-### 2. Local Installation
-Navigate to this folder and install all local dependencies:
+### 2. Instalasi Lokal
+Akses folder `/backend` dan instal dependensi lokal:
 ```bash
 cd backend
 npm install
@@ -27,116 +27,146 @@ npm install
 
 ---
 
-## 🔒 Environment Variables
+## 🔒 Variabel Lingkungan (Environment Variables)
 
-Duplicate the template to define your environment configurations. Create a `.env` file in the root of the `/backend` directory:
+Buat file `.env` di root folder `/backend` untuk mendefinisikan konfigurasi berikut:
 
-```bash
-cp .env.example .env
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/seapedia_db?schema=public"
+JWT_SECRET="kcgkejedukbelalangsembah"
+PORT=3000
 ```
-
-Define the following environment variables inside `.env`:
 
 | Key | Description | Example / Recommended Value |
 | :--- | :--- | :--- |
-| `DATABASE_URL` | Connection string pointing to your PostgreSQL database. | `postgresql://postgres:password@localhost:5432/seapedia_db?schema=public` |
-| `JWT_SECRET` | Secret token signing string for security and session tokens. | `kcgkejedukbelalangsembah` *(Use a strong, unique secret key)* |
-| `PORT` | Optional. Defines what port the NestJS server binds to (default: `3000`). | `3000` |
+| `DATABASE_URL` | String koneksi menuju PostgreSQL database. | `postgresql://postgres:password@localhost:5432/seapedia_db?schema=public` |
+| `JWT_SECRET` | Kunci rahasia untuk menandatangani token JWT sesi pengguna. | `kcgkejedukbelalangsembah` |
+| `PORT` | Port tempat server NestJS mendengarkan request (default: `3000`). | `3000` |
 
 ---
 
-## 🗄️ Database Management (Prisma)
+## 🗄️ Manajemen Database (Prisma)
 
-Prisma ORM is utilized for database modeling, migrations, and querying.
+Aplikasi ini menggunakan Prisma ORM untuk pemodelan data, migrasi, dan query.
 
-### 🔌 Synchronizing Database Schema
-Synchronize the PostgreSQL database with the model design described in `prisma/schema.prisma`:
+### 🔌 Sinkronisasi Skema Database
+Untuk menyelaraskan database PostgreSQL Anda dengan model pada `prisma/schema.prisma`:
 ```bash
 npx prisma db push
 ```
 
-### 🧬 Generating Prisma Client
-Generate the client engine assets after changing any database models in `schema.prisma`:
+### 🧬 Menghasilkan Prisma Client
+Jalankan perintah ini setiap kali Anda melakukan perubahan skema pada `schema.prisma`:
 ```bash
 npx prisma generate
 ```
 
-### 📈 Database Migrations
-To track database versions and execute database schema upgrades:
+### 📈 Migrasi Database
+Untuk melacak perubahan database dan menerapkan migrasi pengembangan:
 ```bash
 npx prisma migrate dev --name init
 ```
 
-### 🌱 Seeding Mock/Initial Data
-Seed the database with default roles (`ADMIN`, `SELLER`, `BUYER`, `DRIVER`) and a default `superadmin` profile:
+### 🌱 Data Awal (Seed Data)
+Jalankan script seed untuk membuat peran master (`ADMIN`, `SELLER`, `BUYER`, `DRIVER`) serta profil superadmin bawaan:
 ```bash
 npx prisma db seed
 ```
+
 > [!IMPORTANT]
-> The seed script sets up a default admin profile with:
+> Akun admin default yang didaftarkan melalui script seed adalah:
 > *   **Username**: `superadmin`
 > *   **Password**: `adminpassword123`
 
 ---
 
-## 💻 Running the Server
+## 💻 Menjalankan Server
 
-Run the development, debugging, or production build server using npm scripts:
+Gunakan script npm berikut untuk menjalankan backend:
 
 ```bash
-# Development (with auto-reload/watch mode)
+# Mode pengembangan (dengan auto-reload/watch mode)
 npm run start:dev
 
-# Debugging mode (with Chrome DevTools attachment)
+# Mode debug
 npm run start:debug
 
-# Production build compilation
+# Kompilasi build produksi
 npm run build
 
-# Running the production bundle
+# Menjalankan build produksi
 npm run start:prod
 ```
 
 ---
 
-## 🧪 Testing Suite
+## 📖 Dokumentasi API (Swagger Docs)
 
-Execute tests inside the engine:
-```bash
-# Run unit tests
-npm run test
-
-# Run end-to-end integration tests
-npm run test:e2e
-
-# Run test coverage checks
-npm run test:cov
-```
+Dokumentasi rute API yang interaktif disediakan menggunakan Swagger dan dapat diakses di:
+🔗 **[http://localhost:3000/api/docs](http://localhost:3000/api/docs)**
 
 ---
 
-## 📖 API Documentation (Swagger)
+## ⚙️ Implementasi Aturan Bisnis Utama
 
-By default, the API route documentation is exposed at:
-🔗 **[http://localhost:3000/api](http://localhost:3000/api)** *(or the custom port specified in your `.env`)*
+Berikut adalah detail teknis implementasi aturan bisnis SEAPEDIA di tingkat backend:
 
-> [!NOTE]
-> If Swagger is not yet loaded in your environment, follow this simple snippet to enable it:
->
-> 1. Install Swagger package:
->    ```bash
->    npm install --save @nestjs/swagger
->    ```
-> 2. Add setup to `src/main.ts`:
->    ```typescript
->    import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-> 
->    const config = new DocumentBuilder()
->      .setTitle('Seapedia API')
->      .setDescription('Seapedia Multi-Role Marketplace API Documentation')
->      .setVersion('1.0')
->      .addBearerAuth()
->      .build();
->    const document = SwaggerModule.createDocument(app, config);
->    SwaggerModule.setup('api', app, document);
->    ```
+### 1. Aturan Satu Toko (Single-Store Cart)
+*   Aturan ini diatur dalam [cart.service.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/cart/cart.service.ts).
+*   Model `Cart` menyimpan kolom `sellerId`. Ketika produk pertama dimasukkan, `sellerId` dari toko produk tersebut dikunci ke keranjang.
+*   Ketika produk berikutnya ditambahkan melalui `addToCart`, backend mencocokkan `product.sellerId` dengan `cart.sellerId`. Jika berbeda, backend mengembalikan `ConflictException`.
+*   Keranjang akan mengosongkan kolom `sellerId` kembali menjadi `null` hanya ketika seluruh isi keranjang dihapus atau proses checkout berhasil.
+
+### 2. Aturan Diskon & Perhitungan PPN 12%
+*   Aturan ini diatur dalam [order.service.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/order/order.service.ts).
+*   Sistem mendukung kode diskon berupa `VOUCHER` (memiliki kuota `remainingUsage` yang dikurangi secara atomik saat checkout) dan `PROMO` (hanya divalidasi tanggal kedaluwarsanya).
+*   Pembeli memasukkan satu `discountCode` pada payload checkout. Diskon tidak dapat digabungkan.
+*   **Urutan Perhitungan Pajak**: Diskon dikurangkan terlebih dahulu dari subtotal sebelum pengenaan pajak (PPN 12%).
+    $$\text{Discounted Subtotal} = \max(0, \text{Subtotal} - \text{Discount Amount})$$
+    $$\text{PPN 12\%} = \text{Discounted Subtotal} \times 0.12$$
+    $$\text{Final Total} = \text{Discounted Subtotal} + \text{Delivery Fee} + \text{PPN 12\%}$$
+
+### 3. Pendapatan Pengemudi (Driver Earnings)
+*   Aturan ini diatur dalam [driver.service.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/driver/driver.service.ts).
+*   Ketika pengemudi berhasil melakukan konfirmasi pengiriman selesai (`completeJob`), saldo pendapatan (`earnings`) pada profil pengemudi ditambahkan sebesar biaya ongkos kirim (`deliveryFee`) pesanan yang diantar.
+
+### 4. Overdue SLA, Auto Return/Refund & Simulasi Waktu
+*   Sistem menerapkan batas waktu (SLA) untuk penyelesaian pesanan:
+    *   **Instant**: 24 jam.
+    *   **Next Day**: 48 jam.
+    *   **Regular**: 120 jam (5 hari).
+*   Pemeriksaan otomatis dilakukan oleh [scheduler.service.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/scheduler/scheduler.service.ts) setiap menit menggunakan cron job `@Cron(CronExpression.EVERY_MINUTE)`.
+*   Jika suatu pesanan melewati batas waktu SLA dan belum diselesaikan (status: `BEING_PACKED`, `AWAITING_SHIPMENT`, `BEING_SHIPPED`), backend akan:
+    1.  Mengubah status pesanan menjadi `RETURNED`.
+    2.  Mengembalikan saldo pembeli secara penuh (`Final Total`) melalui transaksi refund dompet.
+    3.  Mengembalikan jumlah stok produk ke inventaris masing-masing penjual.
+    4.  Menghapus pekerjaan pengiriman (`DeliveryJob`) yang aktif.
+    5.  Transaksi ini dilakukan secara atomik menggunakan Prisma `$transaction` dengan tingkat isolasi `Serializable` untuk mencegah kondisi balapan (race condition).
+*   **Simulasi Waktu**: Pengembang dapat memicu simulasi overdue secara instan dengan memanggil endpoint `POST /admin/simulate-overdue` (khusus peran `ADMIN`) dengan menyertakan payload `{"daysToAdvance": number}`. Ini akan memajukan waktu sistem dan segera menjalankan evaluasi SLA.
+
+---
+
+## 🔒 Arsitektur Keamanan (Security Hardening)
+
+### 1. SQL Injection Prevention
+Backend memanfaatkan **Prisma ORM** untuk seluruh operasi database. Prisma secara otomatis melakukan parameterisasi query untuk seluruh input pengguna, sehingga payload SQL berbahaya yang disisipkan pada form login, pencarian, ulasan, atau checkout tidak dapat merusak struktur database atau memanipulasi query.
+
+### 2. XSS (Cross-Site Scripting) Prevention
+Ulasan aplikasi publik dapat disubmit oleh tamu tanpa otentikasi. Untuk menghindari eksploitasi skrip berbahaya (misalnya tag `<script>` atau event handler inline seperti `onload`), backend menggunakan modul `xss` di dalam [reviews.service.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/reviews/reviews.service.ts) untuk menyaring nama pengulas dan konten komentar sebelum disimpan.
+
+### 3. Validasi Input Ketat
+NestJS dikonfigurasi menggunakan `ValidationPipe` global di [main.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/main.ts):
+```typescript
+app.useGlobalPipes(new ValidationPipe({
+  whitelist: true,
+  transform: true,
+  forbidNonWhitelisted: true,
+}));
+```
+Hal ini memastikan request body yang tidak terdefinisi di tingkat DTO (Data Transfer Object) akan ditolak secara ketat, dan input seperti rating (harus integer 1-5), kuantitas, harga, dan tanggal kedaluwarsa divalidasi keabsahannya sebelum diproses.
+
+### 4. Manajemen Sesi Token JWT
+*   Setelah berhasil masuk (`POST /auth/login`), backend menghasilkan token sesi sementara berisi daftar peran pengguna. Pengguna wajib mengirimkan request `POST /auth/select-role` untuk memilih peran aktif mereka.
+*   Token JWT sesi akhir yang diterbitkan berisi properti `activeRole`. Token ini ditandatangani menggunakan algoritma HMAC SHA-256 dengan kunci rahasia `JWT_SECRET`.
+*   Rute dilindungi secara server-side menggunakan `AuthGuard` untuk ekstraksi token dan `RolesGuard` untuk verifikasi kecocokan peran aktif pengguna. Jika peran yang dikirim di header tidak sesuai dengan otorisasi rute, backend akan melempar `ForbiddenException`.
+*   Backend tidak pernah memercayai role yang dikirim langsung di request body; semua validasi bertumpu pada payload token JWT terenkripsi yang diterima.
