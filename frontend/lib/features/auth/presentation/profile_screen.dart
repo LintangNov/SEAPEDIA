@@ -171,6 +171,15 @@ class ProfileScreen extends ConsumerWidget {
                                               ),
                                             ),
                                           );
+                                          if (role == 'SELLER') {
+                                            context.go('/seller/dashboard');
+                                          } else if (role == 'DRIVER') {
+                                            context.go('/driver/dashboard');
+                                          } else if (role == 'ADMIN') {
+                                            context.go('/admin/dashboard');
+                                          } else {
+                                            context.go('/products');
+                                          }
                                         }
                                       } catch (e) {
                                         if (context.mounted) {

@@ -15,6 +15,11 @@ void main() async {
 
   final container = ProviderContainer();
 
+  if (hasToken) {
+    final activeRole = decodeActiveRole(token);
+    container.read(activeRoleProvider.notifier).setRole(activeRole);
+  }
+
   container.read(authControllerProvider.notifier).checkStatus(hasToken);
 
   runApp(

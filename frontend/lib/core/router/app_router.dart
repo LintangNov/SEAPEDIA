@@ -50,8 +50,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           return '/select-role';
         }
       } else if (authState == AuthState.authenticated) {
-        if (isGoingToLogin || isGoingToRegister || isGoingToSelectRole) {
-          return '/profile';
+        if (isGoingToLogin || isGoingToRegister || isGoingToSelectRole || state.uri.toString() == '/') {
+          final activeRole = ref.read(activeRoleProvider);
+          if (activeRole == 'SELLER') return '/seller/dashboard';
+          if (activeRole == 'DRIVER') return '/driver/dashboard';
+          if (activeRole == 'ADMIN') return '/admin/dashboard';
+          return '/products';
         }
       }
       return null;
@@ -143,6 +147,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   );
 
   ref.listen(authControllerProvider, (previous, next) {
+    router.refresh();
+  });
+
+  ref.listen(activeRoleProvider, (previous, next) {
     router.refresh();
   });
 
