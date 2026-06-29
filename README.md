@@ -17,8 +17,8 @@ This repository is designed to facilitate seamless developer experiences across 
 
 To jump straight into the technical setup, development workflows, and architectural guides of specific subsystems, use the links below:
 
-*   **[⚙️ Backend Engine Documentation](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/README.md)**: Local installation, environment configuration, database migration guides (Prisma + PostgreSQL), and Swagger API details.
-*   **[📱 Frontend Mobile Documentation](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/README.md)**: Mobile codebase architecture (MVVM), state reactivity engine (Riverpod 3.x), Dio API clients, local persistence (Secure Storage), and multi-platform compilation guides.
+*   **[⚙️ Backend Engine Documentation](./backend/README.md)**: Local installation, environment configuration, database migration guides (Prisma + PostgreSQL), and Swagger API details.
+*   **[📱 Frontend Mobile Documentation](./frontend/README.md)**: Mobile codebase architecture (MVVM), state reactivity engine (Riverpod 3.x), Dio API clients, local persistence (Secure Storage), and multi-platform compilation guides.
 
 ---
 
