@@ -1,3 +1,12 @@
+---
+title: Seapedia API
+emoji: 🐳
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
 # ⚙️ Seapedia Backend — NestJS Engine
 
 This is the core REST API engine for the Seapedia application, built using the progressive Node.js framework [NestJS](https://nestjs.com), [Prisma ORM](https://prisma.io), and backed by a [PostgreSQL](https://postgresql.org) database.
