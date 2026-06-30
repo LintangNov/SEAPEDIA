@@ -1,4 +1,4 @@
-# 🐳 SEAPEDIA Monorepo
+# SEAPEDIA Monorepo
 
 [![NestJS](https://img.shields.io/badge/NestJS-11.0-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
 [![Prisma](https://img.shields.io/badge/Prisma-6.19-2D3748?logo=prisma&logoColor=white)](https://prisma.io)
