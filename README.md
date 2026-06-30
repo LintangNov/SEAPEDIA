@@ -34,8 +34,8 @@ Backend untuk proyek SEAPEDIA ini telah berhasil di-deploy ke Hugging Face Space
 ## 📦 Unduh Aplikasi Pre-built (Download Links)
 
 Untuk mempermudah pengujian tanpa harus membangun (*compile*) kode sumber Flutter secara manual dari awal, Anda dapat mengunduh berkas rilis aplikasi siap pakai berikut:
-*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-android.apk)](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-android.apk)
-*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-windows.zip)](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-windows.zip)
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-android.apk)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-windows.zip)
 
 ---
 
