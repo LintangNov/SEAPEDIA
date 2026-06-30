@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/driver/data/driver_repository.dart';
 import 'package:seapedia/features/driver/presentation/driver_dashboard_controller.dart';
 import 'package:seapedia/features/order/data/order_models.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 class FindJobsController extends AsyncNotifier<List<OrderModel>> {
   @override
@@ -32,31 +34,53 @@ class FindJobsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(findJobsProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Available Delivery Jobs'),),
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/driver/find-jobs'),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Available Delivery Jobs'),
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
+          ),
+        ],
+      ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Error: $err', textAlign: TextAlign.center, style: const TextStyle(color: Colors.red)),
-              ElevatedButton(onPressed: () => ref.refresh(findJobsProvider), child: const Text('Retry'))
-            ],
-          )
+        error: (err, _) => SeapediaErrorWidget(
+          error: err,
+          onRetry: () => ref.refresh(findJobsProvider),
         ),
         data: (jobs) {
-          if (jobs.isEmpty) return const Center(child: Text('No available jibs right now'),);
+          if (jobs.isEmpty) {
+            return RefreshIndicator(
+              onRefresh: () async => ref.refresh(findJobsProvider),
+              child: const SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: Text('No available jobs right now'),
+                  ),
+                ),
+              ),
+            );
+          }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: jobs.length,
-            itemBuilder: (context, index) {
-              final job = jobs[index];
-              return DebugBorder(
-                color: Colors.purpleAccent, label: 'Job List',
-                child: Card(
+          return RefreshIndicator(
+            onRefresh: () async => ref.refresh(findJobsProvider),
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              itemCount: jobs.length,
+              itemBuilder: (context, index) {
+                final job = jobs[index];
+                return Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -70,16 +94,45 @@ class FindJobsScreen extends ConsumerWidget {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.blue, foregroundColor: Colors.white),
                           onPressed: () async {
-                            try {
-                              await ref.read(findJobsProvider.notifier).takeJob(job.id);
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Job taken successfully!')));
-                                context.pop();
-                              }
-                            } catch (e) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-                                final _ = ref.refresh(findJobsProvider);
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Confirm Take Job'),
+                                content: Text(
+                                  'Are you sure you want to take this delivery job?\n\n'
+                                  'Pickup: ${job.storeName ?? "Unknown Store"}\n'
+                                  'Delivery: ${job.deliveryMethod}\n'
+                                  'Earning Potential: Rp ${job.deliveryFee}'
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx, false),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(ctx, true),
+                                    child: const Text('Take Job'),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (confirmed == true) {
+                              try {
+                                await ref.read(findJobsProvider.notifier).takeJob(job.id);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Job taken successfully!')),
+                                  );
+                                  context.pop();
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(e.toString())),
+                                  );
+                                  final _ = ref.refresh(findJobsProvider);
+                                }
                               }
                             }
                           },
@@ -88,9 +141,9 @@ class FindJobsScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           );
         }
       ),

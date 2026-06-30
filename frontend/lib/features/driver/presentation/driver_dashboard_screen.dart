@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/driver/presentation/driver_dashboard_controller.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 class DriverDashboardScreen extends ConsumerWidget {
   const DriverDashboardScreen({super.key});
@@ -10,18 +12,28 @@ class DriverDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(driverDashboardProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/driver/dashboard'),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Driver Dashboard'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/profile'),
-        ),
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
+          ),
+        ],
       ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => SeapediaErrorWidget(
+        error: err,
+        onRetry: () => ref.refresh(driverDashboardProvider),
+      ),
         data: (profile) {
           final activeJob = profile.activeOrder;
 
@@ -30,24 +42,17 @@ class DriverDashboardScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DebugBorder(
-                  color: Colors.green,
-                  label: 'Earnings',
-                  child: ListTile(
+                ListTile(
                     leading: const Icon(Icons.account_balance_wallet, color: Colors.green, size: 24,),
                     title: const Text('Total Earnings'),
                     subtitle: Text('Rp ${profile.earnings.toStringAsFixed(2)}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                   ),
-                ),
                 const SizedBox(height: 24,),
 
                 if (activeJob != null)...[
                   const Text('Active Delivery Job', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 8),
-                  DebugBorder(
-                    color: Colors.orange,
-                    label: 'Current Job',
-                    child: Card(
+                  Card(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -83,13 +88,9 @@ class DriverDashboardScreen extends ConsumerWidget {
                           ],
                         ),
                       ),
-                    ),
-                  )
+                    )
                 ] else...[
-                  DebugBorder(
-                    color: Colors.blue,
-                    label: 'Actions',
-                    child: Column(
+                  Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ElevatedButton.icon(
@@ -99,7 +100,6 @@ class DriverDashboardScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                  ),
                 ],
                 const SizedBox(height: 16,),
                 OutlinedButton.icon(

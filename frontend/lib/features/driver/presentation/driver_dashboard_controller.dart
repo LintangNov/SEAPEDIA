@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/driver_models.dart';
 import '../data/driver_repository.dart';
+import 'driver_history_screen.dart';
 
 class DriverDashboardController extends AsyncNotifier<DriverProfileData> {
   @override
@@ -13,6 +14,7 @@ class DriverDashboardController extends AsyncNotifier<DriverProfileData> {
     await AsyncValue.guard(() async {
       await ref.read(driverRepositoryProvider).completeJob(orderId);
       ref.invalidateSelf();
+      ref.invalidate(driverHistoryProvider); // Reload delivery history in real-time
     });
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/order/presentation/seller_order_controller.dart';
-import '../../../core/widgets/debug_border.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 class SellerOrdersScreen extends ConsumerWidget {
   const SellerOrdersScreen({super.key});
@@ -9,12 +11,28 @@ class SellerOrdersScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(sellerOrdersProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Seller Orders & Income')),
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/seller/orders'),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Seller Orders & Income'),
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
+          ),
+        ],
+      ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => SeapediaErrorWidget(
+        error: err,
+        onRetry: () => ref.refresh(sellerOrdersProvider),
+      ),
         data: (orders) {
           if (orders.isEmpty){
             return const Center(child: Text('No orders yet.'));
@@ -28,10 +46,7 @@ class SellerOrdersScreen extends ConsumerWidget {
               );
           return Column(
             children: [
-              DebugBorder(
-                color: Colors.green,
-                label: 'Income Report',
-                child: ListTile(
+              ListTile(
                   title: const Text(
                     'Estimated Revenue',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -46,17 +61,13 @@ class SellerOrdersScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ),
               const Divider(),
               Expanded(
                 child: ListView.builder(
                   itemCount: orders.length,
                   itemBuilder: (context, index) {
                     final order = orders[index];
-                    return DebugBorder(
-                      color: Colors.orange,
-                      label: 'Order Processing',
-                      child: Card(
+                    return Card(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
@@ -94,8 +105,7 @@ class SellerOrdersScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                      ),
-                    );
+                      );
                   },
                 ),
               ),

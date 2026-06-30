@@ -53,6 +53,6 @@ class CartController extends AsyncNotifier<CartSummary?> {
 }
 
 final cartControllerProvider =
-    AsyncNotifierProvider.autoDispose<CartController, CartSummary?>(
+    AsyncNotifierProvider<CartController, CartSummary?>(
       CartController.new,
     );

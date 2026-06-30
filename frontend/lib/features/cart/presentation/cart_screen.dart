@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/cart/presentation/cart_controller.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 class CartScreen extends ConsumerWidget {
   const CartScreen({super.key});
@@ -10,10 +12,19 @@ class CartScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartState = ref.watch(cartControllerProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/cart'),
       appBar: AppBar(
         title: const Text('Shopping Cart'),
         actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
+          ),
           IconButton(
             icon: const Icon(Icons.delete_sweep),
             tooltip: 'Clear Cart',
@@ -42,10 +53,7 @@ class CartScreen extends ConsumerWidget {
                   itemCount: cart.items.length,
                   itemBuilder: (context, index) {
                     final item = cart.items[index];
-                    return DebugBorder(
-                      color: Colors.blue,
-                      label: 'Cart Item',
-                      child: ListTile(
+                    return ListTile(
                         title: Text(
                           item.productName,
                           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -96,8 +104,7 @@ class CartScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      ),
-                    );
+                      );
                   },
                 ),
               ),
@@ -151,7 +158,10 @@ class CartScreen extends ConsumerWidget {
             ],
           );
         },
-        error: (error, _) => Center(child: Text('Error: $error')),
+        error: (error, _) => SeapediaErrorWidget(
+        error: error,
+        onRetry: () => ref.refresh(cartControllerProvider),
+      ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );

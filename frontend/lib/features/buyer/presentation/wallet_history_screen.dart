@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:seapedia/core/widgets/debug_border.dart';
 import 'package:seapedia/features/buyer/data/buyer_repository.dart';
 
 final walletHistoryProvider = FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
@@ -18,7 +18,10 @@ class WalletHistoryScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Wallet Transaction History')),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => SeapediaErrorWidget(
+        error: err,
+        onRetry: () => ref.refresh(walletHistoryProvider),
+      ),
         data: (history) {
           if (history.isEmpty) return const Center(child: Text('No transactions yet.'));
 
@@ -28,9 +31,7 @@ class WalletHistoryScreen extends ConsumerWidget {
             itemBuilder: (context, index){
               final trx = history[index];
               final isTopUp = trx['type'] == 'TOP_UP' || trx['type'] == 'REFUND';
-              return DebugBorder(
-                color: isTopUp ? Colors.green : Colors.red, label: trx['type'],
-                child: ListTile(
+              return ListTile(
                   leading: Icon(isTopUp ? Icons.arrow_downward : Icons.arrow_upward, color: isTopUp ? Colors.green : Colors.red),
                   title: Text(trx['description'] ?? 'Transaction'),
                   subtitle: Text(DateTime.parse(trx['createdAt']).toLocal().toString().split('.')[0]),
@@ -38,8 +39,7 @@ class WalletHistoryScreen extends ConsumerWidget {
                     '${isTopUp ? '+' : '-'} Rp ${trx['amount']}',
                     style: TextStyle(color: isTopUp ? Colors.green : Colors.red, fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                ),
-              );
+                );
             },
           );
         }

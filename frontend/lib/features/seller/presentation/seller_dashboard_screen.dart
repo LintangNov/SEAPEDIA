@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/products/data/product_repository.dart';
-import '../../../core/widgets/debug_border.dart';
 import '../../products/presentation/products_provider.dart';
+import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 
 class SellerDashboardScreen extends ConsumerWidget {
   const SellerDashboardScreen({super.key});
@@ -11,30 +12,19 @@ class SellerDashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productsAsync = ref.watch(sellerProductsProvider);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/seller/dashboard'),
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: 'Back to Profile',
-          onPressed: () => context.go('/profile'),
-        ),
+        automaticallyImplyLeading: false,
         title: const Text('Seller Dashboard'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.list_alt),
-            tooltip: 'Manage Incoming Orders',
-            onPressed: () => context.push('/seller/orders'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.shopping_bag),
-            tooltip: 'Go to Public Catalog',
-            onPressed: () => context.push('/products'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.store),
-            tooltip: 'Edit Store Profile',
-            onPressed: () => context.push('/seller/store-profile'),
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
           ),
         ],
       ),
@@ -67,10 +57,7 @@ class SellerDashboardScreen extends ConsumerWidget {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return DebugBorder(
-                color: Colors.teal,
-                label: 'Seller Product Item',
-                child: ListTile(
+              return ListTile(
                   title: Text(
                     product.name,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -127,8 +114,7 @@ class SellerDashboardScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                ),
-              );
+                );
             },
           );
         },

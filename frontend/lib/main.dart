@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'core/theme/theme.dart';
 import 'core/router/app_router.dart';
 import 'features/auth/presentation/auth_controller.dart';
 
@@ -13,6 +14,11 @@ void main() async {
   final hasToken = token != null && token.isNotEmpty;
 
   final container = ProviderContainer();
+
+  if (hasToken) {
+    final activeRole = decodeActiveRole(token);
+    container.read(activeRoleProvider.notifier).setRole(activeRole);
+  }
 
   container.read(authControllerProvider.notifier).checkStatus(hasToken);
 
@@ -27,11 +33,15 @@ class SeapediaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
+    final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
       title: 'Seapedia',
       debugShowCheckedModeBanner: false,
       routerConfig: router,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
     );
   }
 }

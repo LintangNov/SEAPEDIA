@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/buyer/presentation/top_up_dialog.dart';
-import '../../../core/widgets/debug_border.dart';
 import '../../cart/presentation/cart_controller.dart';
 import '../data/order_models.dart';
 import '../data/order_repository.dart';
@@ -163,7 +163,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       appBar: AppBar(title: const Text('Checkout')),
       body: cartState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('Error: $error')),
+        error: (error, _) => SeapediaErrorWidget(error: error),
         data: (cart) {
           if (cart == null || cart.items.isEmpty) {
             return const Center(child: Text('Your cart is empty.'));
@@ -186,10 +186,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DebugBorder(
-                  color: Colors.blue,
-                  label: 'Delivery Address',
-                  child: TextField(
+                TextField(
                     controller: _addressController,
                     maxLines: 3,
                     decoration: const InputDecoration(
@@ -197,12 +194,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                ),
                 const SizedBox(height: 16),
-                DebugBorder(
-                  color: Colors.orange,
-                  label: 'Delivery Method',
-                  child: DropdownButtonFormField<String>(
+                DropdownButtonFormField<String>(
                     initialValue: _selectedDeliveryMethod,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -223,12 +216,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       }
                     },
                   ),
-                ),
                 const SizedBox(height: 16),
-                DebugBorder(
-                  color: Colors.purple,
-                  label: 'Voucher / Promo Code',
-                  child: Row(
+                Row(
                     children: [
                       Expanded(
                         child: TextField(
@@ -246,12 +235,8 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       ),
                     ],
                   ),
-                ),
                 const SizedBox(height: 16),
-                DebugBorder(
-                  color: Colors.green,
-                  label: 'Payment Summary',
-                  child: Column(
+                Column(
                     children: [
                       _SummaryRow(label: 'Subtotal', value: subtotal),
                       if (discountAmount > 0)
@@ -270,7 +255,6 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                       ),
                     ],
                   ),
-                ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(

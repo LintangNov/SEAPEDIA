@@ -37,12 +37,14 @@ class UserProfile {
   final String username;
   final String activeRole;
   final List<String> roles;
+  final String? storeName;
 
   UserProfile({
     required this.id,
     required this.username,
     required this.activeRole,
     required this.roles,
+    this.storeName,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -51,6 +53,7 @@ class UserProfile {
       username: json['username']?.toString() ?? 'Unknown',
       activeRole: json['activeRole']?.toString() ?? 'None',
       roles: List<String>.from(json['roles'] ?? []),
+      storeName: json['storeName']?.toString(),
     );
   }
 }
