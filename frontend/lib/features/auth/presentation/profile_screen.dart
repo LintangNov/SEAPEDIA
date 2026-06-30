@@ -135,6 +135,40 @@ class ProfileScreen extends ConsumerWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
+          if (profile.email != null && profile.email!.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.email_outlined, size: 16, color: isDark ? Colors.white60 : Colors.black54),
+                const SizedBox(width: 8),
+                Text(
+                  profile.email!,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? Colors.white70 : Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ],
+          if (profile.phoneNumber != null && profile.phoneNumber!.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.phone_outlined, size: 16, color: isDark ? Colors.white60 : Colors.black54),
+                const SizedBox(width: 8),
+                Text(
+                  profile.phoneNumber!,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDark ? Colors.white70 : Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ],
       ),
     );

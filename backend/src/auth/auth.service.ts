@@ -16,7 +16,14 @@ export class AuthService {
 
         if (existingUser){
             throw new ConflictException("Username was registered");
-            
+        }
+
+        const existingEmail = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+        });
+
+        if (existingEmail) {
+            throw new ConflictException("Email was already registered");
         }
 
         const saltRounds =10;
@@ -29,6 +36,8 @@ export class AuthService {
         const user = await this.prisma.user.create({
             data: {
                 username: dto.username,
+                email: dto.email,
+                phoneNumber: dto.phoneNumber,
                 passwordHash: hashedPassword,
                 roles: {
                     create: roleConnectors,

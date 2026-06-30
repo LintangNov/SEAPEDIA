@@ -35,6 +35,8 @@ class SelectRoleResponse {
 class UserProfile {
   final String id;
   final String username;
+  final String? email;
+  final String? phoneNumber;
   final String activeRole;
   final List<String> roles;
   final String? storeName;
@@ -42,6 +44,8 @@ class UserProfile {
   UserProfile({
     required this.id,
     required this.username,
+    this.email,
+    this.phoneNumber,
     required this.activeRole,
     required this.roles,
     this.storeName,
@@ -51,6 +55,8 @@ class UserProfile {
     return UserProfile(
       id: json['sub']?.toString() ?? json['id']?.toString() ?? '',
       username: json['username']?.toString() ?? 'Unknown',
+      email: json['email']?.toString(),
+      phoneNumber: json['phoneNumber']?.toString(),
       activeRole: json['activeRole']?.toString() ?? 'None',
       roles: List<String>.from(json['roles'] ?? []),
       storeName: json['storeName']?.toString(),

@@ -21,13 +21,21 @@ class AuthRepository {
 
   Future<void> register(
     String username,
+    String email,
+    String phoneNumber,
     String password,
     List<String> roles,
   ) async {
     try {
       await _dio.post(
         '/auth/register',
-        data: {'username': username, 'password': password, 'roles': roles},
+        data: {
+          'username': username,
+          'email': email,
+          'phoneNumber': phoneNumber,
+          'password': password,
+          'roles': roles,
+        },
       );
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Registration failed');

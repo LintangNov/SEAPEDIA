@@ -62,6 +62,8 @@ export class UsersService{
             profile: {
                 sub: user.id,
                 username: user.username,
+                email: user.email,
+                phoneNumber: user.phoneNumber,
                 activeRole: activeRole,
                 roles: user.roles.map(ur => ur.role.name),
                 walletBalance: walletBalance,
