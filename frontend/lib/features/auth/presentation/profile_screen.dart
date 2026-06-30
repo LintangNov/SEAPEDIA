@@ -148,6 +148,7 @@ class ProfileScreen extends ConsumerWidget {
     bool showBadge = false,
   }) {
     final cardContent = Container(
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
         color: isDark ? theme.colorScheme.surface : Colors.white,
@@ -291,12 +292,8 @@ class ProfileScreen extends ConsumerWidget {
         orElse: () => 0,
       );
       final pendingCount = sellerOrdersState.maybeWhen(
-        data: (orders) => orders.where((o) => o.status == 'PENDING' || o.status == 'Sedang Dikemas').length,
+        data: (orders) => orders.where((o) => o.status == 'BEING_PACKED' || o.status == 'AWAITING_SHIPMENT' || o.status == 'BEING_SHIPPED').length,
         orElse: () => 0,
-      );
-      final hasBeingPacked = sellerOrdersState.maybeWhen(
-        data: (orders) => orders.any((o) => o.status == 'BEING_PACKED'),
-        orElse: () => false,
       );
 
       return Row(
@@ -311,7 +308,7 @@ class ProfileScreen extends ConsumerWidget {
           ),
           const SizedBox(width: 12),
           _buildMiniStatsCard(
-            '$productCount prod',
+            '$productCount',
             'Products',
             Icons.shopping_bag_outlined,
             theme,
@@ -326,7 +323,6 @@ class ProfileScreen extends ConsumerWidget {
             theme,
             isDark,
             onTap: () => context.push('/seller/orders'),
-            showBadge: hasBeingPacked,
           ),
         ],
       );
