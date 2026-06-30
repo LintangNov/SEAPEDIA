@@ -122,13 +122,17 @@ Biaya pengiriman ditentukan berdasarkan metode pengiriman yang dipilih saat chec
 
 ---
 
-## 🔒 Penerapan Keamanan (Security Implementation)
+## 🔒 Penerapan Keamanan & Validasi Input (Security Implementation)
 
 Aplikasi SEAPEDIA dirancang dengan standar keamanan berikut:
 
-1.  **Pencegahan SQL Injection**: Seluruh akses database di backend diimplementasikan menggunakan Prisma ORM. Prisma secara bawaan menggunakan parameterized queries / prepared statements untuk seluruh query, memastikan payload berbahaya tidak dapat dieksekusi sebagai perintah SQL.
-2.  **Pencegahan Cross-Site Scripting (XSS)**: Data ulasan aplikasi publik (reviewer name dan comment) disaring menggunakan library `xss` di backend sebelum disimpan ke database. Hal ini memastikan script berbahaya (seperti `<script>`) akan dinonaktifkan secara aman dan dirender sebagai teks biasa di frontend.
-3.  **Validasi Input**: Validasi ketat dilakukan di tingkat DTO menggunakan NestJS `ValidationPipe` yang didukung oleh `class-validator`. Kolom penting seperti email, rating, kuantitas, harga, stok, dan nilai diskon divalidasi tipe datanya sebelum diproses.
+1.  **Pencegahan SQL Injection**: Seluruh akses database di backend menggunakan **Prisma ORM**. Prisma secara otomatis melakukan parameterisasi query (*parameterized queries*) untuk seluruh input pengguna, memastikan query berbahaya tidak dapat dieksekusi sebagai perintah SQL SQLi.
+2.  **Pencegahan Cross-Site Scripting (XSS)**: Data ulasan aplikasi publik (*reviewer name* dan *comment*) disaring menggunakan library `xss` di backend sebelum disimpan ke database. Hal ini memastikan script berbahaya (seperti `<script>`) akan dinonaktifkan secara aman dan dirender sebagai teks biasa di frontend.
+3.  **Validasi Input Ketat (Level 7)**: Validasi dilakukan di tingkat DTO menggunakan NestJS `ValidationPipe` yang didukung oleh `class-validator`:
+    *   **Email**: Wajib berformat email valid (`@IsEmail`) dan unik (dicek saat pendaftaran).
+    *   **Nomor Telepon**: Wajib berupa string dengan panjang minimal 8 karakter (`@MinLength(8)`).
+    *   **Rating**: Integer dari 1 hingga 5.
+    *   **Kuantitas, Harga, Stok, & Diskon**: Nilai numerik divalidasi keabsahannya (tidak boleh negatif atau nol untuk parameter tertentu).
 4.  **Manajemen Sesi yang Aman**: Token JWT disimpan menggunakan `FlutterSecureStorage` pada mobile client untuk enkripsi data di tingkat perangkat.
 5.  **Server-Side Role-Based Access Control (RBAC)**: Backend tidak memercayai role yang dideklarasikan oleh frontend. Setiap endpoint dashboard dilindungi dengan `@UseGuards(AuthGuard, RolesGuard)` yang memverifikasi kecocokan peran aktif (`activeRole`) yang terenkripsi di dalam JWT token.
 
@@ -136,13 +140,45 @@ Aplikasi SEAPEDIA dirancang dengan standar keamanan berikut:
 
 ## 👥 Akun Demo & Data Awal (Seed Data)
 
-Setelah melakukan migrasi database dan menjalankan script seed, akun administrator berikut akan otomatis terdaftar:
+Setelah melakukan sinkronisasi database (`prisma db push`) dan menjalankan script seed (`prisma db seed`), database PostgreSQL Anda akan terpopulasi dengan data relasional yang siap pakai untuk pengujian (tanpa ada *orphan data*):
 
-*   **Role**: ADMIN
-*   **Username**: `superadmin`
-*   **Password**: `adminpassword123`
+### 1. Daftar Akun Demo (Password semua akun non-admin adalah `password123`)
 
-Untuk peran non-admin (Buyer, Seller, Driver), Anda dapat mendaftarkan akun baru secara langsung di aplikasi mobile atau menggunakan Swagger Docs untuk mempermudah alur simulasi.
+| No | Username | Email | No. Telepon | Peran Bawaan | Detail Profil |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | `superadmin` | `admin@seapedia.com` | `081234567890` | **ADMIN** | Akun administrator utama (Password: `adminpassword123`) |
+| 2 | `buyer1` | `buyer1@seapedia.com` | `081111111111` | **BUYER** | Saldo awal: Rp500.000. Alamat: Jl. Samudera Raya No. 100 |
+| 3 | `seller1` | `seller1@seapedia.com` | `082222222222` | **SELLER** | Nama Toko: **Aqua Marine Shop** |
+| 4 | `seller2` | `seller2@seapedia.com` | `083333333333` | **SELLER** | Nama Toko: **Deep Blue Coral** |
+| 5 | `driver1` | `driver1@seapedia.com` | `084444444444` | **DRIVER** | Pendapatan awal: Rp20.000 (dari 1 pengantaran selesai) |
+| 6 | `multi_user` | `multiuser@seapedia.com` | `085555555555` | **BUYER, SELLER, DRIVER** | Nama Toko: **Multi Ocean Store** (Saldo Buyer: Rp250.000) |
+
+### 2. Katalog Produk Contoh
+
+*   **Clownfish (Ikan Badut Hias)**: Rp50.000,00 (Stok: 15) - Penjual: *Aqua Marine Shop*
+*   **Coral Anemon Merah**: Rp120.000,00 (Stok: 5) - Penjual: *Aqua Marine Shop*
+*   **Rumput Laut Asin Kering**: Rp25.000,00 (Stok: 30) - Penjual: *Deep Blue Coral*
+*   **Pakan Ikan Laut Premium**: Rp35.000,00 (Stok: 50) - Penjual: *Multi Ocean Store*
+
+### 3. Kode Diskon (Voucher & Promo)
+
+*   `VOUCHER10`: Tipe **Voucher** - Potongan Rp10.000 (Kuota penggunaan: 10 kali) - Belum kedaluwarsa.
+*   `PROMO50`: Tipe **Promo** - Potongan Rp50.000 (Kuota penggunaan: Tidak terbatas) - Belum kedaluwarsa.
+*   `EXPIRED20`: Tipe **Promo** - Potongan Rp20.000 (Sudah kedaluwarsa sejak 5 hari lalu - tidak bisa dipakai).
+
+### 4. Ulasan Aplikasi Publik (Tampil di Landing Page)
+
+*   *Alice Johnson* (Rating 5): *"SEAPEDIA sangat mempermudah pemesanan biota laut, UI-nya segar sekali!"*
+*   *Budi Santoso* (Rating 4): *"Pengirimannya cepat dengan metode Instant. Rekomendasi belanja."*
+
+### 5. Riwayat Transaksi & Order Bawaan
+
+*   **Pesanan Selesai (ORDER_COMPLETED)**:
+    *   Dibeli oleh `buyer1` dari penjual `seller1` (Clownfish x 2 = Rp100.000 + Ongkir Instant Rp20.000 + PPN Rp12.000 = Total Rp132.000).
+    *   Telah diantarkan dan diselesaikan oleh `driver1`. Pendapatan driver bertambah Rp20.000.
+*   **Pesanan Menunggu Pengirim (AWAITING_SHIPMENT)**:
+    *   Dibeli oleh `buyer1` dari penjual `seller2` (Rumput Laut x 2 = Rp50.000 + Ongkir Regular Rp10.000 + PPN Rp6.000 = Total Rp66.000).
+    *   Telah diproses oleh seller dan siap diambil oleh Driver manapun di rute `/driver/find-jobs`.
 
 ---
 
@@ -231,37 +267,39 @@ Sebelum menjalankan aplikasi secara lokal, pastikan perangkat Anda telah memenuh
 
 ## 🧪 Alur Pengujian E2E (End-to-End Demo Guide)
 
-Untuk menguji seluruh fitur marketplace SEAPEDIA dari awal hingga akhir, ikuti skenario berikut:
+Untuk menguji seluruh fitur marketplace SEAPEDIA dari awal hingga akhir, ikuti skenario pengujian berikut:
 
 1.  **Ulasan Publik & Katalog (Guest)**
     *   Buka aplikasi tanpa login. Akses halaman produk (`/products`) untuk melihat daftar katalog.
-    *   Buka halaman ulasan (`/reviews`) dan kirim rating & komentar mengenai aplikasi. Konfirmasi ulasan tampil secara aman tanpa merusak tata letak.
-2.  **Registrasi & Login Multi-Role**
-    *   Lakukan registrasi akun baru dengan mencentang tiga peran sekaligus: **Buyer**, **Seller**, dan **Driver**.
-    *   Login menggunakan akun tersebut. Halaman pemilihan peran (`/select-role`) akan muncul.
+    *   Buka halaman ulasan (`/reviews`) dan kirim ulasan berupa rating & komentar mengenai aplikasi. Konfirmasi bahwa ulasan tampil secara aman tanpa merusak tata letak (skrip berbahaya seperti `<script>` disaring secara otomatis dengan pengaman XSS di backend).
+2.  **Registrasi & Login Multi-Role dengan Validasi Input (Level 7)**
+    *   Lakukan registrasi akun baru. Masukkan **Username**, **Email**, **Nomor Telepon**, dan **Password**, serta centang tiga peran sekaligus: **Buyer**, **Seller**, dan **Driver**.
+    *   *Pengujian Validasi Keamanan*: Coba masukkan format email yang salah (contoh: `lintang`) atau nomor telepon kurang dari 8 karakter. Sistem akan memvalidasi secara real-time dan menolak pendaftaran sebelum format diperbaiki.
+    *   Login menggunakan akun baru tersebut. Halaman pemilihan peran (`/select-role`) akan muncul otomatis.
     *   Pilih peran **Seller** untuk masuk ke dashboard penjual.
 3.  **Pembuatan Toko & Produk (Seller)**
-    *   Pada dashboard penjual, klik menu Toko dan buat nama toko unik Anda (misalnya: "Seapedia Store").
-    *   Masuk ke menu Manajemen Produk, tambahkan produk baru (masukkan nama, deskripsi, harga, dan stok). Produk ini sekarang akan muncul di katalog publik.
-4.  **Belanja, Keranjang & Checkout (Buyer)**
+    *   Pada dashboard penjual, klik menu Toko dan buat nama toko unik Anda (misalnya: "Samudera Hias").
+    *   Masuk ke menu Manajemen Produk, tambahkan produk baru (masukkan nama, deskripsi, harga, dan stok). Produk ini sekarang akan langsung muncul di katalog publik.
+4.  **Belanja, Keranjang, Checkout, & Profil Kontak (Buyer)**
     *   Kembali ke menu profil, ganti peran aktif Anda menjadi **Buyer**.
+    *   *Verifikasi Tampilan Kontak*: Buka halaman profil, dan konfirmasikan bahwa **Email** dan **Nomor Telepon** Anda yang terdaftar kini ditampilkan dengan rapi di bawah kartu informasi peran aktif.
     *   Akses dompet pembeli (Wallet) lalu lakukan simulasi Top Up saldo.
     *   Cari produk yang baru saja Anda buat sebagai Seller tadi, tambahkan ke keranjang.
-    *   *Pengujian Aturan Satu Toko*: Coba mendaftar akun lain, buat produk dengan toko berbeda, lalu coba tambahkan produk toko kedua tersebut ke keranjang. Aplikasi akan menolak dan meminta keranjang dibersihkan terlebih dahulu.
-    *   Lakukan checkout. Masukkan alamat pengiriman, pilih metode pengiriman (Instant/Next Day/Regular), dan masukkan kode diskon (jika ada).
-    *   Konfirmasi rincian biaya: Subtotal, Diskon, Ongkir, PPN 12%, dan Total Bayar. Konfirmasi saldo terpotong dan stok produk berkurang. Status pesanan awal adalah `Sedang Dikemas`.
+    *   *Pengujian Aturan Satu Toko*: Coba mendaftar akun lain, buat produk dengan toko berbeda, lalu coba tambahkan produk toko kedua tersebut ke keranjang. Aplikasi akan mendeteksi bentrokan toko, memblokir penambahan, dan meminta Anda mengosongkan keranjang terlebih dahulu.
+    *   Lakukan checkout. Masukkan alamat pengiriman, pilih metode pengiriman (Instant/Next Day/Regular), dan masukkan kode diskon bawaan seperti `VOUCHER10` atau `PROMO50`.
+    *   Konfirmasi rincian biaya pada ringkasan bayar: Subtotal, Diskon, Ongkir, PPN 12%, dan Total Akhir. Konfirmasikan bahwa saldo terpotong dan stok produk berkurang. Status pesanan awal setelah checkout adalah `Sedang Dikemas` (BEING_PACKED).
 5.  **Proses Pesanan (Seller)**
-    *   Beralih peran kembali ke **Seller**.
+    *   Beralih peran kembali menjadi **Seller**.
     *   Masuk ke riwayat pesanan masuk, temukan pesanan pembeli tadi, lalu klik tombol **Proses Pesanan**.
-    *   Status pesanan akan berubah dari `Sedang Dikemas` menjadi `Menunggu Pengirim`.
+    *   Status pesanan akan berubah dari `Sedang Dikemas` menjadi `Menunggu Pengirim` (AWAITING_SHIPMENT).
 6.  **Pengantaran & Pendapatan (Driver)**
     *   Beralih peran menjadi **Driver**.
-    *   Buka halaman Cari Pekerjaan (`/driver/find-jobs`). Pesanan yang berstatus `Menunggu Pengirim` akan muncul di sini.
-    *   Klik **Ambil Pekerjaan**. Status pesanan berubah menjadi `Sedang Dikirim`.
-    *   Klik **Konfirmasi Selesai** setelah pesanan diantarkan. Status pesanan berubah menjadi `Pesanan Selesai`.
-    *   Periksa saldo pendapatan Driver Anda. Saldo tersebut harus bertambah tepat sebesar biaya ongkir pesanan tersebut.
-7.  **Simulasi Overdue & Auto Return (Admin/Overdue)**
-    *   Login menggunakan akun admin (`superadmin`).
+    *   Buka halaman Cari Pekerjaan (`/driver/find-jobs`). Pesanan yang berstatus `Menunggu Pengirim` akan muncul di daftar job pool.
+    *   Klik **Ambil Pekerjaan**. Status pesanan berubah menjadi `Sedang Dikirim` (BEING_SHIPPED).
+    *   Klik **Konfirmasi Selesai** setelah pesanan diantarkan. Status pesanan berubah menjadi `Pesanan Selesai` (ORDER_COMPLETED).
+    *   Periksa saldo pendapatan Driver Anda. Saldo tersebut harus bertambah tepat sebesar biaya ongkir pesanan tersebut (pendapatan 100% ongkir).
+7.  **Simulasi Overdue & Auto Return/Refund (Admin)**
+    *   Login menggunakan akun admin bawaan (`superadmin` / `adminpassword123`).
     *   Buat transaksi baru sebagai Buyer (selesaikan hingga checkout, status `Sedang Dikemas` atau `Menunggu Pengirim`).
-    *   Melalui Swagger API docs (`/api/docs`) atau UI Admin, jalankan simulasi memajukan waktu (simulate-overdue) sebanyak 5 hari (default).
-    *   Verifikasi bahwa pesanan tersebut sekarang otomatis berstatus `Dikembalikan` (RETURNED), saldo pembeli di-refund penuh, dan stok produk dikembalikan ke semula secara aman.
+    *   Buka Dashboard Admin, pilih tab **Monitoring & Logs**, klik tombol **Day Simulation (+5 Days)**.
+    *   Verifikasi bahwa pesanan tersebut sekarang otomatis berstatus `Dikembalikan` (RETURNED), saldo pembeli di-refund penuh, stok produk dikembalikan ke semula, dan job pengiriman dihapus secara otomatis dan atomik.

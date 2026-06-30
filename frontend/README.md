@@ -101,6 +101,10 @@ Aplikasi mobile mengawal aturan bisnis SEAPEDIA melalui fitur-fitur berikut:
 *   Peran aktif pengguna selalu ditampilkan di Navbar utama atau bagian atas halaman profil (`ProfileScreen`).
 *   Header aplikasi menampilkan detail finansial khusus peran aktif (Saldo Dompet untuk Buyer, Total Pendapatan untuk Seller/Driver).
 
+### 4. Validasi Format Registrasi & Tampilan Kontak Profil (Level 7)
+*   **Registrasi**: Form pendaftaran pada [register_screen.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/features/auth/presentation/register_screen.dart) memvalidasi keabsahan format email menggunakan ekspresi reguler (Regex) serta membatasi nomor telepon minimal 8 karakter sebelum mengirimkannya ke backend.
+*   **Tampilan Kontak**: Halaman profil ([profile_screen.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/features/auth/presentation/profile_screen.dart)) menampilkan email dan nomor telepon terdaftar secara terpusat dengan ikon yang selaras di bawah informasi peran aktif untuk keperluan identifikasi pemilik akun.
+
 ---
 
 ## 💻 Cara Menjalankan & Membangun Aplikasi

@@ -76,15 +76,19 @@ npx prisma migrate dev --name init
 ```
 
 ### 🌱 Data Awal (Seed Data)
-Jalankan script seed untuk membuat peran master (`ADMIN`, `SELLER`, `BUYER`, `DRIVER`) serta profil superadmin bawaan:
+Jalankan script seed untuk mengisi database secara lengkap dengan data relasional siap pakai (master roles, users, store/buyer/driver profiles, products, discounts, reviews, orders, dan transactions) tanpa ada orphan data:
 ```bash
 npx prisma db seed
 ```
 
 > [!IMPORTANT]
-> Akun admin default yang didaftarkan melalui script seed adalah:
-> *   **Username**: `superadmin`
-> *   **Password**: `adminpassword123`
+> **Daftar Akun Hasil Seeding (Password non-admin: `password123`)**:
+> *   **Admin**: `superadmin` (Password: `adminpassword123`, Email: `admin@seapedia.com`, Telp: `081234567890`)
+> *   **Buyer**: `buyer1` (Email: `buyer1@seapedia.com`, Telp: `081111111111`, Saldo: Rp500.000)
+> *   **Seller 1**: `seller1` (Email: `seller1@seapedia.com`, Telp: `082222222222`, Toko: *Aqua Marine Shop*)
+> *   **Seller 2**: `seller2` (Email: `seller2@seapedia.com`, Telp: `083333333333`, Toko: *Deep Blue Coral*)
+> *   **Driver**: `driver1` (Email: `driver1@seapedia.com`, Telp: `084444444444`, Pendapatan: Rp20.000)
+> *   **Multi-Role**: `multi_user` (Email: `multiuser@seapedia.com`, Telp: `085555555555`, Toko: *Multi Ocean Store*, Saldo: Rp250.000)
 
 ---
 
@@ -162,7 +166,7 @@ Backend memanfaatkan **Prisma ORM** untuk seluruh operasi database. Prisma secar
 ### 2. XSS (Cross-Site Scripting) Prevention
 Ulasan aplikasi publik dapat disubmit oleh tamu tanpa otentikasi. Untuk menghindari eksploitasi skrip berbahaya (misalnya tag `<script>` atau event handler inline seperti `onload`), backend menggunakan modul `xss` di dalam [reviews.service.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/reviews/reviews.service.ts) untuk menyaring nama pengulas dan konten komentar sebelum disimpan.
 
-### 3. Validasi Input Ketat
+### 3. Validasi Input Ketat (Level 7)
 NestJS dikonfigurasi menggunakan `ValidationPipe` global di [main.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/main.ts):
 ```typescript
 app.useGlobalPipes(new ValidationPipe({
@@ -171,7 +175,11 @@ app.useGlobalPipes(new ValidationPipe({
   forbidNonWhitelisted: true,
 }));
 ```
-Hal ini memastikan request body yang tidak terdefinisi di tingkat DTO (Data Transfer Object) akan ditolak secara ketat, dan input seperti rating (harus integer 1-5), kuantitas, harga, dan tanggal kedaluwarsa divalidasi keabsahannya sebelum diproses.
+Hal ini memastikan request body yang tidak terdefinisi di tingkat DTO (Data Transfer Object) akan ditolak secara ketat. Validasi yang diimplementasikan mencakup:
+*   **Email**: Validasi format email menggunakan `@IsEmail()` dan keunikan email di database saat registrasi.
+*   **Nomor Telepon**: Validasi minimal 8 karakter menggunakan `@MinLength(8)`.
+*   **Rating**: Integer berkisar 1 - 5.
+*   **Kuantitas, Harga, Stok, dan Nilai Diskon**: Nilai numerik divalidasi keabsahannya sebelum diproses untuk menghindari nilai negatif atau manipulasi angka.
 
 ### 4. Manajemen Sesi Token JWT
 *   Setelah berhasil masuk (`POST /auth/login`), backend menghasilkan token sesi sementara berisi daftar peran pengguna. Pengguna wajib mengirimkan request `POST /auth/select-role` untuk memilih peran aktif mereka.
