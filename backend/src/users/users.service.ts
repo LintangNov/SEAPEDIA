@@ -37,6 +37,7 @@ export class UsersService{
         if (!user) throw new InternalServerErrorException("User not found");
 
         let walletBalance = 0;
+        let storeName: string | null = null;
 
         if (user.roles.some(ur => ur.role.name === 'BUYER')) {
             const buyerProfile = await this.prisma.buyerProfile.findUnique({
@@ -47,6 +48,15 @@ export class UsersService{
             }
         }
 
+        if (user.roles.some(ur => ur.role.name === 'SELLER')) {
+            const sellerProfile = await this.prisma.sellerProfile.findUnique({
+                where: { userId }
+            });
+            if (sellerProfile) {
+                storeName = sellerProfile.storeName;
+            }
+        }
+
         return {
             message: "Profile successfully retrieved",
             profile: {
@@ -54,7 +64,8 @@ export class UsersService{
                 username: user.username,
                 activeRole: activeRole,
                 roles: user.roles.map(ur => ur.role.name),
-                walletBalance: walletBalance
+                walletBalance: walletBalance,
+                storeName: storeName
             }
         };
     }
