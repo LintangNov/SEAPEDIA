@@ -67,8 +67,10 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: 16),
               _buildStatsRow(ref, profile.activeRole, theme, isDark, context),
               const SizedBox(height: 16),
-              _buildSwitchRoleCard(context, ref, profile, theme, isDark),
-              const SizedBox(height: 16),
+              if (profile.activeRole != 'ADMIN') ...[
+                _buildSwitchRoleCard(context, ref, profile, theme, isDark),
+                const SizedBox(height: 16),
+              ],
               _buildActionsSection(context, ref, profile, theme, isDark),
             ],
           ),

@@ -18,16 +18,24 @@ class AdminDashboardScreen extends ConsumerStatefulWidget {
   ConsumerState<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
 }
 
-class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
+class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> with SingleTickerProviderStateMixin {
   final _codeController = TextEditingController();
   final _amountController = TextEditingController();
   final _usageController = TextEditingController();
   String _selectedType = 'PROMO';
   DateTime? _selectedDate;
   bool _isSimulating = false;
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
 
   @override
   void dispose() {
+    _tabController.dispose();
     _codeController.dispose();
     _amountController.dispose();
     _usageController.dispose();
@@ -106,76 +114,81 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/admin/dashboard'),
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text('Admin Dashboard'),
-          actions: [
-            IconButton(
-              icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-              onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
-              tooltip: 'Toggle Theme',
-            ),
-          ],
-          bottom: const TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.monitor), text: 'Monitoring & Logs'),
-              Tab(icon: Icon(Icons.discount), text: 'Voucher & Promo'),
-            ],
+    return Scaffold(
+      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/admin/dashboard'),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text('Admin Dashboard'),
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+            tooltip: 'Toggle Theme',
           ),
+        ],
+        bottom: TabBar(
+          controller: _tabController,
+          labelColor: isDark ? AppColors.bioluminescence : AppColors.textPrimaryLight,
+          unselectedLabelColor: isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight,
+          indicatorColor: isDark ? AppColors.bioluminescence : AppColors.textPrimaryLight,
+          indicatorSize: TabBarIndicatorSize.tab,
+          tabs: const [
+            Tab(icon: Icon(Icons.monitor), text: 'Monitoring & Logs'),
+            Tab(icon: Icon(Icons.discount), text: 'Voucher & Promo'),
+          ],
         ),
-        body: TabBarView(
-          children: [
-            Consumer(builder: (context, ref, child) {
-              final monitoringState = ref.watch(adminMonitoringProvider);
-              return monitoringState.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (err, _) => SeapediaErrorWidget(
-                  error: err,
-                  onRetry: () => ref.refresh(adminMonitoringProvider),
-                ),
-                data: (data) => RefreshIndicator(
-                  onRefresh: () async => ref.invalidate(adminMonitoringProvider),
-                  child: ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      Column(
-                          children: [
-                            const Text('The system will automatically check for orders that have exceeded the SLA (Instant: 24h, Next Day: 48h, Regular: 120h).', textAlign: TextAlign.center,),
-                            const SizedBox(height: 12),
-                            ElevatedButton.icon(
-                              icon: _isSimulating ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Icon(Icons.fast_forward),
-                              label: const Text('Day Simulation (+5 Days)'),
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                              onPressed: _isSimulating ? null : _handleSimulateOverdue,
-                            ),
-                          ],
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          Consumer(builder: (context, ref, child) {
+            final monitoringState = ref.watch(adminMonitoringProvider);
+            return monitoringState.when(
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, _) => SeapediaErrorWidget(
+                error: err,
+                onRetry: () => ref.refresh(adminMonitoringProvider),
+              ),
+              data: (data) => RefreshIndicator(
+                onRefresh: () async => ref.invalidate(adminMonitoringProvider),
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    Column(
+                      children: [
+                        const Text('The system will automatically check for orders that have exceeded the SLA (Instant: 24h, Next Day: 48h, Regular: 120h).', textAlign: TextAlign.center,),
+                        const SizedBox(height: 12),
+                        ElevatedButton.icon(
+                          icon: _isSimulating ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)) : const Icon(Icons.fast_forward),
+                          label: const Text('Day Simulation (+5 Days)'),
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                          onPressed: _isSimulating ? null : _handleSimulateOverdue,
                         ),
-                      const SizedBox(height: 16),
-                      Column(
-                          children: [
-                            ListTile(leading: const Icon(Icons.people), title: const Text('Total Users'), trailing: Text('${data['totalUsers']}', style: const TextStyle(fontSize: 20))),
-                            ListTile(leading: const Icon(Icons.store), title: const Text('Total Stores'), trailing: Text('${data['totalStores']}', style: const TextStyle(fontSize: 20))),
-                            ListTile(leading: const Icon(Icons.shopping_bag), title: const Text('Total Products'), trailing: Text('${data['totalProducts']}', style: const TextStyle(fontSize: 20))),
-                            ListTile(leading: const Icon(Icons.receipt), title: const Text('Total Orders'), trailing: Text('${data['totalOrders']}', style: const TextStyle(fontSize: 20))),
-                            ListTile(leading: const Icon(Icons.assignment_return, color: Colors.orange), title: const Text('Total Returned (All)'), trailing: Text('${data['totalReturnedOrders']}', style: const TextStyle(fontSize: 20, color: Colors.orange, fontWeight: FontWeight.bold))),
-                            ListTile(leading: const Icon(Icons.warning, color: Colors.red), title: const Text('SLA Auto-Refunded'), trailing: Text('${data['totalAutoRefunds']}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold))),
-                            ListTile(leading: const Icon(Icons.discount), title: const Text('Total Discounts'), trailing: Text('${data['totalDiscounts']}', style: const TextStyle(fontSize: 20))),
-                            ListTile(leading: const Icon(Icons.motorcycle), title: const Text('Active Deliveries'), trailing: Text('${data['activeDeliveries']}', style: const TextStyle(fontSize: 20))),
-                          ]
-                        )
-                    ]
-                  )
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Column(
+                      children: [
+                        ListTile(leading: const Icon(Icons.people), title: const Text('Total Users'), trailing: Text('${data['totalUsers']}', style: const TextStyle(fontSize: 20))),
+                        ListTile(leading: const Icon(Icons.store), title: const Text('Total Stores'), trailing: Text('${data['totalStores']}', style: const TextStyle(fontSize: 20))),
+                        ListTile(leading: const Icon(Icons.shopping_bag), title: const Text('Total Products'), trailing: Text('${data['totalProducts']}', style: const TextStyle(fontSize: 20))),
+                        ListTile(leading: const Icon(Icons.receipt), title: const Text('Total Orders'), trailing: Text('${data['totalOrders']}', style: const TextStyle(fontSize: 20))),
+                        ListTile(leading: const Icon(Icons.assignment_return, color: Colors.orange), title: const Text('Total Returned (All)'), trailing: Text('${data['totalReturnedOrders']}', style: const TextStyle(fontSize: 20, color: Colors.orange, fontWeight: FontWeight.bold))),
+                        ListTile(leading: const Icon(Icons.warning, color: Colors.red), title: const Text('SLA Auto-Refunded'), trailing: Text('${data['totalAutoRefunds']}', style: const TextStyle(fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold))),
+                        ListTile(leading: const Icon(Icons.discount), title: const Text('Total Discounts'), trailing: Text('${data['totalDiscounts']}', style: const TextStyle(fontSize: 20))),
+                        ListTile(leading: const Icon(Icons.motorcycle), title: const Text('Active Deliveries'), trailing: Text('${data['activeDeliveries']}', style: const TextStyle(fontSize: 20))),
+                      ]
+                    )
+                  ]
                 )
-              );
-            }),
+              )
+            );
+          }),
 
-            Column(
-              children: [
-                Padding(
+          CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -206,32 +219,38 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     ],
                   ),
                 ), 
-                const Divider(),
-                Expanded(
-                  child: discountState.when(
-                    data: (discounts) => ListView.builder(
-                      itemCount: discounts.length,
-                      itemBuilder: (context, index){
-                        final d = discounts[index];
-                        return ListTile(
-                          title: Text('${d.code} (${d.type}) - Rp${d.amount}'),
-                          subtitle: Text('Expires: ${d.expiryDate.toLocal().toString().split(' ')[0]}'),
-                          trailing: const Icon(Icons.info_outline, color: Colors.blue),
-                          onTap: () => _showDiscountDetail(context, d),
-                        );
-                      },
-                    ), 
-                    error: (err, _) => SeapediaErrorWidget(
-                      error: err,
-                      onRetry: () => ref.refresh(adminDiscountProvider),
-                    ), 
-                    loading: () => const Center(child: CircularProgressIndicator(),)
+              ),
+              const SliverToBoxAdapter(
+                child: Divider(),
+              ),
+              discountState.when(
+                data: (discounts) => SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final d = discounts[index];
+                      return ListTile(
+                        title: Text('${d.code} (${d.type}) - Rp${d.amount}'),
+                        subtitle: Text('Expires: ${d.expiryDate.toLocal().toString().split(' ')[0]}'),
+                        trailing: const Icon(Icons.info_outline, color: Colors.blue),
+                        onTap: () => _showDiscountDetail(context, d),
+                      );
+                    },
+                    childCount: discounts.length,
                   ),
+                ), 
+                error: (err, _) => SliverToBoxAdapter(
+                  child: SeapediaErrorWidget(
+                    error: err,
+                    onRetry: () => ref.refresh(adminDiscountProvider),
+                  ), 
+                ), 
+                loading: () => const SliverToBoxAdapter(
+                  child: Center(child: Padding(padding: EdgeInsets.all(24.0), child: CircularProgressIndicator())),
                 )
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
