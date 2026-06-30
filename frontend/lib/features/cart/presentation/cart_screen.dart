@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -157,7 +158,10 @@ class CartScreen extends ConsumerWidget {
             ],
           );
         },
-        error: (error, _) => Center(child: Text('Error: $error')),
+        error: (error, _) => SeapediaErrorWidget(
+        error: error,
+        onRetry: () => ref.refresh(cartControllerProvider),
+      ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
     );

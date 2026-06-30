@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -69,7 +70,10 @@ class _StoreProfileScreenState extends ConsumerState<StoreProfileScreen> {
         body: Center(child: CircularProgressIndicator()),
       ),
       error: (err, _) => Scaffold(
-        body: Center(child: Text('Error: $err')),
+        body: SeapediaErrorWidget(
+          error: err,
+          onRetry: () => ref.refresh(profileProvider),
+        ),
       ),
       data: (profile) {
         if (_storeNameController.text.isEmpty && profile.storeName != null) {

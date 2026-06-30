@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -51,14 +52,9 @@ class FindJobsScreen extends ConsumerWidget {
       ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Error: $err', textAlign: TextAlign.center, style: const TextStyle(color: Colors.red)),
-              ElevatedButton(onPressed: () => ref.refresh(findJobsProvider), child: const Text('Retry'))
-            ],
-          )
+        error: (err, _) => SeapediaErrorWidget(
+          error: err,
+          onRetry: () => ref.refresh(findJobsProvider),
         ),
         data: (jobs) {
           if (jobs.isEmpty) {

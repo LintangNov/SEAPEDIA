@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/driver/data/driver_repository.dart';
@@ -33,18 +34,9 @@ class DriverHistoryScreen extends ConsumerWidget {
       ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Error: $err', style: const TextStyle(color: Colors.red)),
-              const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () => ref.refresh(driverHistoryProvider),
-                child: const Text('Retry'),
-              ),
-            ],
-          ),
+        error: (err, _) => SeapediaErrorWidget(
+          error: err,
+          onRetry: () => ref.refresh(driverHistoryProvider),
         ),
         data: (history) {
           if (history.isEmpty) {

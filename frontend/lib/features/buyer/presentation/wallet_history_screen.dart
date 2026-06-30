@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/buyer/data/buyer_repository.dart';
 
@@ -17,7 +18,10 @@ class WalletHistoryScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Wallet Transaction History')),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => SeapediaErrorWidget(
+        error: err,
+        onRetry: () => ref.refresh(walletHistoryProvider),
+      ),
         data: (history) {
           if (history.isEmpty) return const Center(child: Text('No transactions yet.'));
 

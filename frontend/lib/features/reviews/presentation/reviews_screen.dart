@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/reviews/presentation/review_form_controller.dart';
 import 'reviews_provider.dart';
@@ -145,7 +146,10 @@ class _ReviewsScreenState extends ConsumerState<ReviewsScreen> {
           Expanded(
             child: reviewsAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Error: $error')),
+              error: (error, _) => SeapediaErrorWidget(
+                error: error,
+                onRetry: () => ref.refresh(reviewsListProvider),
+              ),
               data: (reviews) {
                 if (reviews.isEmpty) {
                   return const Center(

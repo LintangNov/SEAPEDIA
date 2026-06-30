@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/admin/data/admin_repository.dart';
@@ -132,7 +133,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               final monitoringState = ref.watch(adminMonitoringProvider);
               return monitoringState.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (err, _) => Center(child: Text('Error: $err')),
+                error: (err, _) => SeapediaErrorWidget(
+                  error: err,
+                  onRetry: () => ref.refresh(adminMonitoringProvider),
+                ),
                 data: (data) => RefreshIndicator(
                   onRefresh: () async => ref.invalidate(adminMonitoringProvider),
                   child: ListView(
@@ -217,7 +221,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                         );
                       },
                     ), 
-                    error: (err, _) => Center(child: Text('Error: $err'),), 
+                    error: (err, _) => SeapediaErrorWidget(
+                      error: err,
+                      onRetry: () => ref.refresh(adminDiscountProvider),
+                    ), 
                     loading: () => const Center(child: CircularProgressIndicator(),)
                   ),
                 )

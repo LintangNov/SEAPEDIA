@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/buyer/presentation/top_up_dialog.dart';
@@ -162,7 +163,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       appBar: AppBar(title: const Text('Checkout')),
       body: cartState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('Error: $error')),
+        error: (error, _) => SeapediaErrorWidget(error: error),
         data: (cart) {
           if (cart == null || cart.items.isEmpty) {
             return const Center(child: Text('Your cart is empty.'));
