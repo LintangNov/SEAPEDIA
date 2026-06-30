@@ -145,52 +145,73 @@ class ProfileScreen extends ConsumerWidget {
     ThemeData theme,
     bool isDark, {
     VoidCallback? onTap,
+    bool showBadge = false,
   }) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
+    final cardContent = Container(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      decoration: BoxDecoration(
+        color: isDark ? theme.colorScheme.surface : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-          decoration: BoxDecoration(
-            color: isDark ? theme.colorScheme.surface : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(6),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: theme.colorScheme.primary, size: 24),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 10,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+
+    return Expanded(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          InkWell(
+            onTap: onTap,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(6),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            child: cardContent,
           ),
-          child: Column(
-            children: [
-              Icon(icon, color: theme.colorScheme.primary, size: 24),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+          if (showBadge)
+            Positioned(
+              top: -4,
+              right: -4,
+              child: Container(
+                width: 10,
+                height: 10,
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
                 ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey,
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
+            ),
+        ],
       ),
     );
   }
@@ -273,6 +294,10 @@ class ProfileScreen extends ConsumerWidget {
         data: (orders) => orders.where((o) => o.status == 'PENDING' || o.status == 'Sedang Dikemas').length,
         orElse: () => 0,
       );
+      final hasBeingPacked = sellerOrdersState.maybeWhen(
+        data: (orders) => orders.any((o) => o.status == 'BEING_PACKED'),
+        orElse: () => false,
+      );
 
       return Row(
         children: [
@@ -301,6 +326,7 @@ class ProfileScreen extends ConsumerWidget {
             theme,
             isDark,
             onTap: () => context.push('/seller/orders'),
+            showBadge: hasBeingPacked,
           ),
         ],
       );

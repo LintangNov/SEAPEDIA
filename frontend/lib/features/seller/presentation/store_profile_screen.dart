@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'store_profile_controller.dart';
 import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
+import 'package:seapedia/features/auth/presentation/profile_screen.dart';
 
 class StoreProfileScreen extends ConsumerStatefulWidget {
   const StoreProfileScreen({super.key});
@@ -42,6 +43,7 @@ class _StoreProfileScreenState extends ConsumerState<StoreProfileScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text(state.error.toString())));
     } else if (mounted) {
+      ref.invalidate(profileProvider); // Sync the profile with the new store name
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -58,49 +60,63 @@ class _StoreProfileScreenState extends ConsumerState<StoreProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeProfileControllerProvider);
+    final profileState = ref.watch(profileProvider);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/seller/store-profile'),
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text('Store Profile'),
-        actions: [
-          IconButton(
-            icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-            onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
-            tooltip: 'Toggle Theme',
-          ),
-        ],
+    return profileState.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Before adding products, you must set up a unique store name.',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-                controller: _storeNameController,
-                decoration: const InputDecoration(
-                  labelText: 'Store Name',
-                  border: OutlineInputBorder(),
-                ),
+      error: (err, _) => Scaffold(
+        body: Center(child: Text('Error: $err')),
+      ),
+      data: (profile) {
+        if (_storeNameController.text.isEmpty && profile.storeName != null) {
+          _storeNameController.text = profile.storeName!;
+        }
+        return Scaffold(
+          bottomNavigationBar: const SeapediaBottomNavBar(currentPath: '/seller/store-profile'),
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text('Store Profile'),
+            actions: [
+              IconButton(
+                icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+                onPressed: () => ref.read(themeModeProvider.notifier).toggleTheme(),
+                tooltip: 'Toggle Theme',
               ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: state.isLoading ? null : _handleSubmit,
-              child: state.isLoading
-                  ? const CircularProgressIndicator()
-                  : const Text('Save Store Profile'),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Before adding products, you must set up a unique store name.',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _storeNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Store Name',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: state.isLoading ? null : _handleSubmit,
+                  child: state.isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text('Save Store Profile'),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
