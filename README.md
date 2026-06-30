@@ -9,7 +9,7 @@
 **SEAPEDIA** adalah platform e-commerce multi-role yang menghubungkan Pembeli (Buyer), Penjual (Seller), dan Pengemudi (Driver/Courier) dalam satu ekosistem marketplace. Proyek ini dikelola secara monorepo, mencakup backend REST API berbasis NestJS dan frontend mobile berbasis Flutter.
 
 > [!IMPORTANT]
-> Aplikasi ini mendukung platform **Android** dan **Windows**. Namun, desain antarmuka pengguna (UI/UX) dimaksimalkan khusus untuk perangkat **Android** (tampilan mobile). Build platform **Windows** disediakan semata-mata untuk kemudahan evaluasi dan pengujian (*testing*) oleh reviewer di PC.
+> Aplikasi ini mendukung platform **Android** dan **Windows**. Namun, desain antarmuka pengguna (UI/UX) dimaksimalkan khusus untuk perangkat **Android** (tampilan mobile). Build platform **Windows** disediakan semata-mata untuk kemudahan dalam proses pengembangan, serta evaluasi dan pengujian (*testing*) oleh reviewer di PC.
 
 ---
 
