@@ -27,15 +27,15 @@ Backend untuk proyek SEAPEDIA ini telah berhasil di-deploy ke Hugging Face Space
 *   **Swagger API Docs (Live)**: **[https://lintangnv-seapedia-api.hf.space/api/docs](https://lintangnv-seapedia-api.hf.space/api/docs)**
 
 > [!NOTE]
-> Secara default, aplikasi frontend Flutter diatur untuk langsung terhubung dengan link deployment backend di atas (dikonfigurasi dalam file [dio_provider.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/network/dio_provider.dart)). Namun, penguji tetap dapat menjalankan backend secara lokal dengan mengikuti panduan di bawah.
+> Secara default, aplikasi frontend Flutter diatur untuk langsung terhubung dengan link deployment backend di atas (dikonfigurasi dalam file [dio_provider.dart](./frontend/lib/core/network/dio_provider.dart)). Namun, penguji tetap dapat menjalankan backend secara lokal dengan mengikuti panduan di bawah.
 
 ---
 
 ## 📦 Unduh Aplikasi Pre-built (Download Links)
 
 Untuk mempermudah pengujian tanpa harus membangun (*compile*) kode sumber Flutter secara manual dari awal, Anda dapat mengunduh berkas rilis aplikasi siap pakai berikut:
-*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (PLACEHOLDER LINK APK)](LINK_DOWNLOAD_APK_DI_SINI)
-*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (PLACEHOLDER LINK APK)](LINK_DOWNLOAD_EXE_DI_SINI)
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-android.apk)](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-android.apk)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-windows.zip)](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-windows.zip)
 
 ---
 
