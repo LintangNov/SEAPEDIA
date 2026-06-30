@@ -73,7 +73,7 @@ frontend/lib/
 
 ## 🌐 Koneksi Jaringan & Interceptor Otentikasi
 
-Pengelolaan REST API diimplementasikan menggunakan **Dio (v5.x)** yang diatur secara terpusat di dalam [dio_provider.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/network/dio_provider.dart):
+Pengelolaan REST API diimplementasikan menggunakan **Dio (v5.x)** yang diatur secara terpusat di dalam [dio_provider.dart](./frontend/lib/core/network/dio_provider.dart):
 
 *   **Penyelarasan IP Otomatis**: Aplikasi mendeteksi target emulator yang sedang aktif:
     *   **Emulator Android**: Dialihkan ke IP khusus `http://10.0.2.2:3000` agar terhubung ke localhost mesin host.
@@ -88,7 +88,7 @@ Pengelolaan REST API diimplementasikan menggunakan **Dio (v5.x)** yang diatur se
 Aplikasi mobile mengawal aturan bisnis SEAPEDIA melalui fitur-fitur berikut:
 
 ### 1. Guard Navigasi Pemilihan Peran (Role Selection Guard)
-*   Sistem navigasi dikelola oleh **GoRouter** di [app_router.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/core/router/app_router.dart).
+*   Sistem navigasi dikelola oleh **GoRouter** di [app_router.dart](./frontend/lib/core/router/app_router.dart).
 *   Jika pengguna memiliki beberapa peran (misal Buyer & Seller) dan baru saja login, status sesi diubah menjadi `AuthState.partial`.
 *   Pengguna akan diarahkan ke halaman `/select-role` dan diblokir dari rute privat lainnya hingga memilih peran aktifnya. Setelah peran aktif dipilih dan token baru didapatkan, status berubah menjadi `AuthState.authenticated`.
 
@@ -102,8 +102,8 @@ Aplikasi mobile mengawal aturan bisnis SEAPEDIA melalui fitur-fitur berikut:
 *   Header aplikasi menampilkan detail finansial khusus peran aktif (Saldo Dompet untuk Buyer, Total Pendapatan untuk Seller/Driver).
 
 ### 4. Validasi Format Registrasi & Tampilan Kontak Profil (Level 7)
-*   **Registrasi**: Form pendaftaran pada [register_screen.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/features/auth/presentation/register_screen.dart) memvalidasi keabsahan format email menggunakan ekspresi reguler (Regex) serta membatasi nomor telepon minimal 8 karakter sebelum mengirimkannya ke backend.
-*   **Tampilan Kontak**: Halaman profil ([profile_screen.dart](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/frontend/lib/features/auth/presentation/profile_screen.dart)) menampilkan email dan nomor telepon terdaftar secara terpusat dengan ikon yang selaras di bawah informasi peran aktif untuk keperluan identifikasi pemilik akun.
+*   **Registrasi**: Form pendaftaran pada [register_screen.dart](./frontend/lib/features/auth/presentation/register_screen.dart) memvalidasi keabsahan format email menggunakan ekspresi reguler (Regex) serta membatasi nomor telepon minimal 8 karakter sebelum mengirimkannya ke backend.
+*   **Tampilan Kontak**: Halaman profil ([profile_screen.dart](./frontend/lib/features/auth/presentation/profile_screen.dart)) menampilkan email dan nomor telepon terdaftar secara terpusat dengan ikon yang selaras di bawah informasi peran aktif untuk keperluan identifikasi pemilik akun.
 
 ---
 
@@ -150,5 +150,5 @@ flutter build web --release
 
 ## 📦 Unduh Aplikasi Pre-built (Download Links)
 Untuk mempermudah penguji/reviewer menjalankan aplikasi tanpa harus meng-compile kode sumber dari awal:
-*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA (Tulis link download APK Anda di sini)](TULIS_LINK_DOWNLOAD_APK_DI_SINI)
-*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows (Tulis link download ZIP Windows Anda di sini)](TULIS_LINK_DOWNLOAD_EXE_DI_SINI)
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-android.apk)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-windows.zip)
