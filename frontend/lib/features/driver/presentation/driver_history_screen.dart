@@ -33,16 +33,44 @@ class DriverHistoryScreen extends ConsumerWidget {
       ),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, _) => Center(child: Text('Error: $err')),
+        error: (err, _) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Error: $err', style: const TextStyle(color: Colors.red)),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () => ref.refresh(driverHistoryProvider),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
         data: (history) {
-          if (history.isEmpty) return const Center(child: Text('You have not completed any deliveries yet.'));
+          if (history.isEmpty) {
+            return RefreshIndicator(
+              onRefresh: () async => ref.refresh(driverHistoryProvider),
+              child: const SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: 300,
+                  child: Center(
+                    child: Text('You have not completed any deliveries yet.'),
+                  ),
+                ),
+              ),
+            );
+          }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16.0),
-            itemCount: history.length,
-            itemBuilder: (context, index) {
-              final job = history[index];
-              return Card(
+          return RefreshIndicator(
+            onRefresh: () async => ref.refresh(driverHistoryProvider),
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16.0),
+              itemCount: history.length,
+              itemBuilder: (context, index) {
+                final job = history[index];
+                return Card(
                   child: ListTile(
                     leading: const Icon(Icons.check_circle, color: Colors.green),
                     title: Text('Order ID: ${job.id.length >= 8 ? job.id.substring(0, 8) : job.id}...'),
@@ -50,7 +78,8 @@ class DriverHistoryScreen extends ConsumerWidget {
                     isThreeLine: true,
                   ),
                 );
-            },
+              },
+            ),
           );
         },
       ),
