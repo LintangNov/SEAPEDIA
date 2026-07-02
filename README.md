@@ -135,6 +135,8 @@ Aplikasi SEAPEDIA dirancang dengan standar keamanan berikut:
     *   **Kuantitas, Harga, Stok, & Diskon**: Nilai numerik divalidasi keabsahannya (tidak boleh negatif atau nol untuk parameter tertentu).
 4.  **Manajemen Sesi yang Aman**: Token JWT disimpan menggunakan `FlutterSecureStorage` pada mobile client untuk enkripsi data di tingkat perangkat.
 5.  **Server-Side Role-Based Access Control (RBAC)**: Backend tidak memercayai role yang dideklarasikan oleh frontend. Setiap endpoint dashboard dilindungi dengan `@UseGuards(AuthGuard, RolesGuard)` yang memverifikasi kecocokan peran aktif (`activeRole`) yang terenkripsi di dalam JWT token.
+6.  **Pencegahan API Abuse (Rate Limiting / Throttling)**: Menerapkan `@nestjs/throttler` secara global untuk membatasi jumlah request guna mencegah serangan brute-force dan spamming. Batas default global diatur maksimal 100 request/menit, sedangkan endpoint berisiko tinggi seperti registrasi & login dibatasi ketat maksimal 5 request/menit, dan pengiriman ulasan aplikasi dibatasi maksimal 3 request/menit.
+7.  **Standardisasi Penanganan Error (Global Exception Filter)**: Menggunakan custom global exception filter untuk menangkap semua error HTTP maupun error server tak terduga, lalu memformatnya menjadi respon JSON yang konsisten, bersih, dan informatif untuk frontend.
 
 ---
 

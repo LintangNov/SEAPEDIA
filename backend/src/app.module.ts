@@ -15,6 +15,8 @@ import { DriverModule } from './driver/driver.module';
 import { AdminModule } from './admin/admin.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -23,6 +25,10 @@ import { ScheduleModule } from '@nestjs/schedule';
       envFilePath: '.env'
     }),
     ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([{
+      ttl: 60000, // 1 minute
+      limit: 100, // max 100 requests per minute
+    }]),
     AuthModule,
     UsersModule,
     ProductsModule,
@@ -36,6 +42,13 @@ import { ScheduleModule } from '@nestjs/schedule';
     SchedulerModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [
+    AppService, 
+    PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

@@ -186,3 +186,32 @@ Hal ini memastikan request body yang tidak terdefinisi di tingkat DTO (Data Tran
 *   Token JWT sesi akhir yang diterbitkan berisi properti `activeRole`. Token ini ditandatangani menggunakan algoritma HMAC SHA-256 dengan kunci rahasia `JWT_SECRET`.
 *   Rute dilindungi secara server-side menggunakan `AuthGuard` untuk ekstraksi token dan `RolesGuard` untuk verifikasi kecocokan peran aktif pengguna. Jika peran yang dikirim di header tidak sesuai dengan otorisasi rute, backend akan melempar `ForbiddenException`.
 *   Backend tidak pernah memercayai role yang dikirim langsung di request body; semua validasi bertumpu pada payload token JWT terenkripsi yang diterima.
+
+### 5. API Rate Limiting (Throttling)
+*   Menggunakan `@nestjs/throttler` untuk mengamankan API dari penyalahgunaan request berlebihan, serangan brute-force, dan spamming.
+*   **Batas Global**: Dikonfigurasi maksimal 100 request per menit per alamat IP secara global.
+*   **Pembatasan Khusus (Stricter Throttling)**:
+    *   Registrasi (`POST /auth/register`): Maksimal 5 request per menit.
+    *   Otentikasi Login (`POST /auth/login`): Maksimal 5 request per menit.
+    *   Ulasan Aplikasi (`POST /reviews`): Maksimal 3 request per menit.
+
+### 6. Standardisasi Penanganan Error (Global Exception Filter)
+*   Sistem menggunakan custom filter [http-exception.filter.ts](file:///d:/KULIAH/kursus/Compfest%20Academy/seleksi/seapedia/backend/src/common/filters/http-exception.filter.ts) yang didaftarkan secara global pada `main.ts`.
+*   Filter ini menangkap seluruh error (`HttpException` dari NestJS serta error sistem mentah lainnya) dan membungkusnya ke dalam format JSON standard yang seragam:
+    ```json
+    {
+      "success": false,
+      "statusCode": 409,
+      "message": "Store name 'Aqua Marine Shop' is already taken.",
+      "error": "Conflict",
+      "timestamp": "2026-07-02T12:00:00.000Z",
+      "path": "/api/users/seller/store"
+    }
+    ```
+*   Ini memastikan frontend menerima format respon error yang konsisten di semua skenario kegagalan transaksi, otentikasi, maupun error internal database.
+
+### 7. Swagger OpenAPI Detailing
+*   Seluruh pengontrol REST API (Controllers) didekorasi dengan anotasi Swagger lengkap (`@ApiTags`, `@ApiBearerAuth`, `@ApiOperation`, `@ApiResponse`, `@ApiParam`, dan `@ApiBody`).
+*   Tipe data input didokumentasikan secara rinci menggunakan kelas DTO yang dilengkapi dekorator `@ApiProperty()` dan `@ApiPropertyOptional()`.
+*   Swagger interaktif ini dapat diakses langsung oleh reviewer secara lokal di `http://localhost:3000/api/docs` atau live di rilis demo.
+

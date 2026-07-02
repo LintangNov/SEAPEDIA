@@ -5,6 +5,7 @@ import { LoginDto } from './dto/login.dto';
 import { SelectRoleDto } from './dto/select-role.dto';
 import { AuthGuard } from "./auth.guard";
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -14,6 +15,8 @@ export class AuthController {
   @ApiOperation({ summary: 'Register a new user', description: 'Creates a new user profile with selected roles (SELLER, BUYER, DRIVER).' })
   @ApiResponse({ status: 201, description: 'User successfully registered.' })
   @ApiResponse({ status: 400, description: 'Invalid input data or username/email already exists.' })
+  @ApiResponse({ status: 429, description: 'Too many requests. Registration is throttled.' })
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('register')
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
@@ -22,6 +25,8 @@ export class AuthController {
   @ApiOperation({ summary: 'User login', description: 'Authenticates user credentials and returns a JWT access token.' })
   @ApiResponse({ status: 200, description: 'User successfully logged in.' })
   @ApiResponse({ status: 401, description: 'Invalid credentials.' })
+  @ApiResponse({ status: 429, description: 'Too many requests. Login is throttled.' })
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Body() dto: LoginDto) {
