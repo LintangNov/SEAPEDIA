@@ -23,6 +23,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isSubmitted = false;
 
   @override
   void dispose() {
@@ -47,6 +48,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
+    setState(() => _isSubmitted = true);
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -211,7 +213,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 padding: const EdgeInsets.all(24.0),
                 child: Form(
                   key: _formKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -227,6 +228,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       const SizedBox(height: 24),
                       TextFormField(
                         controller: _usernameController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           hintText: 'Username',
                           prefixIcon: const Icon(Icons.person_outline),
@@ -236,7 +238,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                         validator: (value) {
-                          if (value == null || value.trim().length < 3) {
+                          if (value == null || value.trim().isEmpty) {
+                            return _isSubmitted ? 'Username must be at least 3 characters' : null;
+                          }
+                          if (value.trim().length < 3) {
                             return 'Username must be at least 3 characters';
                           }
                           return null;
@@ -246,6 +251,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           hintText: 'Email',
                           prefixIcon: const Icon(Icons.email_outlined),
@@ -256,7 +262,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Please enter email';
+                            return _isSubmitted ? 'Please enter email' : null;
                           }
                           if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
                             return 'Please enter a valid email address';
@@ -268,6 +274,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       TextFormField(
                         controller: _phoneNumberController,
                         keyboardType: TextInputType.phone,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           hintText: 'Phone Number',
                           prefixIcon: const Icon(Icons.phone_outlined),
@@ -277,7 +284,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                         validator: (value) {
-                          if (value == null || value.trim().length < 8) {
+                          if (value == null || value.trim().isEmpty) {
+                            return _isSubmitted ? 'Phone number must be at least 8 characters' : null;
+                          }
+                          if (value.trim().length < 8) {
                             return 'Phone number must be at least 8 characters';
                           }
                           return null;
@@ -287,6 +297,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           hintText: 'Password',
                           prefixIcon: const Icon(Icons.lock_outline),
@@ -306,7 +317,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                         validator: (value) {
-                          if (value == null || value.length < 6) {
+                          if (value == null || value.isEmpty) {
+                            return _isSubmitted ? 'Password must be at least 6 characters' : null;
+                          }
+                          if (value.length < 6) {
                             return 'Password must be at least 6 characters';
                           }
                           return null;
@@ -316,6 +330,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       TextFormField(
                         controller: _confirmPasswordController,
                         obscureText: _obscureConfirmPassword,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           hintText: 'Confirm Password',
                           prefixIcon: const Icon(Icons.lock_outline),
@@ -335,7 +350,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
                         validator: (value) {
-                          if (value == null || value != _passwordController.text) {
+                          if (value == null || value.isEmpty) {
+                            return _isSubmitted ? 'Passwords do not match' : null;
+                          }
+                          if (value != _passwordController.text) {
                             return 'Passwords do not match';
                           }
                           return null;
