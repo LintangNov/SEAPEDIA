@@ -150,5 +150,5 @@ flutter build web --release
 
 ## 📦 Unduh Aplikasi Pre-built (Download Links)
 Untuk mempermudah penguji/reviewer menjalankan aplikasi tanpa harus meng-compile kode sumber dari awal:
-*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-android.apk)
-*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.0/seapedia-windows.zip)
+*   🤖 **Android (APK)**: [Unduh APK Rilis SEAPEDIA](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.1/seapedia-android1.0.1.apk)
+*   💻 **Windows (Executable ZIP)**: [Unduh executable Windows](https://github.com/LintangNov/SEAPEDIA/releases/download/v1.0.1/seapedia-windows1.0.1.zip)
