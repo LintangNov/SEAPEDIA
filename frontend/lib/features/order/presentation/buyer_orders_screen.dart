@@ -4,6 +4,7 @@ import 'package:seapedia/core/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seapedia/features/order/presentation/buyer_order_controller.dart';
 import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
+import 'package:seapedia/core/widgets/seapedia_shimmer.dart';
 
 class BuyerOrdersScreen extends ConsumerWidget {
   const BuyerOrdersScreen({super.key});
@@ -28,7 +29,82 @@ class BuyerOrdersScreen extends ConsumerWidget {
         ],
       ),
       body: state.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 20,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: isDark ? theme.colorScheme.surface : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    Container(
+                      height: 24,
+                      width: 140,
+                      decoration: BoxDecoration(
+                        color: isDark ? theme.colorScheme.surface : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SeapediaShimmer(
+                                  width: 150,
+                                  height: 18,
+                                ),
+                                SeapediaShimmer(
+                                  width: 24,
+                                  height: 24,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            const SeapediaShimmer(width: 200, height: 14),
+                            const SizedBox(height: 6),
+                            const SeapediaShimmer(width: 120, height: 14),
+                            const SizedBox(height: 12),
+                            const SeapediaShimmer(width: 80, height: 12),
+                            const SizedBox(height: 8),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(2, (i) => const Padding(
+                                padding: EdgeInsets.only(top: 4.0),
+                                child: SeapediaShimmer(width: 180, height: 12),
+                              )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
         error: (err, _) => SeapediaErrorWidget(
         error: err,
         onRetry: () => ref.refresh(buyerOrdersProvider),

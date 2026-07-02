@@ -11,6 +11,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneNumberController = TextEditingController();
@@ -46,30 +47,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
-    final username = _usernameController.text.trim();
-    final email = _emailController.text.trim();
-    final phoneNumber = _phoneNumberController.text.trim();
-    final password = _passwordController.text;
-    final confirmPassword = _confirmPasswordController.text;
-
-    if (username.length < 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Username must be at least 3 characters')),
-      );
-      return;
-    }
-
-    if (email.isEmpty || !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a valid email address')),
-      );
-      return;
-    }
-
-    if (phoneNumber.isEmpty || phoneNumber.length < 8) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Phone number must be at least 8 characters')),
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
@@ -80,19 +58,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       return;
     }
 
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
-      return;
-    }
-
-    if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Password must be at least 6 characters')),
-      );
-      return;
-    }
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final phoneNumber = _phoneNumberController.text.trim();
+    final password = _passwordController.text;
 
     setState(() => _isLoading = true);
 
@@ -240,20 +209,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ],
                 ),
                 padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Create an Account?',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
+                child: Form(
+                  key: _formKey,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Create an Account?',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : Colors.black87,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    TextField(
+                      const SizedBox(height: 24),
+                      TextFormField(
                         controller: _usernameController,
                         decoration: InputDecoration(
                           hintText: 'Username',
@@ -263,9 +235,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
+                        validator: (value) {
+                          if (value == null || value.trim().length < 3) {
+                            return 'Username must be at least 3 characters';
+                          }
+                          return null;
+                        },
                       ),
-                    const SizedBox(height: 16),
-                    TextField(
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
@@ -276,9 +254,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Please enter email';
+                          }
+                          if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value.trim())) {
+                            return 'Please enter a valid email address';
+                          }
+                          return null;
+                        },
                       ),
-                    const SizedBox(height: 16),
-                    TextField(
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _phoneNumberController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
@@ -289,9 +276,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
+                        validator: (value) {
+                          if (value == null || value.trim().length < 8) {
+                            return 'Phone number must be at least 8 characters';
+                          }
+                          return null;
+                        },
                       ),
-                    const SizedBox(height: 16),
-                    TextField(
+                      const SizedBox(height: 16),
+                      TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
@@ -312,49 +305,61 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
+                        validator: (value) {
+                          if (value == null || value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
                       ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _confirmPasswordController,
-                      obscureText: _obscureConfirmPassword,
-                      decoration: InputDecoration(
-                        hintText: 'Confirm Password',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _confirmPasswordController,
+                        obscureText: _obscureConfirmPassword,
+                        decoration: InputDecoration(
+                          hintText: 'Confirm Password',
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                              });
+                            },
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureConfirmPassword = !_obscureConfirmPassword;
-                            });
-                          },
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                        validator: (value) {
+                          if (value == null || value != _passwordController.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        'Select Roles',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white70 : Colors.black54,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Select Roles',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white70 : Colors.black54,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Column(
+                      const SizedBox(height: 8),
+                      Column(
                         children: [
                           _buildRoleCard('BUYER', Icons.shopping_basket_outlined, 'Browse products & checkout items'),
                           _buildRoleCard('SELLER', Icons.storefront_outlined, 'Open store & sell your catalog'),
                           _buildRoleCard('DRIVER', Icons.two_wheeler, 'Deliver packages & earn income'),
                         ],
                       ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
+                      const SizedBox(height: 24),
+                      ElevatedButton(
                         onPressed: _isLoading ? null : _handleRegister,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -370,7 +375,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               )
                             : const Text('Register'),
                       ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

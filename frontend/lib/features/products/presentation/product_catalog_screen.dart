@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:seapedia/features/auth/presentation/auth_controller.dart';
 import 'package:seapedia/core/widgets/seapedia_bottom_nav_bar.dart';
 import 'package:seapedia/core/widgets/seapedia_error_widget.dart';
+import 'package:seapedia/core/widgets/seapedia_shimmer.dart';
 import 'products_provider.dart';
 
 class ProductCatalogScreen extends ConsumerStatefulWidget {
@@ -56,7 +57,93 @@ class _ProductCatalogScreenState extends ConsumerState<ProductCatalogScreen> {
         ],
       ),
       body: productsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () {
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                child: Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: isDark ? theme.colorScheme.surface : Colors.grey[200],
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                child: Row(
+                  children: [
+                    Container(
+                      height: 16,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: isDark ? theme.colorScheme.surface : Colors.grey[200],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: 6,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: isDark ? theme.colorScheme.surface : Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(6),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                              child: SeapediaShimmer(
+                                width: double.infinity,
+                                height: double.infinity,
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SeapediaShimmer(width: 100, height: 14),
+                                SizedBox(height: 6),
+                                SeapediaShimmer(width: 60, height: 10),
+                                SizedBox(height: 10),
+                                SeapediaShimmer(width: 80, height: 16),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
         error: (error, _) => SeapediaErrorWidget(
           error: error,
           onRetry: () => ref.refresh(productsListProvider),
